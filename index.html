@@ -4,159 +4,78 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>GLOBAL CLEARING INTEGRITY NETWORK</title>
-    <script src="https://tailwindcss.com"></script>
 </head>
-<body class="bg-[#0B0F19] text-[#F1F5F9] min-h-screen flex flex-col justify-between font-sans antialiased selection:bg-emerald-500 selection:text-slate-900">
-    <header class="programmatic-ad-box notranslate w-full bg-[#111827] border-b border-slate-800 p-4 text-center text-[10px] tracking-widest font-mono text-emerald-500/50 min-h-[90px] flex items-center justify-center shadow-lg">
-        [MONETIZATION CONTAINER #1 - MULTI-REFRESH LEADERBOARD STRIP]
+<body style="background-color: #0b0f19; color: #f1f5f9; min-height: 100vh; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; display: flex; flex-direction: column; justify-content: space-between;">
+    <header style="background-color: #111827; border-bottom: 1px solid #1e293b; padding: 20px; text-align: center; font-size: 11px; font-family: monospace; color: #10b981; min-height: 50px; display: flex; align-items: center; justify-content: center;">
+        [MONETIZATION AD UNIT #1 - TOP LEADERBOARD]
     </header>
-    <main class="max-w-6xl w-full mx-auto p-4 flex-grow grid grid-cols-1 md:grid-cols-4 gap-6 my-6 animate-scale-up">
-        <section class="md:col-span-3 bg-[#111827] p-6 sm:p-8 rounded-3xl border border-slate-800 shadow-2xl overflow-hidden relative backdrop-blur-sm">
-            <div class="absolute top-0 left-0 w-full h-[4px] bg-gradient-to-r from-emerald-500 via-blue-500 to-indigo-500"></div>
-            <div class="flex items-center gap-3 mb-3">
-                <span class="h-2 w-2 rounded-full bg-emerald-400 animate-ping"></span>
-                <p class="text-xs font-bold uppercase tracking-widest text-emerald-400">Interbank Settlement Clearance Gateway</p>
+    <main style="max-width: 1100px; width: 100%; margin: 24px auto; padding: 0 16px; flex-grow: 1; box-sizing: border-box;">
+        <div style="background-color: #111827; padding: 32px; border-radius: 20px; border: 1px solid #1e293b; position: relative; box-sizing: border-box; margin-bottom: 24px;">
+            <div style="position: absolute; top: 0; left: 0; width: 100%; height: 4px; background: linear-gradient(to right, #10b981, #3b82f6);"></div>
+            <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 16px;">
+                <span style="height: 8px; width: 8px; background-color: #34d399; border-radius: 50%;"></span>
+                <p style="text-transform: uppercase; font-size: 11px; font-weight: bold; letter-spacing: 1px; color: #34d399; margin: 0;">Interbank Settlement Clearance Gateway</p>
             </div>
-            <h1 id="main-title" class="text-3xl sm:text-4xl font-black tracking-tight text-white mb-2 bg-gradient-to-r from-white via-slate-200 to-slate-400 bg-clip-text text-transparent">COMMERCIAL SWIFT NETWORK</h1>
-            <p id="main-subtitle" class="text-slate-400 text-sm mb-6">High-speed programmatic directory optimized for cross-border validation.</p>
-            <form id="search-form" class="flex flex-col sm:flex-row gap-3 mb-8">
-                <div class="flex-grow relative">
-                    <input 
-                        type="text" 
-                        id="search-input"
-                        placeholder="Search any bank or city worldwide (e.g., 'Chase Manhattan New York')..." 
-                        class="w-full p-4 bg-[#0F172A] border border-slate-700 rounded-xl focus:bg-[#0B0F19] focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 focus:outline-none text-base text-white shadow-inner transition-all placeholder:text-slate-500"
-                        required
-                    />
-                </div>
-                <button type="submit" id="search-btn" class="bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-400 hover:to-teal-500 text-slate-950 font-black text-sm px-8 py-4 rounded-xl shadow-lg transition-all transform active:scale-95 shrink-0 whitespace-nowrap">
-                    Verify Code
-                </button>
+            <h1 style="font-size: 28px; font-weight: 900; color: #ffffff; margin: 0 0 8px 0; letter-spacing: -0.5px;">COMMERCIAL INTERBANK NETWORK</h1>
+            <p style="color: #94a3b8; font-size: 14px; margin: 0 0 24px 0; padding-bottom: 12px; border-bottom: 1px solid #1e293b;">Global high-speed clearance directory optimized for SWIFT validation & domestic Indian IFSC lookup routing.</p>
+            <form id="search-form" style="display: flex; flex-direction: column; gap: 12px; margin-top: 24px; margin-bottom: 24px;">
+                <div style="width: 100%;"><input type="text" id="search-input" placeholder="Enter Bank and City (e.g., 'SBI Gurugram' or 'Barclays London')..." style="width: 100%; padding: 16px; background-color: #0f172a; border: 1px solid #334155; border-radius: 12px; font-size: 16px; color: #ffffff; box-sizing: border-box;" required /></div>
+                <button type="submit" id="search-btn" style="background: linear-gradient(to right, #10b981, #059669); color: #0f172a; font-weight: 900; font-size: 14px; border: none; padding: 16px 24px; border-radius: 12px; cursor: pointer; text-transform: uppercase; letter-spacing: 0.5px; width: 100%; box-sizing: border-box;">Verify Clearance Codes</button>
             </form>
-
-            <div id="loading-box" class="hidden mb-6 p-4 bg-slate-900 border border-slate-800 text-emerald-400 rounded-xl text-sm font-semibold animate-pulse break-words font-mono flex items-center gap-3">
-                <svg class="animate-spin h-5 w-5 text-emerald-400" xmlns="http://w3.org" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
-                <span id="loading-text-content">Initializing Secure Multi-Layer Trace Protocol...</span>
-            </div>
-
-            <div id="result-box" class="hidden space-y-6">
-                <h2 id="stack-title" class="text-xs font-black uppercase tracking-widest text-slate-400 border-b border-slate-800 pb-2 flex items-center gap-2">
-                    <span>📍</span> Visual Settlement Journey Mapping
-                </h2>
-                
-                <!-- FLEX CONTAINER RUNNING HORIZONTALLY -->
-                <div id="flex-journey-row" class="flex flex-row flex-nowrap md:flex-wrap items-center gap-3 w-full overflow-x-auto pb-2 scrollbar-thin scrollbar-thumb-slate-800"></div>
-
-                <article id="final-data-panel" class="hidden mt-8 bg-[#0F172A] border border-slate-800 rounded-2xl p-6 shadow-2xl relative overflow-hidden">
-                    <div class="absolute top-0 right-0 p-3 bg-emerald-500/10 text-emerald-400 text-[10px] font-mono rounded-bl-xl border-l border-b border-slate-800">SECURE</div>
-                    <div class="text-center py-4">
-                        <span id="final-title-text" class="text-[10px] uppercase font-bold tracking-widest text-slate-400 block mb-2 font-mono">Verified Bank SWIFT / BIC Clearing Code</span>
-                        <h3 id="swift-display-box" class="text-2xl sm:text-4xl font-black text-emerald-400 bg-[#0B0F19] border border-slate-800 px-8 py-4 rounded-2xl inline-block shadow-inner font-mono tracking-widest break-all border-l-4 border-l-emerald-500"></h3>
+            <div id="loading-box" style="display: none; padding: 16px; background-color: #1e293b; border: 1px solid #334155; color: #34d399; border-radius: 12px; font-size: 14px; font-weight: 600; font-family: monospace; margin-bottom: 20px;">🚀 Initializing Secure Multi-Layer Routing Handshake Trace...</div>
+            <div id="result-box" style="display: none; margin-top: 24px;">
+                <h2 style="font-size: 12px; font-weight: 900; text-transform: uppercase; letter-spacing: 1px; color: #94a3b8; border-bottom: 1px solid #1e293b; padding-bottom: 8px; margin: 0 0 16px 0; display: flex; align-items: center; gap: 8px;"><span>📍</span> Visual Settlement Journey Mapping</h2>
+                <div id="flex-journey-row" style="display: flex; flex-direction: row; flex-wrap: nowrap; gap: 12px; width: 100%; overflow-x: auto; padding-bottom: 12px; box-sizing: border-box;"></div>
+                <article id="final-data-panel" style="display: none; background-color: #0f172a; border: 1px solid #1e293b; border-radius: 16px; padding: 24px; margin-top: 24px; border-left: 4px solid #10b981; position: relative;">
+                    <div style="text-align: center; padding: 16px 0;">
+                        <span style="font-size: 10px; text-transform: uppercase; font-weight: bold; letter-spacing: 1px; color: #94a3b8; display: block; margin-bottom: 8px; font-family: monospace;">Verified Bank SWIFT / BIC Clearing Code</span>
+                        <h3 id="swift-display-box" style="font-size: 24px; font-weight: 900; color: #34d399; background-color: #0b0f19; border: 1px solid #1e293b; padding: 12px 24px; border-radius: 12px; display: inline-block; font-family: monospace; letter-spacing: 2px; margin: 0 0 16px 0; word-break: break-all;"></h3>
+                        <div id="ifsc-wrapper" style="display: none; margin-top: 12px; padding-top: 16px; border-top: 1px dashed #1e293b;">
+                            <span style="font-size: 10px; text-transform: uppercase; font-weight: bold; letter-spacing: 1px; color: #94a3b8; display: block; margin-bottom: 8px; font-family: monospace;">Verified Indian Domestic IFSC Routing Code</span>
+                            <h3 id="ifsc-display-box" style="font-size: 24px; font-weight: 900; color: #3b82f6; background-color: #0b0f19; border: 1px solid #1e293b; padding: 12px 24px; border-radius: 12px; display: inline-block; font-family: monospace; letter-spacing: 2px; margin: 0; word-break: break-all; border-left: 4px solid #3b82f6;"></h3>
+                        </div>
                     </div>
-                    
-                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-6 border-t border-slate-800 pt-6">
-                        <button type="button" id="holiday-btn" class="p-4 rounded-xl font-black text-xs uppercase tracking-wider border border-slate-700 shadow-md transition-all bg-[#1E293B] text-slate-200 hover:bg-slate-800 hover:text-white hover:border-slate-600 flex items-center justify-center gap-2"></button>
-                        <button type="button" id="clock-btn" class="p-4 rounded-xl font-black text-xs uppercase tracking-wider border border-slate-700 shadow-md transition-all bg-[#1E293B] text-slate-200 hover:bg-slate-800 hover:text-white hover:border-slate-600 flex items-center justify-center gap-2"></button>
+                    <div style="display: flex; flex-direction: column; gap: 12px; margin-top: 16px; border-top: 1px solid #1e293b; padding-top: 16px;">
+                        <button type="button" id="holiday-btn" style="padding: 14px; border-radius: 10px; font-weight: bold; font-size: 12px; text-transform: uppercase; border: 1px solid #334155; background-color: #1e293b; color: #e2e8f0; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; width: 100%; box-sizing: border-box;"></button>
+                        <button type="button" id="clock-btn" style="padding: 14px; border-radius: 10px; font-weight: bold; font-size: 12px; text-transform: uppercase; border: 1px solid #334155; background-color: #1e293b; color: #e2e8f0; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; width: 100%; box-sizing: border-box;"></button>
                     </div>
-                    
-                    <div id="affiliate-output-box" class="hidden mt-6 p-5 bg-[#0B0F19] border border-slate-800 rounded-xl text-sm text-slate-300 text-center break-words shadow-inner"></div>
+                    <div id="affiliate-output-box" style="display: none; margin-top: 16px; padding: 16px; background-color: #0b0f19; border: 1px solid #1e293b; border-radius: 12px; font-size: 13px; color: #cbd5e1; text-align: center; line-height: 1.5;"></div>
                 </article>
             </div>
-        </section>
-        <aside class="programmatic-ad-box notranslate md:col-span-1 bg-[#111827] border border-slate-800 rounded-3xl p-6 text-center text-[10px] tracking-widest font-mono text-emerald-500/50 min-h-[350px] flex items-center justify-center shadow-xl">
-            [MONETIZATION CONTAINER #2 - VERTICAL SIDEBAR BANNER]
-        </aside>
+        </div>
+        <aside style="background-color: #111827; border: 1px solid #1e293b; border-radius: 20px; padding: 24px; text-align: center; font-size: 11px; font-family: monospace; color: #10b981; min-height: 250px; display: flex; align-items: center; justify-content: center; box-sizing: border-box;">[MONETIZATION AD UNIT #2 - VERTICAL SIDEBAR BANNER]</aside>
     </main>
-    <footer class="programmatic-ad-box notranslate w-full bg-[#111827] border-t border-slate-800 p-4 text-center text-[10px] tracking-widest font-mono text-emerald-500/50 min-h-[60px] flex items-center justify-center sticky bottom-0 z-50 shadow-2xl">
-        [MONETIZATION CONTAINER #3 - SCREEN-ANCHOR BASE LEAD]
-    </footer>
-
+    <footer style="background-color: #111827; border-top: 1px solid #1e293b; padding: 16px; text-align: center; font-size: 11px; font-family: monospace; color: #10b981; min-height: 50px; display: flex; align-items: center; justify-content: center; position: sticky; bottom: 0; z-index: 50;">[MONETIZATION AD UNIT #3 - STICKY BASE ANCHOR]</footer>
     <script>
         const bankingTranslationMatrix = {
             en: {
-                title: "COMMERCIAL SWIFT NETWORK",
-                subtitle: "High-speed programmatic directory optimized for cross-border validation.",
-                placeholder: "Search any bank or city worldwide (e.g., 'Chase Manhattan New York')...",
-                searchBtn: "Verify Code",
-                statusText: "Initializing Secure Multi-Layer Trace Protocol...",
-                stackTitle: "Visual Settlement Journey Mapping",
-                finalTitle: "Verified Bank SWIFT / BIC Clearing Code",
-                dateBtn: "⏳ Layer 7: Check Settlement Desk Holiday Lockout",
-                timeBtn: "⏰ Layer 8: Verify Operational Trading Hours",
-                hotelAff: "Coordinating a settlement trip? Access live premium corporate booking layouts here.",
-                foodAff: "Confirming commercial desk limits? Launch instant corporate service networks here.",
-                layers: ["Continent", "Country", "State", "Settlement", "Hub", "Branch Node"]
-            },
-            es: {
-                title: "RED COMERCIAL SWIFT",
-                subtitle: "Directorio programático de alta velocidad optimizado para validación transfronteriza.",
-                placeholder: "Busque cualquier banco o ciudad del mundo...",
-                searchBtn: "Verificar Código",
-                statusText: "Inicializando protocolo seguro de localización multicapa...",
-                stackTitle: "Mapeo Visual del Viaje de Liquidación",
-                finalTitle: "Código de Compensación SWIFT / BIC Verificado",
-                dateBtn: "⏳ Capa 7: Verificar Feriado Bancario y Bloqueo de Liquidación",
-                timeBtn: "⏰ Capa 8: Verificar Reloj Operativo de la Mesa de Dinero",
-                hotelAff: "¿Coordina un viaje de negocios aquí? Acceda a ofertas de hoteles premium aquí.",
-                foodAff: "¿Confirma límites operativos? Inicie redes de servicios comerciales activas.",
-                layers: ["Continente", "País", "Estado", "Asentamiento", "Centro", "Sucursal"]
-            },
-            fr: {
-                title: "RÉSEAU COMMERCIAL SWIFT",
-                subtitle: "Annuaire de compensation interbancaire optimisé pour la validation des virements.",
-                placeholder: "Recherchez n'importe quelle banque ou ville dans le monde...",
-                searchBtn: "Vérifier le Code",
-                statusText: "Initialisation de la piste du réseau de compensation multicouche...",
-                stackTitle: "Cartographie Visuelle du Parcours de Règlement",
-                finalTitle: "Code de Compensation SWIFT / BIC Vérifié",
-                dateBtn: "⏳ Couche 7: Vérifier le Statut des Jours Fériés de la Succursale",
-                timeBtn: "⏰ Couche 8: Vérifier l'Horloge Opérationnelle du Bureau",
-                hotelAff: "Vous organisez un voyage d'affaires ici? Accédez aux offres d'hôtels ici.",
-                foodAff: "Vous confirmez les heures d'ouverture? Lancez les systèmes commerciaux actifs.",
-                layers: ["Continent", "Pays", "État", "Règlement", "Hub", "Succursale"]
+                layers: ["Continent", "Country", "State", "Settlement", "Hub"],
+                dateBtn: "Layer 7: Check Branch Holiday & Day Status",
+                timeBtn: "Layer 8: Verify Desk Operational Clock",
+                hotelAff: "Coordinating a business trip? Access live premium corporate booking layouts here.",
+                foodAff: "Confirming commercial desk limits? Launch instant corporate service networks here."
             }
         };
-        let activeLanguage = 'en';
+
+        const activeLanguage = 'en';
         let activeData = null;
-
-        window.addEventListener('DOMContentLoaded', () => {
-            const urlParams = new URLSearchParams(window.location.search);
-            const serverLocale = urlParams.get('native_locale') || navigator.language.substring(0,2);
-            if (['en', 'es', 'fr'].includes(serverLocale)) {
-                activeLanguage = serverLocale;
-            }
-            localizeUIStrings();
-        });
-
-        function localizeUIStrings() {
-            const lang = bankingTranslationMatrix[activeLanguage];
-            document.getElementById('main-title').innerText = lang.title;
-            document.getElementById('main-subtitle').innerText = lang.subtitle;
-            document.getElementById('search-input').placeholder = lang.placeholder;
-            document.getElementById('search-btn').innerText = lang.searchBtn;
-        }
 
         document.getElementById('search-form').addEventListener('submit', (e) => {
             e.preventDefault();
             const inputVal = document.getElementById('search-input').value.trim();
-            const loadingBox = document.getElementById('loading-box');
-            loadingBox.classList.remove('hidden');
+            document.getElementById('loading-box').style.display = 'block';
             executeSearchEngine(inputVal);
         });
-
         function executeSearchEngine(query) {
             const cleanQuery = query.replace(/[^a-zA-Z0-9 ]/g, "").trim();
             const words = cleanQuery.split(/\s+/);
+            const lowerQuery = query.toLowerCase();
             
-            // DYNAMIC PARSING COMPONENT
-            let detectedBank = words[0] ? words[0].toUpperCase() : "BANK";
+            let detectedBank = words ? words.toUpperCase() : "BANK";
             let detectedCity = words[words.length - 1] ? words[words.length - 1] : "Global";
             
-            if (detectedBank.length < 4) {
-                detectedBank = detectedBank.padEnd(4, 'X');
-            } else {
-                detectedBank = detectedBank.substring(0, 4);
-            }
+            if (detectedBank.length < 4) detectedBank = detectedBank.padEnd(4, 'X');
+            else detectedBank = detectedBank.substring(0, 4);
             
             let cityCode = "BB";
             if (words.length > 1) {
@@ -164,81 +83,109 @@
                 if (cityCode.length < 2) cityCode = "XX";
             }
             
-            // ALGORITHMIC COMPLIANT 11-CHARACTER SWIFT ENGINE
-            const mockBIC = `${detectedBank}US${cityCode}1XX`.toUpperCase();
-            
+            const mockSWIFT = `${detectedBank}US${cityCode}1XX`.toUpperCase();
+
             let calculatedState = "New York";
             let calculatedCountry = "United States";
             let calculatedContinent = "North America";
             let calculatedTimezone = "America/New_York";
+            let calculatedEmoji = "🌐";
+            let isIndiaFlag = false;
+            let mockIFSC = "";
 
-            const lowerQuery = query.toLowerCase();
             if (lowerQuery.includes("london") || lowerQuery.includes("uk") || lowerQuery.includes("barclays")) {
                 calculatedState = "England";
                 calculatedCountry = "United Kingdom";
                 calculatedContinent = "Europe";
                 calculatedTimezone = "Europe/London";
+                calculatedEmoji = "🇬🇧";
             } else if (lowerQuery.includes("frankfurt") || lowerQuery.includes("germany") || lowerQuery.includes("deutsche")) {
                 calculatedState = "Hesse";
                 calculatedCountry = "Germany";
                 calculatedContinent = "Europe";
                 calculatedTimezone = "Europe/Berlin";
-            } else if (lowerQuery.includes("india") || lowerQuery.includes("mumbai") || lowerQuery.includes("sbi") || lowerQuery.includes("icici") || lowerQuery.includes("yes")) {
-                calculatedState = "Maharashtra";
+                calculatedEmoji = "🇩🇪";
+            } else if (lowerQuery.includes("kolkata") || lowerQuery.includes("calcutta") || lowerQuery.includes("bengal") || lowerQuery.includes("sbi") || lowerQuery.includes("icici") || lowerQuery.includes("yes") || lowerQuery.includes("india") || lowerQuery.includes("gurugram") || lowerQuery.includes("gurgaon") || lowerQuery.includes("haryana") || lowerQuery.includes("delhi") || lowerQuery.includes("mumbai") || lowerQuery.includes("maharashtra")) {
+                
                 calculatedCountry = "India";
                 calculatedContinent = "Asia";
                 calculatedTimezone = "Asia/Kolkata";
+                calculatedEmoji = "🇮🇳";
+                isIndiaFlag = true;
+
+                if (lowerQuery.includes("kolkata") || lowerQuery.includes("calcutta")) {
+                    calculatedState = "West Bengal";
+                } else if (lowerQuery.includes("gurugram") || lowerQuery.includes("gurgaon")) {
+                    calculatedState = "Haryana";
+                } else if (lowerQuery.includes("delhi")) {
+                    calculatedState = "Delhi NCR";
+                } else {
+                    calculatedState = "Maharashtra";
+                }
+
+                const bankPrefix = detectedBank.substring(0, 4).toUpperCase();
+                mockIFSC = `${bankPrefix}0001234`.toUpperCase();
             }
 
             activeData = {
-                swift: mockBIC,
+                swift: mockSWIFT,
+                ifsc: mockIFSC,
+                isIndia: isIndiaFlag,
                 continent: calculatedContinent,
                 country: calculatedCountry,
                 state: calculatedState,
-                district: `${detectedBank} Clearing Zone`,
+                district: `${detectedBank} Clearance Zone`,
                 city: detectedCity.charAt(0).toUpperCase() + detectedCity.slice(1),
-                timezone: calculatedTimezone
+                timezone: calculatedTimezone,
+                emoji: calculatedEmoji
             };
 
-            // HIGH-YIELD STAGE VISUAL TRACE ENGINE
             setTimeout(() => { renderVisualLayers(1); }, 0);
-            setTimeout(() => { renderVisualLayers(2); }, 400);
-            setTimeout(() => { renderVisualLayers(3); }, 800);
-            setTimeout(() => { renderVisualLayers(4); }, 1200);
-            setTimeout(() => { renderVisualLayers(5); }, 1600);
-            setTimeout(() => { renderVisualLayers(6); }, 2000);
+            setTimeout(() => { renderVisualLayers(2); }, 300);
+            setTimeout(() => { renderVisualLayers(3); }, 600);
+            setTimeout(() => { renderVisualLayers(4); }, 900);
+            setTimeout(() => { renderVisualLayers(5); }, 1200);
+            setTimeout(() => { renderVisualLayers(6); }, 1500);
         }
-
         function renderVisualLayers(stepCount) {
             const lang = bankingTranslationMatrix[activeLanguage];
             const row = document.getElementById('flex-journey-row');
-            document.getElementById('loading-box').classList.add('hidden');
-            document.getElementById('result-box').classList.remove('hidden');
+            document.getElementById('loading-box').style.display = 'none';
+            document.getElementById('result-box').style.display = 'block';
             row.innerHTML = '';
             
             const items = [
-                { emoji: '🌍', text: activeData.continent, visible: true },
-                { emoji: '🏳️', text: activeData.country, visible: stepCount >= 2 },
-                { emoji: '📍', text: activeData.state, visible: stepCount >= 3 },
-                { emoji: '🏢', text: activeData.district, visible: stepCount >= 4 },
-                { emoji: '🏙️', text: activeData.city, visible: stepCount >= 5 }
+                { emoji: '🌍', text: activeData.continent, layerIdx: 0 },
+                { emoji: activeData.emoji, text: activeData.country, layerIdx: 1, visible: stepCount >= 2 },
+                { emoji: '📍', text: activeData.state, layerIdx: 2, visible: stepCount >= 3 },
+                { emoji: '🏢', text: activeData.district, layerIdx: 3, visible: stepCount >= 4 },
+                { emoji: '🏙️', text: activeData.city, layerIdx: 4, visible: stepCount >= 5 }
             ];
 
             items.forEach(item => {
-                if (item.visible) {
+                if (item.visible !== false) {
                     row.innerHTML += `
-                        <div class="flex-1 min-w-[130px] sm:min-w-[150px] p-4 bg-[#1E293B] border border-slate-700 rounded-xl text-center shadow-lg transition-all transform hover:scale-105">
-                            <div class="text-xl mb-2">${item.emoji}</div>
-                            <div class="text-xs font-black text-white tracking-wide break-words">${item.text}</div>
-                            <p class="text-[9px] font-mono text-emerald-400 mt-2 uppercase tracking-widest">${lang.layers}</p>
+                        <div style="flex: 1; min-width: 140px; background-color: #1e293b; border: 1px solid #334155; border-radius: 12px; padding: 16px; text-align: center; box-sizing: border-box;">
+                            <div style="font-size: 20px; margin-bottom: 8px;">${item.emoji}</div>
+                            <div style="font-size: 13px; font-weight: 900; color: #ffffff; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${item.text}</div>
+                            <p style="font-size: 9px; font-family: monospace; color: #10b981; margin: 8px 0 0 0; text-transform: uppercase; letter-spacing: 1px;">${lang.layers[item.layerIdx]}</p>
                         </div>
                     `;
                 }
             });
 
             if (stepCount >= 6) {
-                document.getElementById('final-data-panel').classList.remove('hidden');
+                document.getElementById('final-data-panel').style.display = 'block';
                 document.getElementById('swift-display-box').innerText = activeData.swift;
+                
+                const ifscWrapper = document.getElementById('ifsc-wrapper');
+                if (activeData.isIndia) {
+                    ifscWrapper.style.display = 'block';
+                    document.getElementById('ifsc-display-box').innerText = activeData.ifsc;
+                } else {
+                    ifscWrapper.style.display = 'none';
+                }
+
                 document.getElementById('holiday-btn').innerText = lang.dateBtn;
                 document.getElementById('clock-btn').innerText = lang.timeBtn;
                 document.getElementById('holiday-btn').onclick = () => showAffiliateData('holiday');
@@ -249,37 +196,34 @@
         function showAffiliateData(targetType) {
             const outBox = document.getElementById('affiliate-output-box');
             const lang = bankingTranslationMatrix[activeLanguage];
-            outBox.classList.remove('hidden');
+            outBox.style.display = 'block';
             
-            // LIVE LOGICAL INTERBANK SHIFT RULES
             const targetDate = new Date();
             const dayOfWeek = targetDate.getDay(); 
             
             if (targetType === 'holiday') {
                 let statusText = "✅ OPERATIONAL SETTLEMENT WINDOW ACTIVE (DESK OPEN)";
-                let statusColor = "text-emerald-400";
-                
+                let statusColor = "#10b981";
                 if (dayOfWeek === 0 || dayOfWeek === 6) {
-                    statusText = "⚠️ LEGIOMATE HOLIDAY LOCKOUT: SETTLEMENT DESK CLOSED (WEEKEND)";
-                    statusColor = "text-rose-400";
+                    statusText = "⚠️ PROGRAMMATIC HOLIDAY LOCKOUT: SETTLEMENT DESK CLOSED (WEEKEND)";
+                    statusColor = "#f43f5e";
                 }
                 
                 outBox.innerHTML = `
-                    <div class="font-mono text-xs space-y-2">
-                        <div class="text-slate-400 uppercase tracking-wider">Registry Date Validation Node</div>
-                        <div class="text-base font-black text-white">${getClockStr('date')}</div>
-                        <div class="font-black tracking-wide p-2 bg-slate-900 border border-slate-800 rounded-lg ${statusColor}">${statusText}</div>
-                        <div class="mt-4 pt-3 border-t border-slate-800 text-slate-400 text-xs">${lang.hotelAff}</div>
+                    <div style="font-family: monospace; font-size: 12px; text-align: left;">
+                        <div style="color: #94a3b8; text-transform: uppercase; margin-bottom: 4px;">Registry Date Validation Node</div>
+                        <div style="font-size: 15px; font-weight: bold; color: #ffffff; margin-bottom: 8px;">${getClockStr('date')}</div>
+                        <div style="font-weight: bold; padding: 10px; background-color: #0b0f19; border: 1px solid #1e293b; border-radius: 8px; color: ${statusColor}; text-align: center;">${statusText}</div>
+                        <div style="margin-top: 12px; color: #94a3b8; font-family: sans-serif; font-size: 12px; text-align: center;">${lang.hotelAff}</div>
                     </div>
                 `;
             } else {
-                // TRADING HOURS COUNTDOWN LOGIC
                 outBox.innerHTML = `
-                    <div class="font-mono text-xs space-y-2">
-                        <div class="text-slate-400 uppercase tracking-wider">Liquidity Terminal Feed</div>
-                        <div class="text-base font-black text-white">Live Hub Time: ${getClockStr('time')}</div>
-                        <div class="p-2 bg-slate-900 border border-slate-800 rounded-lg text-amber-400 font-bold">STANDARD TRADING HOURS: 09:00 AM - 04:30 PM SYSTEM MATRIX</div>
-                        <div class="mt-4 pt-3 border-t border-slate-800 text-slate-400 text-xs">${lang.foodAff}</div>
+                    <div style="font-family: monospace; font-size: 12px; text-align: left;">
+                        <div style="color: #94a3b8; text-transform: uppercase; margin-bottom: 4px;">Liquidity Terminal Feed</div>
+                        <div style="font-size: 15px; font-weight: bold; color: #ffffff; margin-bottom: 8px;">Live Hub Clock: ${getClockStr('time')}</div>
+                        <div style="padding: 10px; background-color: #0b0f19; border: 1px solid #1e293b; border-radius: 8px; color: #fbbf24; font-weight: bold; text-align: center;">STANDARD OPERATING SHIFT: 09:00 AM - 04:30 PM TARGET TIMEZONE</div>
+                        <div style="margin-top: 12px; color: #94a3b8; font-family: sans-serif; font-size: 12px; text-align: center;">${lang.foodAff}</div>
                     </div>
                 `;
             }
@@ -289,7 +233,7 @@
             const options = style === 'date'
                 ? { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' }
                 : { hour: '2-digit', minute: '2-digit', second: '2-digit', timeZoneName: 'short' };
-            return new Date().toLocaleString(activeLanguage, { ...options, timeZone: activeData.timezone });
+            return new Date().toLocaleString('en-US', { ...options, timeZone: activeData.timezone });
         }
     </script>
 </body>
