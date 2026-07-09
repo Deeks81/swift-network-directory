@@ -19,41 +19,26 @@
             <h1 id="main-title" class="text-2xl sm:text-3xl font-black tracking-tight text-slate-900 mb-2">COMMERCIAL SWIFT & ROUTING CODE NETWORK</h1>
             <p id="main-subtitle" class="text-slate-500 text-sm mb-6">High-speed interbank clearing directory optimized for global wire validation.</p>
             <form id="search-form" class="flex flex-col sm:flex-row gap-2 mb-6">
-                <input 
-                    type="text" 
-                    id="search-input"
-                    placeholder="Search any bank or city worldwide (e.g., 'State Bank of India Korba')..." 
-                    class="flex-grow p-4 bg-slate-50 border rounded-xl focus:bg-white focus:ring-2 focus:ring-slate-900 focus:outline-none text-base shadow-inner min-w-0"
-                    required
-                />
-                <button type="submit" id="search-btn" class="bg-slate-900 text-white font-bold text-sm px-6 py-4 rounded-xl shadow shrink-0 whitespace-nowrap">
-                    Verify Code
-                </button>
+                <input type="text" id="search-input" placeholder="Search any bank worldwide..." class="flex-grow p-4 bg-slate-50 border rounded-xl text-base outline-none focus:bg-white" required />
+                <button type="submit" id="search-btn" class="bg-slate-900 text-white font-bold text-sm px-6 py-4 rounded-xl">Verify Code</button>
             </form>
-
-            <div id="loading-box" class="hidden mb-6 p-4 bg-slate-900 text-white rounded-xl text-sm font-medium animate-pulse break-words"></div>
-
+            <div id="loading-box" class="hidden mb-6 p-4 bg-slate-900 text-white rounded-xl text-sm font-medium animate-pulse">Initializing Trace...</div>
             <div id="result-box" class="hidden space-y-6">
                 <h2 id="stack-title" class="text-xs font-bold uppercase tracking-widest text-slate-400 border-b pb-2">Visual Settlement Journey Mapping</h2>
-                
                 <div id="flex-journey-row" class="flex flex-wrap gap-3 w-full"></div>
-
-                <article id="final-data-panel" class="hidden mt-8 bg-slate-50 border rounded-2xl p-4 sm:p-6 shadow-sm overflow-hidden">
+                <article id="final-data-panel" class="hidden mt-8 bg-slate-50 border rounded-2xl p-4 sm:p-6 shadow-sm">
                     <div class="text-center py-2">
                         <span id="final-title-text" class="text-[10px] uppercase font-bold tracking-widest text-slate-400 block mb-1">Verified Bank SWIFT / BIC Clearing Code</span>
-                        <h3 id="swift-display-box" class="text-2xl sm:text-4xl font-black text-slate-900 bg-white border px-6 py-3 rounded-2xl inline-block shadow-sm font-mono tracking-widest break-all"></h3>
+                        <h3 id="swift-display-box" class="text-2xl sm:text-4xl font-black text-slate-900 bg-white border px-6 py-3 rounded-2xl inline-block font-mono tracking-widest break-all"></h3>
                     </div>
-                    
                     <div class="flex flex-col sm:flex-row justify-center gap-3 mt-6 border-t pt-4">
                         <button type="button" id="holiday-btn" class="p-3 rounded-xl font-bold text-xs uppercase tracking-wider border shadow-sm transition-all flex-1 bg-white text-slate-700 hover:bg-slate-50"></button>
                         <button type="button" id="clock-btn" class="p-3 rounded-xl font-bold text-xs uppercase tracking-wider border shadow-sm transition-all flex-1 bg-white text-slate-700 hover:bg-slate-100"></button>
                     </div>
-                    
                     <div id="affiliate-output-box" class="hidden mt-4 p-4 bg-white border rounded-xl text-xs text-slate-600 text-center break-words"></div>
                 </article>
             </div>
         </section>
-        
         <aside class="programmatic-ad-box notranslate md:col-span-1 bg-white border rounded-2xl p-4 text-center text-[10px] tracking-widest font-mono text-slate-400 min-h-[300px] flex items-center justify-center shadow-sm">
             [ENTERPRISE AD PLACEMENT: AD UNIT #2 - VERTICAL SIDEBAR BANNER]
         </aside>
@@ -61,13 +46,12 @@
     <footer class="programmatic-ad-box notranslate w-full bg-white border-t p-4 text-center text-[10px] tracking-widest font-mono text-slate-400 min-h-[60px] flex items-center justify-center sticky bottom-0 z-50">
         [ENTERPRISE AD PLACEMENT: AD UNIT #3 - SCREEN-ANCHOR]
     </footer>
-
     <script>
         const bankingTranslationMatrix = {
             en: {
                 title: "COMMERCIAL SWIFT & ROUTING CODE NETWORK",
                 subtitle: "High-speed interbank clearing directory optimized for global wire validation.",
-                placeholder: "Search any bank or city worldwide (e.g., 'State Bank of India Korba')...",
+                placeholder: "Search any bank worldwide...",
                 searchBtn: "Verify Code",
                 statusText: "Initializing Multi-Layer Clearing Network Trace...",
                 stackTitle: "Visual Settlement Journey Mapping",
@@ -81,7 +65,7 @@
             es: {
                 title: "RED OFICIAL DE CÓDIGOS SWIFT Y ENRUTAMIENTO",
                 subtitle: "Directorio de liquidación interbancaria de alta velocidad optimizado para validación global.",
-                placeholder: "Busque cualquier banco o ciudad del mundo...",
+                placeholder: "Busque cualquier banco del mundo...",
                 searchBtn: "Verificar Código",
                 statusText: "Inicializando pista de red de liquidación de múltiples capas...",
                 stackTitle: "Mapeo Visual del Viaje de Liquidación",
@@ -95,7 +79,7 @@
             fr: {
                 title: "RÉSEAU DES CODES SWIFT & ROUTAGE COMMERCIAL",
                 subtitle: "Annuaire de compensation interbancaire optimisé pour la validation des virements.",
-                placeholder: "Recherchez n'importe quelle banque ou ville dans le monde...",
+                placeholder: "Recherchez n'importe quelle banque dans le monde...",
                 searchBtn: "Vérifier le Code",
                 statusText: "Initialisation de la piste du réseau de compensation multicouche...",
                 stackTitle: "Cartographie Visuelle du Parcours de Règlement",
@@ -133,24 +117,21 @@
             document.getElementById('search-input').placeholder = lang.placeholder;
             document.getElementById('search-btn').innerText = lang.searchBtn;
         }
+
         document.getElementById('search-form').addEventListener('submit', (e) => {
             e.preventDefault();
             const inputVal = document.getElementById('search-input').value.trim();
             const loadingBox = document.getElementById('loading-box');
-            
             loadingBox.innerText = bankingTranslationMatrix[activeLanguage].statusText;
             loadingBox.classList.remove('hidden');
-
             executeSearchEngine(inputVal);
         });
 
         function executeSearchEngine(query) {
             const cleanKey = query.toLowerCase().trim();
-            
             if (staticFallbackDB[cleanKey]) {
                 activeData = staticFallbackDB[cleanKey];
             } else {
-                // Instantly parsing query into dynamic visual parameters
                 const cleanQuery = query.replace(/[^a-zA-Z0-9 ]/g, "").toUpperCase();
                 const mockBIC = (cleanQuery.substring(0,4).padEnd(4, 'X') + "INBBXXX").toUpperCase();
                 activeData = {
@@ -164,13 +145,13 @@
                 };
             }
 
-            // Running 8-layer cascading visual delay loops locally inside index.html
-            const sequence =;
-            sequence.forEach((stepNum, index) => {
-                setTimeout(() => {
-                    renderVisualLayers(stepNum);
-                }, index * 400);
-            });
+            // High-yield sequence executed manually without array brackets to prevent clipping errors
+            setTimeout(() => { renderVisualLayers(1); }, 0);
+            setTimeout(() => { renderVisualLayers(2); }, 400);
+            setTimeout(() => { renderVisualLayers(3); }, 800);
+            setTimeout(() => { renderVisualLayers(4); }, 1200);
+            setTimeout(() => { renderVisualLayers(5); }, 1600);
+            setTimeout(() => { renderVisualLayers(6); }, 2000);
         }
 
         function renderVisualLayers(stepCount) {
@@ -179,13 +160,13 @@
             document.getElementById('loading-box').classList.add('hidden');
             document.getElementById('result-box').classList.remove('hidden');
             row.innerHTML = '';
-
+            
             const items = [
                 { emoji: '🌍', text: activeData.continent, visible: true },
-                { emoji: '🏳️', text: activeData.country, visible: stepCount >= 3 },
-                { emoji: '📍', text: activeData.state, visible: stepCount >= 4 },
-                { emoji: '🏢', text: activeData.district, visible: stepCount >= 5 },
-                { emoji: '🏙️', text: activeData.city, visible: stepCount >= 6 }
+                { emoji: '🏳️', text: activeData.country, visible: stepCount >= 2 },
+                { emoji: '📍', text: activeData.state, visible: stepCount >= 3 },
+                { emoji: '🏢', text: activeData.district, visible: stepCount >= 4 },
+                { emoji: '🏙️', text: activeData.city, visible: stepCount >= 5 }
             ];
 
             items.forEach(item => {
@@ -205,7 +186,6 @@
                 document.getElementById('swift-display-box').innerText = activeData.swift;
                 document.getElementById('holiday-btn').innerText = lang.dateBtn;
                 document.getElementById('clock-btn').innerText = lang.timeBtn;
-
                 document.getElementById('holiday-btn').onclick = () => showAffiliateData('holiday');
                 document.getElementById('clock-btn').onclick = () => showAffiliateData('desk-hours');
             }
@@ -215,7 +195,6 @@
             const outBox = document.getElementById('affiliate-output-box');
             const lang = bankingTranslationMatrix[activeLanguage];
             outBox.classList.remove('hidden');
-            
             if (targetType === 'holiday') {
                 outBox.innerHTML = `<time class="text-lg font-black text-slate-800 block mb-1 font-mono">${getClockStr('date')}</time>💼 <strong>${lang.hotelAff}</strong>`;
             } else {
