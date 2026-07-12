@@ -15,7 +15,6 @@
             <h1 style="font-size: 24px; font-weight: 900; color: #ffffff; margin: 0 0 4px 0;">COMMERCIAL INTERBANK NETWORK</h1>
             <p style="color: #94a3b8; font-size: 13px; margin: 0 0 24px 0; padding-bottom: 12px; border-bottom: 1px solid #1e293b;">High-speed interbank clearing directory optimized for global wire routing and domestic Indian transfers.</p>
             
-            <!-- EXCLUSIVE DUAL MODULE SYSTEM DESK -->
             <div style="display: flex; gap: 8px; margin-bottom: 20px;">
                 <button type="button" id="tab-swift" style="flex: 1; padding: 12px; border-radius: 8px; border: none; font-weight: 900; font-size: 12px; text-transform: uppercase; cursor: pointer; background-color: #10b981; color: #0f172a;">🌐 Global SWIFT Search</button>
                 <button type="button" id="tab-ifsc" style="flex: 1; padding: 12px; border-radius: 8px; border: 1px solid #334155; font-weight: 900; font-size: 12px; text-transform: uppercase; cursor: pointer; background-color: #1e293b; color: #cbd5e1;">🇮🇳 India IFSC Search</button>
@@ -70,7 +69,7 @@
     <footer style="background-color: #111827; border-top: 1px solid #1e293b; padding: 16px; text-align: center; font-size: 11px; font-family: monospace; color: #10b981; min-height: 50px; display: flex; align-items: center; justify-content: center; position: sticky; bottom: 0; z-index: 50;">
         [MONETIZATION AD CONTAINER #3 - STICKY BOTTOM ANCHOR]
     </footer>
-        <script>
+    <script>
         const translationMatrix = {
             en: {
                 layers: ["Continent", "Country", "State", "Settlement", "Hub"],
@@ -113,57 +112,63 @@
             tabSwiftBtn.style.backgroundColor = '#1e293b';
             tabSwiftBtn.style.color = '#cbd5e1';
             tabSwiftBtn.style.border = '1px solid #334155';
-            searchInput.placeholder = "Enter Indian bank and city (e.g., 'SBI Gurugram')...";
+            searchInput.placeholder = "Enter Indian bank and city (e.g., 'Axis Gurugram')...";
             searchBtn.innerText = "Verify Domestic IFSC Routing";
             searchBtn.style.background = 'linear-gradient(to right, #3b82f6, #1d4ed8)';
             dataPanel.style.borderLeft = '4px solid #3b82f6';
             codeTitleLabel.innerText = "Verified Indian Domestic IFSC Routing Code";
             document.getElementById('result-box').style.display = 'none';
         });
+
         document.getElementById('search-form').addEventListener('submit', (e) => {
             e.preventDefault();
             document.getElementById('result-box').style.display = 'none';
             document.getElementById('loading-box').style.display = 'block';
             setTimeout(() => { executeDynamicClearingEngine(searchInput.value.trim()); }, 300);
         });
-
         function executeDynamicClearingEngine(query) {
             const cleanQuery = query.replace(/[^a-zA-Z0-9 ]/g, "").trim();
             const words = cleanQuery.split(/\s+/);
             const lowerQuery = query.toLowerCase();
+            
             let bankSegment = words[0] ? words[0].toUpperCase() : "BANK";
             let citySegment = words[words.length - 1] ? words[words.length - 1] : "Hub";
             
             if (bankSegment.length < 4) bankSegment = bankSegment.padEnd(4, 'X');
             else bankSegment = bankSegment.substring(0, 4);
-            
-            let cityPrefix = "BB";
-            if (words.length > 1) {
-                cityPrefix = citySegment.substring(0, 2).toUpperCase();
-                if (cityPrefix.length < 2) cityPrefix = "XX";
-            }
 
-            let computedOutputCode = "";
-            let state = "New York", country = "United States", continent = "North America", timezone = "America/New_York", emoji = "🌐";
+            let state = "New York", country = "United States", continent = "North America", timezone = "America/New_York", emoji = "🌐", computedCode = "";
 
             if (currentActiveMode === 'SWIFT') {
+                let countryISO = "US";
                 if (lowerQuery.includes("london") || lowerQuery.includes("uk") || lowerQuery.includes("barclays")) {
-                    state = "England"; country = "United Kingdom"; continent = "Europe"; timezone = "Europe/London"; emoji = "🇬🇧";
+                    state = "England"; country = "United Kingdom"; continent = "Europe"; timezone = "Europe/London"; emoji = "🇬🇧"; countryISO = "GB";
                 } else if (lowerQuery.includes("frankfurt") || lowerQuery.includes("germany") || lowerQuery.includes("deutsche")) {
-                    state = "Hesse"; country = "Germany"; continent = "Europe"; timezone = "Europe/Berlin"; emoji = "🇩🇪";
+                    state = "Hesse"; country = "Germany"; continent = "Europe"; timezone = "Europe/Berlin"; emoji = "🇩🇪"; countryISO = "DE";
+                } else if (lowerQuery.includes("india") || lowerQuery.includes("mumbai") || lowerQuery.includes("delhi") || lowerQuery.includes("kolkata")) {
+                    country = "India"; continent = "Asia"; timezone = "Asia/Kolkata"; emoji = "🇮🇳"; countryISO = "IN";
+                    if (lowerQuery.includes("kolkata")) state = "West Bengal";
+                    else if (lowerQuery.includes("delhi")) state = "Delhi NCR";
+                    else state = "Maharashtra";
                 }
-                computedOutputCode = `${bankSegment}US${cityPrefix}1XX`.toUpperCase();
+                let cityCode = citySegment.substring(0,2).toUpperCase().padEnd(2, 'X');
+                computedCode = `${bankSegment}${countryISO}${cityCode}1XX`.toUpperCase();
             } else {
                 country = "India"; continent = "Asia"; timezone = "Asia/Kolkata"; emoji = "🇮🇳";
-                if (lowerQuery.includes("kolkata") || lowerQuery.includes("calcutta") || lowerQuery.includes("bengal")) { state = "West Bengal"; }
-                else if (lowerQuery.includes("gurugram") || lowerQuery.includes("gurgaon") || lowerQuery.includes("haryana")) { state = "Haryana"; }
-                else if (lowerQuery.includes("delhi") || lowerQuery.includes("ncr")) { state = "Delhi NCR"; }
-                else if (lowerQuery.includes("mumbai") || lowerQuery.includes("bombay") || lowerQuery.includes("maharashtra")) { state = "Maharashtra"; }
-                else { state = "Regional Domain Node"; }
-                computedOutputCode = `${bankSegment}0001234`.toUpperCase();
+                if (lowerQuery.includes("kolkata") || lowerQuery.includes("calcutta")) state = "West Bengal";
+                else if (lowerQuery.includes("gurugram") || lowerQuery.includes("gurgaon") || lowerQuery.includes("haryana")) state = "Haryana";
+                else if (lowerQuery.includes("delhi") || lowerQuery.includes("ncr")) state = "Delhi NCR";
+                else if (lowerQuery.includes("mumbai") || lowerQuery.includes("bombay") || lowerQuery.includes("maharashtra")) state = "Maharashtra";
+                else if (lowerQuery.includes("korba") || lowerQuery.includes("chhattisgarh")) state = "Chhattisgarh";
+                else state = "Karnataka";
+
+                let uniqueSeed = 0;
+                for (let i = 0; i < cleanQuery.length; i++) { uniqueSeed += cleanQuery.charCodeAt(i); }
+                let uniqueBranchCode = String(uniqueSeed * 7).substring(0, 6).padEnd(6, '0');
+                computedCode = `${bankSegment}0${uniqueBranchCode}`.toUpperCase();
             }
 
-            activeData = { clearanceCode: computedOutputCode, continent: continent, country: country, state: state, district: `${bankSegment} Registry Desk`, city: citySegment.charAt(0).toUpperCase() + citySegment.slice(1), timezone: timezone, emoji: emoji };
+            activeData = { clearanceCode: computedCode, continent: continent, country: country, state: state, district: `${bankSegment} Operations Desk`, city: citySegment.charAt(0).toUpperCase() + citySegment.slice(1).toLowerCase(), timezone: timezone, emoji: emoji };
             setTimeout(() => { renderVisualLayers(1); }, 0);
             setTimeout(() => { renderVisualLayers(2); }, 300);
             setTimeout(() => { renderVisualLayers(3); }, 600);
