@@ -15,7 +15,7 @@
         form { display: flex; flex-direction: column; gap: 12px; }
         input { width: 100%; padding: 16px; background-color: #0f172a; border: 1px solid #334155; border-radius: 12px; font-size: 16px; color: #ffffff; outline: none; }
         #search-btn { background: linear-gradient(to right, #10b981, #059669); color: #0f172a; font-weight: 900; font-size: 14px; border: none; padding: 16px; border-radius: 12px; cursor: pointer; text-transform: uppercase; }
-        #result-box { display: none; margin-top: 24px; padding: 16px; background: #0f172a; border-radius: 12px; border: 1px solid #1e293b; }
+        #result-box { display: none; margin-top: 24px; padding: 16px; background-color: #0f172a; border-radius: 12px; border: 1px solid #1e293b; }
         .card-row { display: flex; flex-direction: row; gap: 8px; overflow-x: auto; margin-bottom: 16px; padding-bottom: 8px; }
         .card { background: #1e293b; padding: 10px; border-radius: 8px; text-align: center; min-width: 110px; flex: 1; }
         .code-display { font-size: 22px; font-weight: 900; color: #34d399; font-family: monospace; text-align: center; background: #0b0f19; padding: 12px; border-radius: 8px; border: 1px solid #1e293b; word-break: break-all; margin: 12px 0 0 0; }
@@ -37,7 +37,7 @@
             <div id="result-box">
                 <div id="flex-journey-row" class="card-row"></div>
                 <div style="text-align: center; margin-top: 12px;">
-                    <span id="title-label" style="font-size: 10px; color: #94a3b8; font-family: monospace; uppercase">Verified Bank SWIFT / BIC Clearing Code</span>
+                    <span id="title-label" style="font-size: 10px; color: #94a3b8; font-family: monospace;">Verified Bank SWIFT / BIC Clearing Code</span>
                     <h3 id="code-display-box" class="code-display"></h3>
                 </div>
             </div>
@@ -78,7 +78,8 @@
                     continent = "Asia"; country = "India"; emoji = "🇮🇳"; iso = "IN";
                     if (lower.includes("kolkata")) state = "West Bengal"; else if (lower.includes("delhi")) state = "Delhi NCR"; else if (lower.includes("gurugram") || lower.includes("gurgaon")) state = "Haryana"; else state = "Maharashtra";
                 }
-                outCode = `${bSeg}${iso}${cSeg.substring(0, 2).toUpperCase().padEnd(2, 'X')}1XX`;
+                let cityCode = citySegment.substring(0, 2).toUpperCase().padEnd(2, 'X');
+                outCode = `${bSeg}${iso}${cityCode}1XX`;
             } else {
                 continent = "Asia"; country = "India"; emoji = "🇮🇳";
                 if (lower.includes("kolkata") || lower.includes("calcutta")) state = "West Bengal";
@@ -103,4 +104,3 @@
     </script>
 </body>
 </html>
- 
