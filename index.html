@@ -64,7 +64,7 @@
             const clean = val.replace(/[^a-zA-Z0-9 ]/g, "").trim();
             const words = clean.split(/\s+/);
             const lower = val.toLowerCase();
-            let bSeg = words ? words.toUpperCase() : "BANK";
+            let bSeg = words[0] ? words[0].toUpperCase() : "BANK";
             let cSeg = words[words.length - 1] ? words[words.length - 1] : "Hub";
             if (bSeg.length < 4) bSeg = bSeg.padEnd(4, 'X'); else bSeg = bSeg.substring(0, 4);
             
@@ -78,7 +78,7 @@
                     continent = "Asia"; country = "India"; emoji = "🇮🇳"; iso = "IN";
                     if (lower.includes("kolkata")) state = "West Bengal"; else if (lower.includes("delhi")) state = "Delhi NCR"; else if (lower.includes("gurugram") || lower.includes("gurgaon")) state = "Haryana"; else state = "Maharashtra";
                 }
-                let cityCode = citySegment.substring(0, 2).toUpperCase().padEnd(2, 'X');
+                let cityCode = cSeg.substring(0, 2).toUpperCase().padEnd(2, 'X');
                 outCode = `${bSeg}${iso}${cityCode}1XX`;
             } else {
                 continent = "Asia"; country = "India"; emoji = "🇮🇳";
