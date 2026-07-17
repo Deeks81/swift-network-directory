@@ -74,7 +74,6 @@
             document.getElementById('code-title-label').innerText = target === 'SWIFT' ? "Verified Bank SWIFT / BIC Clearing Code" : "Verified Indian Domestic IFSC Routing Code";
             document.getElementById('result-box').style.display = 'none';
         }
-
         function queryDirectory(e) {
             e.preventDefault();
             const inputVal = document.getElementById('search-input').value.trim();
@@ -91,14 +90,15 @@
                 } else if (q.includes("boc") || q.includes("colombo") || q.includes("sri lanka")) {
                     continent = "Asia"; country = "Sri Lanka"; state = "Western Province"; city = "Colombo"; emoji = "🇱🇰"; code = "BCEYLKLXGND";
                 } else if (q.includes("chile") || q.includes("santiago")) {
-                    continent = "South America"; country = "Chile"; state = "Santiago Metropolitan"; city = "Santiago"; emoji = "🇨🇱"; code = "BCHI安裝 CLSGO";
-                    code = "BCHICLSGXXX";
+                    continent = "South America"; country = "Chile"; state = "Santiago Metropolitan"; city = "Santiago"; emoji = "🇨🇱"; code = "BCHICLSGXXX";
                 } else if (q.includes("tamil nadu") || q.includes("chennai")) {
                     continent = "Asia"; country = "India"; state = "Tamil Nadu"; city = "Chennai"; emoji = "🇮🇳"; code = "SBININBBCHE";
                 } else if (q.includes("kolkata") || q.includes("calcutta")) {
                     continent = "Asia"; country = "India"; state = "West Bengal"; city = "Kolkata"; emoji = "🇮🇳"; code = "SBININBBKOL";
                 } else if (q.includes("gurugram") || q.includes("gurgaon")) {
                     continent = "Asia"; country = "India"; state = "Haryana"; city = "Gurugram"; emoji = "🇮🇳"; code = "YESBINBBGRG";
+                } else if (q.includes("kochi") || q.includes("cochin") || q.includes("kerala")) {
+                    continent = "Asia"; country = "India"; state = "Kerala"; city = "Kochi"; emoji = "🇮🇳"; code = "SBININBBKOC";
                 } else {
                     continent = "Asia"; country = "India"; state = "Maharashtra"; city = "Mumbai"; emoji = "🇮🇳"; code = "SBININBBXXX";
                 }
@@ -126,6 +126,9 @@
                 } else if (q.includes("tamil nadu") || q.includes("chennai")) {
                     state = "Tamil Nadu"; city = "Chennai";
                     code = `${bankPref}0000001`;
+                } else if (q.includes("kochi") || q.includes("cochin") || q.includes("kerala")) {
+                    state = "Kerala"; city = "Kochi";
+                    code = `${bankPref}0000003`;
                 } else {
                     state = "Delhi NCR"; city = "New Delhi";
                     code = `${bankPref}0000001`;
