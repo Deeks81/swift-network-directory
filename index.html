@@ -20,7 +20,6 @@
         form { display: flex; flex-direction: column; gap: 12px; margin-bottom: 24px; }
         input { width: 100%; padding: 16px; background-color: #0f172a; border: 1px solid #334155; border-radius: 12px; font-size: 16px; color: #ffffff; outline: none; }
         #search-btn { background: linear-gradient(to right, #10b981, #059669); color: #0f172a; font-weight: 900; font-size: 14px; border: none; padding: 16px 24px; border-radius: 12px; cursor: pointer; text-transform: uppercase; }
-        #loading-box { display: none; padding: 16px; background-color: #1e293b; border: 1px solid #334155; color: #34d399; border-radius: 12px; font-size: 14px; font-weight: 600; font-family: monospace; margin-bottom: 20px; text-align: center; }
         #result-box { display: none; margin-top: 24px; }
         h2 { font-size: 12px; font-weight: 900; text-transform: uppercase; letter-spacing: 1px; color: #94a3b8; border-bottom: 1px solid #1e293b; padding-bottom: 8px; margin: 0 0 16px 0; }
         .card-row { display: flex; flex-direction: row; flex-wrap: nowrap; gap: 12px; width: 100%; overflow-x: auto; padding-bottom: 12px; }
@@ -130,7 +129,7 @@
                     code = bankPref === "UTIB" ? "UTIB0001080" : (bankPref === "YESB" ? "YESB0000056" : bankPref + "0004412");
                 } else if (q.includes("korba") || q.includes("chhattisgarh")) {
                     state = "Chhattisgarh"; city = "Korba";
-                    code = bankPref === "YESB" ? "YESB0000006" : (bankPref === "UTIB" ? "UTIB0000454" : bankPref + "0000378`);
+                    code = bankPref === "YESB" ? "YESB0000006" : (bankPref === "UTIB" ? "UTIB0000454" : bankPref + "0000378");
                 } else if (q.includes("bangalore") || q.includes("bengaluru") || q.includes("karnataka")) {
                     state = "Karnataka"; city = "Bengaluru";
                     code = bankPref === "HSBC" ? "HSBC0560002" : bankPref + "0000001";
