@@ -6,7 +6,7 @@
     <title>COMMERCIAL ROUTING NETWORK</title>
     <style>
         * { box-sizing: border-box; }
-        body { background-color: #0b0f19; color: #f1f5f9; min-height: 100vh; margin: 0; padding: 20px; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; display: flex; flex-direction: column; justify-content: space-between; }
+        body { background-color: #0b0f19; color: #f1f5f9; min-height: 100vh; margin: 0; padding: 20px; font-family: -apple-system, BlinkMacSystemFont, sans-serif; display: flex; flex-direction: column; justify-content: space-between; }
         header { background-color: #111827; border-bottom: 1px solid #1e293b; padding: 16px; text-align: center; font-size: 11px; font-family: monospace; color: #10b981; }
         main { max-width: 700px; width: 100%; margin: 20px auto; padding: 0 16px; flex-grow: 1; }
         .panel { background-color: #111827; padding: 24px; border-radius: 16px; border: 1px solid #1e293b; position: relative; }
@@ -14,7 +14,7 @@
         h1 { font-size: 24px; font-weight: 900; color: #ffffff; margin: 0 0 4px 0; }
         .subtitle { color: #94a3b8; font-size: 13px; margin: 0 0 24px 0; padding-bottom: 12px; border-bottom: 1px solid #1e293b; }
         .tabs { display: flex; gap: 8px; margin-bottom: 20px; }
-        .tab-btn { flex: 1; padding: 12px; border-radius: 8px; font-weight: 900; font-size: 12px; text-transform: uppercase; cursor: pointer; transition: all 0.2s; }
+        .tab-btn { flex: 1; padding: 12px; border-radius: 8px; font-weight: 900; font-size: 12px; text-transform: uppercase; cursor: pointer; }
         #tab-swift { background-color: #10b981; color: #0f172a; border: none; }
         #tab-ifsc { background-color: #1e293b; color: #cbd5e1; border: 1px solid #334155; }
         form { display: flex; flex-direction: column; gap: 12px; margin-bottom: 24px; }
@@ -27,11 +27,11 @@
         .card { flex: 1; min-width: 135px; background-color: #1e293b; border: 1px solid #334155; border-radius: 12px; padding: 14px; text-align: center; }
         article { background-color: #0f172a; border: 1px solid #1e293b; border-radius: 16px; padding: 24px; margin-top: 24px; border-left: 4px solid #10b981; }
         #code-display-box { font-size: 24px; font-weight: 900; color: #34d399; background-color: #0b0f19; border: 1px solid #1e293b; padding: 12px 24px; border-radius: 12px; display: block; font-family: monospace; letter-spacing: 2px; margin: 0 auto; text-align: center; width: max-content; max-width: 100%; word-break: break-all; }
-        aside { background-color: #111827; border: 1px solid #1e293b; border-radius: 16px; padding: 24px; text-align: center; font-size: 11px; font-family: monospace; color: #10b981; min-height: 200px; display: flex; align-items: center; justify-content: center; margin-top: 20px; }
+        aside { background-color: #111827; border: 1px solid #1e293b; border-radius: 16px; padding: 24px; text-align: center; font-size: 11px; font-family: monospace; color: #10b981; min-height: 150px; display: flex; align-items: center; justify-content: center; margin-top: 20px; }
         footer { background-color: #111827; border-top: 1px solid #1e293b; padding: 16px; text-align: center; font-size: 11px; font-family: monospace; color: #10b981; min-height: 50px; display: flex; align-items: center; justify-content: center; position: sticky; bottom: 0; z-index: 50; }
     </style>
 </head>
-<body>
+ <body>
     <header>[TOP AD LEADERBOARD STRIP]</header>
     <main>
         <div class="panel">
@@ -76,7 +76,6 @@
             document.getElementById('code-title-label').innerText = target === 'SWIFT' ? "Verified Bank SWIFT / BIC Clearing Code" : "Verified Indian Domestic IFSC Routing Code";
             document.getElementById('result-box').style.display = 'none';
         }
-
         function queryLocalRegistry(e) {
             e.preventDefault();
             const inputVal = document.getElementById('search-input').value.trim();
@@ -89,17 +88,17 @@
 
                 if (currentMode === 'SWIFT') {
                     if (q.includes("barclays") || q.includes("london") || q.includes("uk")) {
-                        continent = "Europe"; country = "United Kingdom"; state = "England"; city = "London"; emoji = "🇬🇧"; code = "BARCGB2LXXX";
+                        continent = "Europe"; country = "United Kingdom"; state = "England"; city = "London"; emoji = "🇬🇧"; code = "BARCGB22XXX";
                     } else if (q.includes("deutsche") || q.includes("frankfurt") || q.includes("germany")) {
                         continent = "Europe"; country = "Germany"; state = "Hesse"; city = "Frankfurt"; emoji = "🇩🇪"; code = "DEUTDEDDFXX";
                     } else if (q.includes("boc") || q.includes("colombo") || q.includes("sri lanka")) {
                         continent = "Asia"; country = "Sri Lanka"; state = "Western Province"; city = "Colombo"; emoji = "🇱🇰"; code = "BCEYLKLXGND";
                     } else if (q.includes("axis") && q.includes("gurugram")) {
-                        continent = "Asia"; country = "India"; state = "Haryana"; city = "Gurugram"; emoji = "🇮🇳"; code = "UTIBINBBGRG";
+                        continent = "Asia"; country = "India"; state = "Haryana"; city = "Gurugram"; emoji = "🇮🇳"; code = "UTIB0001080";
                     } else if (q.includes("yes") && q.includes("gurugram")) {
-                        continent = "Asia"; country = "India"; state = "Haryana"; city = "Gurugram"; emoji = "🇮🇳"; code = "YESBINBBGRG";
+                        continent = "Asia"; country = "India"; state = "Haryana"; city = "Gurugram"; emoji = "🇮🇳"; code = "YESB0000056";
                     } else if (q.includes("sbi") || q.includes("state bank")) {
-                        continent = "Asia"; country = "India"; state = "Maharashtra"; city = "Mumbai"; emoji = "🇮🇳"; code = "SBININBBXXX";
+                        continent = "Asia"; country = "India"; state = "Maharashtra"; city = "Mumbai"; emoji = "🇮🇳"; code = "SBIN0000631";
                     } else {
                         continent = "North America"; country = "United States"; state = "New York"; city = "New York City"; emoji = "🌐"; code = "CHASUS33XXX";
                     }
@@ -108,94 +107,37 @@
                         state = "Haryana"; city = "Gurugram"; code = "UTIB0001080";
                     } else if (q.includes("yes") && q.includes("korba")) {
                         state = "Chhattisgarh"; city = "Korba"; code = "YESB0000006";
-        } else if (
-          q.includes("axis") &&
-          q.includes("korba")
-        ) {
-          state = "Chhattisgarh";
-          city = "Korba";
-          code = "UTIB0000454";
-        } else if (
-          q.includes("sbi") &&
-          (q.includes("gurugram") ||
-            q.includes("gurgaon"))
-        ) {
-          state = "Haryana";
-          city = "Gurugram Branch";
-          code = "SBIN0004412";
-        } else if (
-          q.includes("sbi") &&
-          (q.includes("kolkata") ||
-            q.includes("calcutta"))
-        ) {
-          state = "West Bengal";
-          city = "Kolkata Main";
-          code = "SBIN0000001";
-        } else if (
-          q.includes("yes") &&
-          (q.includes("gurugram") ||
-            q.includes("gurgaon"))
-        ) {
-          state = "Haryana";
-          city = "Gurugram Desk";
-          code = "YESB0000056";
-        } else if (
-          q.includes("icici") &&
-          (q.includes("kolkata") ||
-            q.includes("calcutta"))
-        ) {
-          state = "West Bengal";
-          city = "Kolkata City";
-          code = "ICIC0000006";
-        } else {
-          state = "Karnataka";
-          city = "Bengaluru Hub";
-          code = "SBIN0040012";
+                    } else if (q.includes("axis") && q.includes("korba")) {
+                        state = "Chhattisgarh"; city = "Korba"; code = "UTIB0000454";
+                    } else if (q.includes("sbi") && (q.includes("gurugram") || q.includes("gurgaon"))) {
+                        state = "Haryana"; city = "Gurugram Branch"; code = "SBIN0004412";
+                    } else if (q.includes("sbi") && (q.includes("kolkata") || q.includes("calcutta"))) {
+                        state = "West Bengal"; city = "Kolkata Main"; code = "SBIN0000001";
+                    } else if (q.includes("yes") && (q.includes("gurugram") || q.includes("gurgaon"))) {
+                        state = "Haryana"; city = "Gurugram Desk"; code = "YESB0000056";
+                    } else if (q.includes("icici") && (q.includes("kolkata") || q.includes("calcutta"))) {
+                        state = "West Bengal"; city = "Kolkata City"; code = "ICIC0000006";
+                    } else {
+                        state = "Karnataka"; city = "Bengaluru Hub"; code = "SBIN0040012";
+                    }
+                }
+
+                document.getElementById('loading-box').style.display = 'none';
+                document.getElementById('result-box').style.display = 'block';
+
+                const row = document.getElementById('flex-journey-row');
+                let h = '';
+                h += '<div class="card"><div>🌍</div><div style="font-size:12px;font-weight:900;margin-top:4px">' + continent + '</div></div>';
+                h += '<div class="card"><div>' + emoji + '</div><div style="font-size:12px;font-weight:900;margin-top:4px">' + country + '</div></div>';
+                h += '<div class="card"><div>📍</div><div style="font-size:12px;font-weight:900;margin-top:4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">' + state + '</div></div>';
+                h += '<div class="card"><div>🏙️</div><div style="font-size:12px;font-weight:900;margin-top:4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">' + city + '</div></div>';
+                row.innerHTML = h;
+
+                const displayBox = document.getElementById('code-display-box');
+                displayBox.innerText = code.toUpperCase();
+                displayBox.style.color = currentMode === 'SWIFT' ? '#34d399' : '#3b82f6';
+            }, 400);
         }
-        document.getElementById(
-          "loading-box"
-        ).style.display = "none";
-        document.getElementById(
-          "result-box"
-        ).style.display = "block";
-
-        const row =
-          document.getElementById(
-            "flex-journey-row"
-          );
-        let h = "";
-        h += '<div class="card">';
-        h += "<div>🌍</div>";
-        h += "<div>" + continent + "</div>";
-        h += "</div>";
-
-        h += '<div class="card">';
-        h += "<div>" + emoji + "</div>";
-        h += "<div>" + country + "</div>";
-        h += "</div>";
-
-        h += '<div class="card">';
-        h += "<div>📍</div>";
-        h += "<div>" + state + "</div>";
-        h += "</div>";
-
-        h += '<div class="card">';
-        h += "<div>🏙️</div>";
-        h += "<div>" + city + "</div>";
-        h += "</div>";
-        row.innerHTML = h;
-        const displayBox =
-          document.getElementById(
-            "code-display-box"
-          );
-        displayBox.innerText =
-          code.toUpperCase();
-        displayBox.style.color =
-          currentMode === "SWIFT"
-            ? "#34d399"
-            : "#3b82f6";
-      }, 400);
-    }
-  </script>
+    </script>
 </body>
 </html>
