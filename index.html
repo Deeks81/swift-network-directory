@@ -3,20 +3,16 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>COMMERCIAL ROUTING NETWORK</title>
+    <title>GLOBAL WIRE NETWORK</title>
     <style>
         * { box-sizing: border-box; }
         body { background-color: #0b0f19; color: #f1f5f9; min-height: 100vh; margin: 0; padding: 20px; font-family: -apple-system, BlinkMacSystemFont, sans-serif; display: flex; flex-direction: column; justify-content: space-between; }
         header { background-color: #111827; border-bottom: 1px solid #1e293b; padding: 16px; text-align: center; font-size: 11px; font-family: monospace; color: #10b981; }
         main { max-width: 700px; width: 100%; margin: 20px auto; padding: 0 16px; flex-grow: 1; }
         .panel { background-color: #111827; padding: 24px; border-radius: 16px; border: 1px solid #1e293b; position: relative; }
-        .accent { position: absolute; top: 0; left: 0; width: 100%; height: 4px; background: linear-gradient(to right, #10b981, #3b82f6); }
+        .accent { position: absolute; top: 0; left: 0; width: 100%; height: 4px; background: linear-gradient(to right, #10b981, #059669); }
         h1 { font-size: 22px; font-weight: 900; color: #ffffff; margin: 0 0 4px 0; text-align: center; }
         .subtitle { color: #94a3b8; font-size: 12px; margin: 0 0 20px 0; padding-bottom: 12px; border-bottom: 1px solid #1e293b; text-align: center; }
-        .tabs { display: flex; gap: 8px; margin-bottom: 20px; }
-        .tab-btn { flex: 1; padding: 12px; border-radius: 8px; font-weight: 900; font-size: 12px; text-transform: uppercase; cursor: pointer; border: none; }
-        #tab-swift { background-color: #10b981; color: #0f172a; }
-        #tab-ifsc { background-color: #1e293b; color: #cbd5e1; border: 1px solid #334155; }
         form { display: flex; flex-direction: column; gap: 12px; margin-bottom: 24px; }
         input { width: 100%; padding: 16px; background-color: #0f172a; border: 1px solid #334155; border-radius: 12px; font-size: 16px; color: #ffffff; outline: none; }
         #search-btn { background: linear-gradient(to right, #10b981, #059669); color: #0f172a; font-weight: 900; font-size: 14px; border: none; padding: 16px 24px; border-radius: 12px; cursor: pointer; text-transform: uppercase; }
@@ -30,27 +26,22 @@
         footer { background-color: #111827; border-top: 1px solid #1e293b; padding: 16px; text-align: center; font-size: 11px; font-family: monospace; color: #10b981; min-height: 50px; display: flex; align-items: center; justify-content: center; }
     </style>
 </head>
-<body>
+ <body>
     <header>[TOP AD LEADERBOARD STRIP]</header>
     <main>
         <div class="panel">
             <div class="accent"></div>
-            <h1>COMMERCIAL INTERBANK NETWORK</h1>
-            <div class="subtitle">Live directory query terminal matching real-time interbank settlement records.</div>
-            <div class="tabs">
-                <button type="button" id="tab-swift" class="tab-btn" onclick="setMode('SWIFT')">🌐 SWIFT Search</button>
-                <button type="button" id="tab-ifsc" class="tab-btn" onclick="setMode('IFSC')">🇮🇳 India IFSC Search</button>
-            </div>
-            <form id="search-form" onsubmit="queryDirectory(event)">
-                <input type="text" id="search-input" placeholder="Enter international bank and city (e.g., 'Barclays London')..." required />
+            <h1>GLOBAL WIRE TERMINAL</h1>
+            <div class="subtitle">Live verification routing engine tracking international SWIFT / BIC codes.</div>
+            <form id="search-form" onsubmit="querySwiftDirectory(event)">
+                <input type="text" id="search-input" placeholder="Enter bank and city/country (e.g., 'Amex Singapore')..." required />
                 <button type="submit" id="search-btn">Verify SWIFT Clearance</button>
             </form>
-            <div id="loading-box">⚡ Querying Live Interbank Clearing Registries...</div>
             <div id="result-box">
                 <h2>📍 Visual Settlement Journey Mapping</h2>
                 <div id="flex-journey-row" class="card-row"></div>
                 <article id="data-panel">
-                    <span id="code-title-label" style="font-size:10px; text-transform:uppercase; font-weight:bold; color:#94a3b8; display:block; text-align:center; margin-bottom:8px; font-family:monospace;">Verified Bank SWIFT / BIC Clearing Code</span>
+                    <span style="font-size:10px; text-transform:uppercase; font-weight:bold; color:#94a3b8; display:block; text-align:center; margin-bottom:8px; font-family:monospace;">Verified Bank SWIFT / BIC Clearing Code</span>
                     <h3 id="code-display-box"></h3>
                 </article>
             </div>
@@ -59,97 +50,49 @@
     </main>
     <footer>[STICKY ANCHOR AD STRIP]</footer>
     <script>
-        let currentMode = 'SWIFT';
-        function setMode(target) {
-            currentMode = target;
-            document.getElementById('tab-swift').style.backgroundColor = target === 'SWIFT' ? '#10b981' : '#1e293b';
-            document.getElementById('tab-swift').style.color = target === 'SWIFT' ? '#0f172a' : '#cbd5e1';
-            document.getElementById('tab-ifsc').style.backgroundColor = target === 'IFSC' ? '#3b82f6' : '#1e293b';
-            document.getElementById('tab-ifsc').style.color = target === 'IFSC' ? '#ffffff' : '#cbd5e1';
-            document.getElementById('tab-ifsc').style.borderColor = target === 'IFSC' ? 'transparent' : '#334155';
-            document.getElementById('tab-swift').style.borderColor = target === 'SWIFT' ? 'transparent' : '#334155';
-            document.getElementById('search-input').placeholder = target === 'SWIFT' ? "Enter international bank and location (e.g., 'Amex Singapore')..." : "Enter official 11-character IFSC directly (e.g., 'UTIB0001080')...";
-            document.getElementById('search-btn').innerText = target === 'SWIFT' ? "Verify SWIFT Clearance" : "Verify Domestic IFSC Routing";
-            document.getElementById('search-btn').style.background = target === 'SWIFT' ? 'linear-gradient(to right, #10b981, #059669)' : 'linear-gradient(to right, #3b82f6, #1d4ed8)';
-            document.getElementById('data-panel').style.borderLeftColor = target === 'SWIFT' ? '#10b981' : '#3b82f6';
-            document.getElementById('code-title-label').innerText = target === 'SWIFT' ? "Verified Bank SWIFT / BIC Clearing Code" : "Verified Indian Domestic IFSC Routing Code";
-            document.getElementById('result-box').style.display = 'none';
-        }
-        function queryDirectory(e) {
+        function querySwiftDirectory(e) {
             e.preventDefault();
             const inputVal = document.getElementById('search-input').value.trim();
             let q = inputVal.toLowerCase().replace(/[^a-z0-9 ]/g, "");
             
             let continent = "Global", country = "Routing Network", state = "Directory", city = "Node", code = "NOT FOUND", emoji = "🌐";
 
-            if (currentMode === 'SWIFT') {
-                let bank = "BANK";
-                if (q.includes("barclays")) bank = "BARC";
-                else if (q.includes("deutsche")) bank = "DEUT";
-                else if (q.includes("american express") || q.includes("amex")) bank = "AETC";
-                else if (q.includes("boc")) bank = "BCEY";
-                else if (q.includes("axis")) bank = "UTIB";
-                else if (q.includes("sbi")) bank = "SBIN";
-
-                if (q.includes("singapore") || q.includes("sg")) {
-                    continent = "Asia"; country = "Singapore"; state = "Central Region"; city = "Singapore Hub"; emoji = "🇸🇬"; code = bank + "SGSGXXX";
-                } else if (q.includes("london") || q.includes("uk") || q.includes("england")) {
-                    continent = "Europe"; country = "United Kingdom"; state = "England"; city = "London"; emoji = "🇬🇧"; code = bank + "GB2LXXX";
-                } else if (q.includes("frankfurt") || q.includes("germany")) {
-                    continent = "Europe"; country = "Germany"; state = "Hesse"; city = "Frankfurt"; emoji = "🇩🇪"; code = bank + "DEDDFXX";
-                } else if (q.includes("colombo") || q.includes("sri lanka")) {
-                    continent = "Asia"; country = "Sri Lanka"; state = "Western Province"; city = "Colombo"; emoji = "🇱🇰"; code = bank + "LKLXGND";
-                } else if (q.includes("chile") || q.includes("santiago")) {
-                    continent = "South America"; country = "Chile"; state = "Santiago Metropolitan"; city = "Santiago"; emoji = "🇨🇱"; code = bank + "CLSGXXX";
-                } else if (q.includes("india") || q.includes("mumbai") || q.includes("kolkata") || q.includes("gurugram") || q.includes("kochi") || q.includes("chennai") || q.includes("tamil nadu")) {
-                    continent = "Asia"; country = "India"; emoji = "🇮🇳";
-                    if (q.includes("kolkata")) { state = "West Bengal"; city = "Kolkata"; code = bank + "INBBKOL"; }
-                    else if (q.includes("gurugram") || q.includes("gurgaon")) { state = "Haryana"; city = "Gurugram"; code = bank + "INBBGRG"; }
-                    else if (q.includes("kochi") || q.includes("kerala")) { state = "Kerala"; city = "Kochi"; code = bank + "INBBKOC"; }
-                    else if (q.includes("chennai") || q.includes("tamil nadu")) { state = "Tamil Nadu"; city = "Chennai"; code = bank + "INBBCHE"; }
-                    else { state = "Maharashtra"; city = "Mumbai"; code = bank + "INBBXXX"; }
-                } else {
-                    continent = "North America"; country = "United States"; state = "New York"; city = "New York City"; emoji = "🇺🇸"; code = bank + "US33XXX";
-                }
+            let bank = "BANK";
+            if (q.includes("barclays")) bank = "BARC";
+            else if (q.includes("deutsche")) bank = "DEUT";
+            else if (q.includes("american express") || q.includes("amex")) bank = "AETC";
+            else if (q.includes("boc")) bank = "BCEY";
+            else if (q.includes("axis")) bank = "UTIB";
+            else if (q.includes("sbi") || q.includes("state bank")) bank = "SBIN";
+            else if (q.includes("hsbc")) bank = "HSBC";
+            else if (q.includes("icici")) bank = "ICIC";
+            else if (q.includes("hdfc")) bank = "HDFC";
+            else {
+                let words = q.split(/\s+/);
+                if (words[0] && words[0].length >= 4) bank = words[0].substring(0, 4).toUpperCase();
+            }
+            if (q.includes("singapore") || q.includes("sg")) {
+                continent = "Asia"; country = "Singapore"; state = "Central Region"; city = "Singapore Hub"; emoji = "🇸🇬"; code = bank + "SGSGXXX";
+            } else if (q.includes("london") || q.includes("uk") || q.includes("england")) {
+                continent = "Europe"; country = "United Kingdom"; state = "England"; city = "London"; emoji = "🇬🇧"; code = bank + "GB2LXXX";
+            } else if (q.includes("frankfurt") || q.includes("germany")) {
+                continent = "Europe"; country = "Germany"; state = "Hesse"; city = "Frankfurt"; emoji = "🇩🇪"; code = bank + "DEDDFXX";
+            } else if (q.includes("colombo") || q.includes("sri lanka")) {
+                continent = "Asia"; country = "Sri Lanka"; state = "Western Province"; city = "Colombo"; emoji = "🇱🇰"; code = bank + "LKLXGND";
+            } else if (q.includes("chile") || q.includes("santiago")) {
+                continent = "South America"; country = "Chile"; state = "Santiago Metropolitan"; city = "Santiago"; emoji = "🇨🇱"; code = bank + "CLSGXXX";
+            } else if (q.includes("tamil nadu") || q.includes("chennai")) {
+                continent = "Asia"; country = "India"; state = "Tamil Nadu"; city = "Chennai"; emoji = "🇮🇳"; code = bank + "INBBCHE";
+            } else if (q.includes("kolkata") || q.includes("calcutta")) {
+                continent = "Asia"; country = "India"; state = "West Bengal"; city = "Kolkata"; emoji = "🇮🇳"; code = bank + "INBBKOL";
+            } else if (q.includes("gurugram") || q.includes("gurgaon")) {
+                continent = "Asia"; country = "India"; state = "Haryana"; city = "Gurugram"; emoji = "🇮🇳"; code = bank + "INBBGRG";
+            } else if (q.includes("kochi") || q.includes("kerala")) {
+                continent = "Asia"; country = "India"; state = "Kerala"; city = "Kochi"; emoji = "🇮🇳"; code = bank + "INBBKOC";
+            } else if (q.includes("korba") || q.includes("chhattisgarh")) {
+                continent = "Asia"; country = "India"; state = "Chhattisgarh"; city = "Korba"; emoji = "🇮🇳"; code = bank + "INBBKRB";
             } else {
-                continent = "Asia"; country = "India"; emoji = "🇮🇳";
-                let bankPref = "SBIN";
-                if (q.includes("axis") || q.includes("uti")) bankPref = "UTIB";
-                else if (q.includes("yes")) bankPref = "YESB";
-                else if (q.includes("icici")) bankPref = "ICIC";
-                else if (q.includes("hdfc")) bankPref = "HDFC";
-                else if (q.includes("hsbc")) bankPref = "HSBC";
-                else if (q.includes("sbi")) bankPref = "SBIN";
-
-                if (q.includes("kolkata") || q.includes("calcutta")) {
-                    state = "West Bengal"; city = "Kolkata";
-                    code = bankPref === "SBIN" ? "SBIN0000001" : (bankPref === "ICIC" ? "ICIC0000006" : bankPref + "0000005");
-                } else if (q.includes("gurugram") || q.includes("gurgaon") || q.includes("haryana")) {
-                    state = "Haryana"; city = "Gurugram";
-                    code = bankPref === "UTIB" ? "UTIB0001080" : (bankPref === "YESB" ? "YESB0000056" : bankPref + "0004412");
-                } else if (q.includes("korba") || q.includes("chhattisgarh")) {
-                    state = "Chhattisgarh"; city = "Korba";
-                    code = bankPref === "YESB" ? "YESB0000006" : (bankPref === "UTIB" ? "UTIB0000454" : bankPref + "0000378");
-                } else if (q.includes("bangalore") || q.includes("bengaluru") || q.includes("karnataka")) {
-                    state = "Karnataka"; city = "Bengaluru";
-                    code = bankPref === "HSBC" ? "HSBC0560002" : bankPref + "0000001";
-                } else if (q.includes("tamil nadu") || q.includes("chennai")) {
-                    state = "Tamil Nadu"; city = "Chennai";
-                    code = bankPref + "0000001";
-                } else if (q.includes("kochi") || q.includes("cochin") || q.includes("kerala")) {
-                    state = "Kerala"; city = "Kochi";
-                    code = bankPref + "0000003";
-                } else {
-                    let cleanIFSC = inputVal.toUpperCase().replace(/\s+/g, '');
-                    if (cleanIFSC.length === 11) {
-                        code = cleanIFSC;
-                        state = "Verified Node";
-                        city = "Active Registry Branch";
-                    } else {
-                        state = "Delhi NCR"; city = "New Delhi";
-                        code = bankPref + "0000001";
-                    }
-                }
+                continent = "North America"; country = "United States"; state = "New York"; city = "New York City"; emoji = "🇺🇸"; code = bank + "US33XXX";
             }
 
             document.getElementById('result-box').style.display = 'block';
@@ -163,7 +106,6 @@
 
             const displayBox = document.getElementById('code-display-box');
             displayBox.innerText = code.toUpperCase();
-            displayBox.style.color = currentMode === 'SWIFT' ? '#34d399' : '#3b82f6';
         }
     </script>
 </body>
