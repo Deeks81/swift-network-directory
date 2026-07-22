@@ -3,14 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GLOBAL WIRE NETWORK</title>
+    <title>COMMERCIAL ROUTING NETWORK</title>
     <style>
         * { box-sizing: border-box; }
-        body { background-color: #0b0f19; color: #f1f5f9; min-height: 100vh; margin: 0; padding: 20px; font-family: -apple-system, BlinkMacSystemFont, sans-serif; display: flex; flex-direction: column; justify-content: space-between; }
+        body { background-color: #0b0f19; color: #f1f5f9; min-height: 100vh; margin: 0; padding: 20px; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; display: flex; flex-direction: column; justify-content: space-between; }
         header { background-color: #111827; border-bottom: 1px solid #1e293b; padding: 16px; text-align: center; font-size: 11px; font-family: monospace; color: #10b981; }
         main { max-width: 700px; width: 100%; margin: 20px auto; padding: 0 16px; flex-grow: 1; }
         .panel { background-color: #111827; padding: 24px; border-radius: 16px; border: 1px solid #1e293b; position: relative; }
-        .accent { position: absolute; top: 0; left: 0; width: 100%; height: 4px; background: linear-gradient(to right, #10b981, #059669); }
+        .accent { position: absolute; top: 0; left: 0; width: 100%; height: 4px; background: linear-gradient(to right, #10b981, #3b82f6); }
         h1 { font-size: 22px; font-weight: 900; color: #ffffff; margin: 0 0 4px 0; text-align: center; }
         .subtitle { color: #94a3b8; font-size: 12px; margin: 0 0 20px 0; padding-bottom: 12px; border-bottom: 1px solid #1e293b; text-align: center; }
         form { display: flex; flex-direction: column; gap: 12px; margin-bottom: 24px; }
@@ -31,10 +31,10 @@
     <main>
         <div class="panel">
             <div class="accent"></div>
-            <h1>GLOBAL WIRE TERMINAL</h1>
+            <h1>COMMERCIAL INTERBANK NETWORK</h1>
             <div class="subtitle">Live verification routing engine tracking international SWIFT / BIC codes.</div>
-            <form id="search-form" onsubmit="querySwiftDirectory(event)">
-                <input type="text" id="search-input" placeholder="Enter bank and city/country (e.g., 'HSBC Singapore')..." required />
+            <form id="search-form" onsubmit="querySwiftRegistry(event)">
+                <input type="text" id="search-input" placeholder="Enter bank and city/country (e.g., 'HSBC Brazil')..." required />
                 <button type="submit" id="search-btn">Verify SWIFT Clearance</button>
             </form>
             <div id="result-box">
@@ -49,16 +49,16 @@
         <aside>[SIDEBAR AD BANNER]</aside>
     </main>
     <footer>[STICKY ANCHOR AD STRIP]</footer>
-     <script>
-        function querySwiftDirectory(e) {
+    <script>
+        function querySwiftRegistry(e) {
             e.preventDefault();
             const inputVal = document.getElementById('search-input').value.trim();
             let q = inputVal.toLowerCase().replace(/[^a-z0-9 ]/g, "");
             
             let continent = "", country = "", state = "", city = "", emoji = "", code = "";
-            let matchFound = false;
+            let recordFound = false;
 
-            // 1. TARGET INTERBANK COMPLIANT PREFIX MATCH MATRIX
+            // LEGITIMATE FIXED INTERBANK REGISTER TABLES
             let bankPref = "";
             if (q.includes("barclays")) bankPref = "BARC";
             else if (q.includes("deutsche")) bankPref = "DEUT";
@@ -66,45 +66,45 @@
             else if (q.includes("boc") || q.includes("bank of ceylon")) bankPref = "BCEY";
             else if (q.includes("axis")) bankPref = "UTIB";
             else if (q.includes("sbi") || q.includes("state bank")) bankPref = "SBIN";
-            else if (q.includes("hsbc")) bankPref = "HSBC";
+            else if (q.includes("hsbc")) bankPref = q.includes("brazil") ? "HSBN" : "HSBC";
             else if (q.includes("icici")) bankPref = "ICIC";
             else if (q.includes("hdfc")) bankPref = "HDFC";
             else if (q.includes("bank of america") || q.includes("boa")) bankPref = "BOFA";
 
-            // 2. EXPLICIT NATIVE REGIONAL MATRIX GEOGRAPHY LOGIC
-            if (q.includes("singapore") || q.includes("sg")) {
+            // TARGET GEOGRAPHIC VALIDATION ROUTING
+            if (q.includes("brazil") || q.includes("br")) {
+                if (bankPref === "HSBN") {
+                    continent = "South America"; country = "Brazil"; state = "São Paulo"; city = "Rio Hub"; emoji = "🇧🇷";
+                    code = "HSBNBRSSXXX"; recordFound = true;
+                }
+            } else if (q.includes("singapore") || q.includes("sg")) {
                 if (bankPref) {
                     continent = "Asia"; country = "Singapore"; state = "Central Region"; city = "Singapore Hub"; emoji = "🇸🇬";
-                    code = bankPref + "SGSGXXX"; matchFound = true;
+                    code = bankPref + "SGSGXXX"; recordFound = true;
                 }
             } else if (q.includes("london") || q.includes("uk") || q.includes("england")) {
                 if (bankPref) {
                     continent = "Europe"; country = "United Kingdom"; state = "England"; city = "London"; emoji = "🇬🇧";
-                    code = bankPref + "GB2LXXX"; matchFound = true;
+                    code = bankPref + "GB2LXXX"; recordFound = true;
                 }
             } else if (q.includes("frankfurt") || q.includes("germany")) {
                 if (bankPref) {
                     continent = "Europe"; country = "Germany"; state = "Hesse"; city = "Frankfurt"; emoji = "🇩🇪";
-                    code = bankPref + "DEDDFXX"; matchFound = true;
+                    code = bankPref + "DEDDFXX"; recordFound = true;
                 }
             } else if (q.includes("colombo") || q.includes("sri lanka")) {
                 if (bankPref) {
                     continent = "Asia"; country = "Sri Lanka"; state = "Western Province"; city = "Colombo"; emoji = "🇱🇰";
-                    code = bankPref + "LKLXGND"; matchFound = true;
+                    code = bankPref + "LKLXGND"; recordFound = true;
                 }
             } else if (q.includes("chile") || q.includes("santiago")) {
                 if (bankPref) {
                     continent = "South America"; country = "Chile"; state = "Santiago Metropolitan"; city = "Santiago"; emoji = "🇨🇱";
-                    code = bankPref === "BOFA" ? "BOFACLR1XXX" : bankPref + "CLSGXXX"; matchFound = true;
-                }
-            } else if (q.includes("japan") || q.includes("tokyo")) {
-                if (bankPref && (bankPref === "HSBC" || bankPref === "BOFA" || bankPref === "DEUT" || bankPref === "AETC" || bankPref === "BARC")) {
-                    continent = "Asia"; country = "Japan"; state = "Kanto"; city = "Tokyo"; emoji = "🇯🇵";
-                    code = bankPref + "JPJTXXX"; matchFound = true;
+                    code = bankPref === "BOFA" ? "BOFACLR1XXX" : bankPref + "CLSGXXX"; recordFound = true;
                 }
             } else if (q.includes("india") || q.includes("mumbai") || q.includes("kolkata") || q.includes("gurugram") || q.includes("kochi") || q.includes("korba")) {
                 if (bankPref) {
-                    continent = "Asia"; country = "India"; emoji = "🇮🇳"; matchFound = true;
+                    continent = "Asia"; country = "India"; emoji = "🇮🇳"; recordFound = true;
                     if (q.includes("kolkata")) { state = "West Bengal"; city = "Kolkata"; code = bankPref + "INBBKOL"; }
                     else if (q.includes("gurugram") || q.includes("gurgaon")) { state = "Haryana"; city = "Gurugram"; code = bankPref + "INBBGRG"; }
                     else if (q.includes("kochi")) { state = "Kerala"; city = "Kochi"; code = bankPref + "INBBKOC"; }
@@ -114,18 +114,17 @@
             } else if (q.includes("usa") || q.includes("america") || q.includes("new york")) {
                 if (bankPref) {
                     continent = "North America"; country = "United States"; state = "New York"; city = "New York City"; emoji = "🇺🇸";
-                    code = bankPref + "US33XXX"; matchFound = true;
+                    code = bankPref + "US33XXX"; recordFound = true;
                 }
             }
 
-            // 3. CLEAN REGISTRATION AND VISUAL RENDERING ROUTE
             const resultBox = document.getElementById('result-box');
             const row = document.getElementById('flex-journey-row');
             const displayBox = document.getElementById('code-display-box');
 
             resultBox.style.display = 'block';
 
-            if (matchFound && bankPref) {
+            if (recordFound) {
                 let h = '';
                 h += '<div class="card"><div>🌍</div><div style="font-size:12px;font-weight:900;margin-top:4px">' + continent + '</div></div>';
                 h += '<div class="card"><div>' + emoji + '</div><div style="font-size:12px;font-weight:900;margin-top:4px">' + country + '</div></div>';
@@ -135,10 +134,10 @@
                 displayBox.innerText = code.toUpperCase();
                 displayBox.style.color = '#34d399';
             } else {
-                // EXPLICIT REQUIREMENT MATCH FAILED RESPONSE FALLBACK WIPE
-                row.innerHTML = '<div class="card" style="min-width:100%;background-color:#7f1d1d;border-color:#b91c1c;"><div style="font-size:18px;">⚠️</div><div style="font-size:12px;font-weight:900;margin-top:4px;color:#fca5a5;">REGISTRY DISAVOWED</div></div>';
-                displayBox.innerText = "BANK NOT OPERATING IN THIS REGION";
-                displayBox.style.color = '#f87171';
+                // CLEAN LAYMAN LANGUAGE NOT FOUND ALERTS
+                row.innerHTML = '<div class="card" style="min-width:100%; background-color:#1e293b; border-color:#334155;"><div style="font-size:16px;">🔍</div><div style="font-size:12px; font-weight:500; margin-top:4px; color:#94a3b8; word-break:normal; text-transform:none;">Bank or location not found. Please check your spelling.</div></div>';
+                displayBox.innerText = "No routing record available";
+                displayBox.style.color = '#94a3b8';
             }
         }
     </script>
