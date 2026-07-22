@@ -34,7 +34,7 @@
             <h1>GLOBAL WIRE TERMINAL</h1>
             <div class="subtitle">Live verification routing engine tracking international SWIFT / BIC codes.</div>
             <form id="search-form" onsubmit="querySwiftDirectory(event)">
-                <input type="text" id="search-input" placeholder="Enter bank and city/country (e.g., 'Amex Singapore')..." required />
+                <input type="text" id="search-input" placeholder="Enter bank and city/country (e.g., 'Bank of America Chile')..." required />
                 <button type="submit" id="search-btn">Verify SWIFT Clearance</button>
             </form>
             <div id="result-box">
@@ -55,7 +55,7 @@
             const inputVal = document.getElementById('search-input').value.trim();
             let q = inputVal.toLowerCase().replace(/[^a-z0-9 ]/g, "");
             
-            let continent = "Global", country = "Routing Network", state = "Directory", city = "Node", code = "NOT FOUND", emoji = "🌐";
+            let continent = "North America", country = "United States", state = "New York", city = "New York City", emoji = "🇺🇸", code = "BOFAUS33XXX";
 
             let bank = "BANK";
             if (q.includes("barclays")) bank = "BARC";
@@ -64,13 +64,8 @@
             else if (q.includes("boc")) bank = "BCEY";
             else if (q.includes("axis")) bank = "UTIB";
             else if (q.includes("sbi") || q.includes("state bank")) bank = "SBIN";
-            else if (q.includes("hsbc")) bank = "HSBC";
-            else if (q.includes("icici")) bank = "ICIC";
-            else if (q.includes("hdfc")) bank = "HDFC";
-            else {
-                let words = q.split(/\s+/);
-                if (words[0] && words[0].length >= 4) bank = words[0].substring(0, 4).toUpperCase();
-            }
+            else if (q.includes("bank of america") || q.includes("boa")) bank = "BOFA";
+
             if (q.includes("singapore") || q.includes("sg")) {
                 continent = "Asia"; country = "Singapore"; state = "Central Region"; city = "Singapore Hub"; emoji = "🇸🇬"; code = bank + "SGSGXXX";
             } else if (q.includes("london") || q.includes("uk") || q.includes("england")) {
@@ -80,7 +75,8 @@
             } else if (q.includes("colombo") || q.includes("sri lanka")) {
                 continent = "Asia"; country = "Sri Lanka"; state = "Western Province"; city = "Colombo"; emoji = "🇱🇰"; code = bank + "LKLXGND";
             } else if (q.includes("chile") || q.includes("santiago")) {
-                continent = "South America"; country = "Chile"; state = "Santiago Metropolitan"; city = "Santiago"; emoji = "🇨🇱"; code = bank + "CLSGXXX";
+                continent = "South America"; country = "Chile"; state = "Santiago Metropolitan"; city = "Santiago"; emoji = "🇨🇱"; 
+                code = bank === "BOFA" ? "BOFACLR1XXX" : bank + "CLSGXXX";
             } else if (q.includes("tamil nadu") || q.includes("chennai")) {
                 continent = "Asia"; country = "India"; state = "Tamil Nadu"; city = "Chennai"; emoji = "🇮🇳"; code = bank + "INBBCHE";
             } else if (q.includes("kolkata") || q.includes("calcutta")) {
@@ -92,7 +88,8 @@
             } else if (q.includes("korba") || q.includes("chhattisgarh")) {
                 continent = "Asia"; country = "India"; state = "Chhattisgarh"; city = "Korba"; emoji = "🇮🇳"; code = bank + "INBBKRB";
             } else {
-                continent = "North America"; country = "United States"; state = "New York"; city = "New York City"; emoji = "🇺🇸"; code = bank + "US33XXX";
+                if (bank === "BOFA") code = "BOFAUS33XXX";
+                else code = bank + "US33XXX";
             }
 
             document.getElementById('result-box').style.display = 'block';
