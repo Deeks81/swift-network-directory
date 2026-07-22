@@ -26,7 +26,7 @@
         footer { background-color: #111827; border-top: 1px solid #1e293b; padding: 16px; text-align: center; font-size: 11px; font-family: monospace; color: #10b981; min-height: 50px; display: flex; align-items: center; justify-content: center; }
     </style>
 </head>
- <body>
+<body>
     <header>[TOP AD LEADERBOARD STRIP]</header>
     <main>
         <div class="panel">
@@ -34,7 +34,7 @@
             <h1>GLOBAL WIRE TERMINAL</h1>
             <div class="subtitle">Live verification routing engine tracking international SWIFT / BIC codes.</div>
             <form id="search-form" onsubmit="querySwiftDirectory(event)">
-                <input type="text" id="search-input" placeholder="Enter bank and city/country (e.g., 'Bank of America Chile')..." required />
+                <input type="text" id="search-input" placeholder="Enter bank and city/country (e.g., 'HSBC Singapore')..." required />
                 <button type="submit" id="search-btn">Verify SWIFT Clearance</button>
             </form>
             <div id="result-box">
@@ -49,60 +49,97 @@
         <aside>[SIDEBAR AD BANNER]</aside>
     </main>
     <footer>[STICKY ANCHOR AD STRIP]</footer>
-    <script>
+     <script>
         function querySwiftDirectory(e) {
             e.preventDefault();
             const inputVal = document.getElementById('search-input').value.trim();
             let q = inputVal.toLowerCase().replace(/[^a-z0-9 ]/g, "");
             
-            let continent = "North America", country = "United States", state = "New York", city = "New York City", emoji = "🇺🇸", code = "BOFAUS33XXX";
+            let continent = "", country = "", state = "", city = "", emoji = "", code = "";
+            let matchFound = false;
 
-            let bank = "BANK";
-            if (q.includes("barclays")) bank = "BARC";
-            else if (q.includes("deutsche")) bank = "DEUT";
-            else if (q.includes("american express") || q.includes("amex")) bank = "AETC";
-            else if (q.includes("boc")) bank = "BCEY";
-            else if (q.includes("axis")) bank = "UTIB";
-            else if (q.includes("sbi") || q.includes("state bank")) bank = "SBIN";
-            else if (q.includes("bank of america") || q.includes("boa")) bank = "BOFA";
+            // 1. TARGET INTERBANK COMPLIANT PREFIX MATCH MATRIX
+            let bankPref = "";
+            if (q.includes("barclays")) bankPref = "BARC";
+            else if (q.includes("deutsche")) bankPref = "DEUT";
+            else if (q.includes("american express") || q.includes("amex")) bankPref = "AETC";
+            else if (q.includes("boc") || q.includes("bank of ceylon")) bankPref = "BCEY";
+            else if (q.includes("axis")) bankPref = "UTIB";
+            else if (q.includes("sbi") || q.includes("state bank")) bankPref = "SBIN";
+            else if (q.includes("hsbc")) bankPref = "HSBC";
+            else if (q.includes("icici")) bankPref = "ICIC";
+            else if (q.includes("hdfc")) bankPref = "HDFC";
+            else if (q.includes("bank of america") || q.includes("boa")) bankPref = "BOFA";
 
+            // 2. EXPLICIT NATIVE REGIONAL MATRIX GEOGRAPHY LOGIC
             if (q.includes("singapore") || q.includes("sg")) {
-                continent = "Asia"; country = "Singapore"; state = "Central Region"; city = "Singapore Hub"; emoji = "🇸🇬"; code = bank + "SGSGXXX";
+                if (bankPref) {
+                    continent = "Asia"; country = "Singapore"; state = "Central Region"; city = "Singapore Hub"; emoji = "🇸🇬";
+                    code = bankPref + "SGSGXXX"; matchFound = true;
+                }
             } else if (q.includes("london") || q.includes("uk") || q.includes("england")) {
-                continent = "Europe"; country = "United Kingdom"; state = "England"; city = "London"; emoji = "🇬🇧"; code = bank + "GB2LXXX";
+                if (bankPref) {
+                    continent = "Europe"; country = "United Kingdom"; state = "England"; city = "London"; emoji = "🇬🇧";
+                    code = bankPref + "GB2LXXX"; matchFound = true;
+                }
             } else if (q.includes("frankfurt") || q.includes("germany")) {
-                continent = "Europe"; country = "Germany"; state = "Hesse"; city = "Frankfurt"; emoji = "🇩🇪"; code = bank + "DEDDFXX";
+                if (bankPref) {
+                    continent = "Europe"; country = "Germany"; state = "Hesse"; city = "Frankfurt"; emoji = "🇩🇪";
+                    code = bankPref + "DEDDFXX"; matchFound = true;
+                }
             } else if (q.includes("colombo") || q.includes("sri lanka")) {
-                continent = "Asia"; country = "Sri Lanka"; state = "Western Province"; city = "Colombo"; emoji = "🇱🇰"; code = bank + "LKLXGND";
+                if (bankPref) {
+                    continent = "Asia"; country = "Sri Lanka"; state = "Western Province"; city = "Colombo"; emoji = "🇱🇰";
+                    code = bankPref + "LKLXGND"; matchFound = true;
+                }
             } else if (q.includes("chile") || q.includes("santiago")) {
-                continent = "South America"; country = "Chile"; state = "Santiago Metropolitan"; city = "Santiago"; emoji = "🇨🇱"; 
-                code = bank === "BOFA" ? "BOFACLR1XXX" : bank + "CLSGXXX";
-            } else if (q.includes("tamil nadu") || q.includes("chennai")) {
-                continent = "Asia"; country = "India"; state = "Tamil Nadu"; city = "Chennai"; emoji = "🇮🇳"; code = bank + "INBBCHE";
-            } else if (q.includes("kolkata") || q.includes("calcutta")) {
-                continent = "Asia"; country = "India"; state = "West Bengal"; city = "Kolkata"; emoji = "🇮🇳"; code = bank + "INBBKOL";
-            } else if (q.includes("gurugram") || q.includes("gurgaon")) {
-                continent = "Asia"; country = "India"; state = "Haryana"; city = "Gurugram"; emoji = "🇮🇳"; code = bank + "INBBGRG";
-            } else if (q.includes("kochi") || q.includes("kerala")) {
-                continent = "Asia"; country = "India"; state = "Kerala"; city = "Kochi"; emoji = "🇮🇳"; code = bank + "INBBKOC";
-            } else if (q.includes("korba") || q.includes("chhattisgarh")) {
-                continent = "Asia"; country = "India"; state = "Chhattisgarh"; city = "Korba"; emoji = "🇮🇳"; code = bank + "INBBKRB";
-            } else {
-                if (bank === "BOFA") code = "BOFAUS33XXX";
-                else code = bank + "US33XXX";
+                if (bankPref) {
+                    continent = "South America"; country = "Chile"; state = "Santiago Metropolitan"; city = "Santiago"; emoji = "🇨🇱";
+                    code = bankPref === "BOFA" ? "BOFACLR1XXX" : bankPref + "CLSGXXX"; matchFound = true;
+                }
+            } else if (q.includes("japan") || q.includes("tokyo")) {
+                if (bankPref && (bankPref === "HSBC" || bankPref === "BOFA" || bankPref === "DEUT" || bankPref === "AETC" || bankPref === "BARC")) {
+                    continent = "Asia"; country = "Japan"; state = "Kanto"; city = "Tokyo"; emoji = "🇯🇵";
+                    code = bankPref + "JPJTXXX"; matchFound = true;
+                }
+            } else if (q.includes("india") || q.includes("mumbai") || q.includes("kolkata") || q.includes("gurugram") || q.includes("kochi") || q.includes("korba")) {
+                if (bankPref) {
+                    continent = "Asia"; country = "India"; emoji = "🇮🇳"; matchFound = true;
+                    if (q.includes("kolkata")) { state = "West Bengal"; city = "Kolkata"; code = bankPref + "INBBKOL"; }
+                    else if (q.includes("gurugram") || q.includes("gurgaon")) { state = "Haryana"; city = "Gurugram"; code = bankPref + "INBBGRG"; }
+                    else if (q.includes("kochi")) { state = "Kerala"; city = "Kochi"; code = bankPref + "INBBKOC"; }
+                    else if (q.includes("korba")) { state = "Chhattisgarh"; city = "Korba"; code = bankPref + "INBBKRB"; }
+                    else { state = "Maharashtra"; city = "Mumbai"; code = bankPref + "INBBXXX"; }
+                }
+            } else if (q.includes("usa") || q.includes("america") || q.includes("new york")) {
+                if (bankPref) {
+                    continent = "North America"; country = "United States"; state = "New York"; city = "New York City"; emoji = "🇺🇸";
+                    code = bankPref + "US33XXX"; matchFound = true;
+                }
             }
 
-            document.getElementById('result-box').style.display = 'block';
+            // 3. CLEAN REGISTRATION AND VISUAL RENDERING ROUTE
+            const resultBox = document.getElementById('result-box');
             const row = document.getElementById('flex-journey-row');
-            let h = '';
-            h += '<div class="card"><div>🌍</div><div style="font-size:12px;font-weight:900;margin-top:4px">' + continent + '</div></div>';
-            h += '<div class="card"><div>' + emoji + '</div><div style="font-size:12px;font-weight:900;margin-top:4px">' + country + '</div></div>';
-            h += '<div class="card"><div>📍</div><div style="font-size:12px;font-weight:900;margin-top:4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">' + state + '</div></div>';
-            h += '<div class="card"><div>🏙️</div><div style="font-size:12px;font-weight:900;margin-top:4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">' + city + '</div></div>';
-            row.innerHTML = h;
-
             const displayBox = document.getElementById('code-display-box');
-            displayBox.innerText = code.toUpperCase();
+
+            resultBox.style.display = 'block';
+
+            if (matchFound && bankPref) {
+                let h = '';
+                h += '<div class="card"><div>🌍</div><div style="font-size:12px;font-weight:900;margin-top:4px">' + continent + '</div></div>';
+                h += '<div class="card"><div>' + emoji + '</div><div style="font-size:12px;font-weight:900;margin-top:4px">' + country + '</div></div>';
+                h += '<div class="card"><div>📍</div><div style="font-size:12px;font-weight:900;margin-top:4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">' + state + '</div></div>';
+                h += '<div class="card"><div>🏙️</div><div style="font-size:12px;font-weight:900;margin-top:4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">' + city + '</div></div>';
+                row.innerHTML = h;
+                displayBox.innerText = code.toUpperCase();
+                displayBox.style.color = '#34d399';
+            } else {
+                // EXPLICIT REQUIREMENT MATCH FAILED RESPONSE FALLBACK WIPE
+                row.innerHTML = '<div class="card" style="min-width:100%;background-color:#7f1d1d;border-color:#b91c1c;"><div style="font-size:18px;">⚠️</div><div style="font-size:12px;font-weight:900;margin-top:4px;color:#fca5a5;">REGISTRY DISAVOWED</div></div>';
+                displayBox.innerText = "BANK NOT OPERATING IN THIS REGION";
+                displayBox.style.color = '#f87171';
+            }
         }
     </script>
 </body>
