@@ -200,9 +200,10 @@ const CONTINENT_MAP={
   'mozambique':'Africa','madagascar':'Africa','mauritius':'Africa','rwanda':'Africa'
 };
 
+const STOP_WORDS=new Set(['of','the','and','de','la','el','del','las','los','et','und','y','e','a','an','in','on','at','for','to','from','by','with']);
+
 function norm(s){return(s||'').toLowerCase().trim();}
 
-/* Find shard: prefer whole-word matches, tie-break by later position */
 function findShard(q){
   const t=norm(q);
   let bestShard=null,bestScore=-1,bestPos=-1;
@@ -233,48 +234,37 @@ async function loadShard(n){
 }
 
 function initials(str){
-  return norm(str).split(/\s+/).filter(w=>w.length>0).map(w=>w[0]).join('');
+  return norm(str).split(/\s+/).filter(w=>w.length>0&&!STOP_WORDS.has(w)).map(w=>w[0]).join('');
 }
 
-/* 
-   Match bank name against search tokens.
-   - Reconstruct the non-country portion of the query as a phrase
-   - Check if that phrase appears in the bank name (substring)
-   - Also check initials and SWIFT prefix
-*/
+/* Strict name-only matching for bank name queries */
 function nameMatches(b,phrase){
   const name=norm(b.name||'');
   if(!phrase) return true;
   
-  // Direct phrase match in bank name
+  // Full phrase substring in name
   if(name.includes(phrase)) return true;
   
-  // Token-by-token: ALL tokens must hit the bank name (stricter)
-  const tokens=phrase.split(/\s+/).filter(t=>t.length>0);
+  // Meaningful tokens (excluding stop words) must ALL hit the name
+  const tokens=phrase.split(/\s+/).filter(t=>t.length>0&&!STOP_WORDS.has(t));
   if(tokens.length===0) return true;
   
-  // Check if ALL tokens match name (AND logic for precision)
-  const allHit=tokens.every(t=>{
+  return tokens.every(t=>{
     if(name.includes(t)) return true;
-    // Initials match for abbreviations like "boa"
     const inits=initials(b.name||'');
     if(t===inits) return true;
-    // SWIFT prefix
     const sw=norm(b.swift||'');
     if(sw.length>=3 && t===sw.substring(0,3)) return true;
     return false;
   });
-  if(allHit) return true;
-  
-  return false;
 }
 
-/* Broader match for city/branch/address searches */
+/* Broader field matching for city/location queries (single meaningful token) */
 function fieldMatches(b,phrase){
   if(!phrase) return true;
   const fields=[b.name,b.swift,b.city,b.state,b.branch,b.address,b.zip];
   const normed=fields.map(f=>norm(f));
-  const tokens=phrase.split(/\s+/).filter(t=>t.length>0);
+  const tokens=phrase.split(/\s+/).filter(t=>t.length>0&&!STOP_WORDS.has(t));
   if(tokens.length===0) return true;
   return tokens.some(t=>{
     for(const h of normed){
@@ -289,19 +279,21 @@ function fieldMatches(b,phrase){
 }
 
 function bankMatches(b,rawQuery,countryKeyword){
-  // Strip country keyword from query
   let t=norm(rawQuery);
   if(countryKeyword){
     t=t.replace(countryKeyword,'').trim();
   }
-  
-  // If only country was searched, show all banks
   if(t.length===0) return true;
   
-  // Try strict name match first (for "Bank of America Chile")
-  if(nameMatches(b,t)) return true;
+  // Count meaningful tokens
+  const meaningful=t.split(/\s+/).filter(x=>x.length>0&&!STOP_WORDS.has(x)).length;
   
-  // Fall back to broader field match (for "Santiago Chile")
+  // If 2+ meaningful tokens, user is searching a bank name -> strict name match
+  if(meaningful>=2){
+    return nameMatches(b,t);
+  }
+  
+  // If 1 meaningful token, could be city or bank name -> broader field match
   return fieldMatches(b,t);
 }
 
