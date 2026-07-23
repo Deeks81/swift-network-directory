@@ -194,6 +194,7 @@
     padding:16px;
     margin-bottom:12px;
     transition:transform 0.15s;
+    cursor:pointer;
   }
   .bank-card:active { transform:scale(0.99); }
   .bank-card .bank-name {
@@ -301,7 +302,7 @@
 
 <div class="wrap">
   <div class="search-box">
-    <input type="text" id="searchInput" placeholder="e.g. 'London', 'Chile', 'Santander Madrid'" autocomplete="off">
+    <input type="text" id="searchInput" placeholder="e.g. 'London', 'Chile', 'BOA Chile'" autocomplete="off">
     <button onclick="runSearch()">Search</button>
   </div>
 </div>
@@ -355,7 +356,7 @@
 
 <script>
 /* ============================================================
-   REGIONAL SHARDING — LOOSE PARTIAL MATCH ENGINE
+   REGIONAL SHARDING — SMART PARTIAL MATCH ENGINE
    ============================================================ */
 
 const SHARD_MAP={
@@ -496,6 +497,10 @@ const CONTINENT_MAP={
   'mozambique':'Africa','madagascar':'Africa','mauritius':'Africa','rwanda':'Africa'
 };
 
+/* ============================================================
+   SEARCH ENGINE
+   ============================================================ */
+
 function norm(s){return(s||'').toLowerCase().trim();}
 
 function findShard(q){
@@ -518,13 +523,27 @@ async function loadShard(n){
   return r.json();
 }
 
-function looseMatch(b,terms){
+/* 
+   KEY FIX: Smart token matching.
+   - Extract the country keyword from the query
+   - Remove it from the search tokens (every bank in file is already from that country)
+   - For remaining tokens: a bank matches if ANY token hits its fields (.some)
+   - If no remaining tokens (e.g. user just typed "Chile"), show ALL banks in file
+*/
+function smartMatch(b,rawQuery,countryKeyword){
   const hay=norm([b.name,b.city,b.state,b.branch,b.address].filter(Boolean).join(' '));
-  return terms.every(t=>hay.includes(t));
-}
-
-function tokenize(q){
-  return norm(q).split(/\s+/).filter(t=>t.length>0);
+  let tokens=norm(rawQuery).split(/\s+/).filter(t=>t.length>0);
+  
+  // Remove the country keyword from tokens — it's redundant inside the file
+  if(countryKeyword){
+    tokens=tokens.filter(t=>t!==countryKeyword && !countryKeyword.includes(t));
+  }
+  
+  // If query was just the country name, show all banks
+  if(tokens.length===0) return true;
+  
+  // A bank matches if AT LEAST ONE remaining token appears in its data
+  return tokens.some(t=>hay.includes(t));
 }
 
 function updateFunnel(c,co,s,ci){
@@ -595,17 +614,29 @@ function copySwift(btn,code){
 async function runSearch(){
   const raw=document.getElementById('searchInput').value.trim();
   if(!raw) return;
-  const shard=findShard(raw);
+  
   const box=document.getElementById('bankList');
   box.innerHTML='<div class="info-card"><p>Searching...</p></div>';
+  
+  const shard=findShard(raw);
   if(!shard){
     renderBanks([]);
     return;
   }
+  
+  // Find which country keyword triggered the shard, so we can strip it from search
+  let countryKeyword='';
+  const t=norm(raw);
+  for(const k of Object.keys(SHARD_MAP)){
+    if(t.includes(k) && SHARD_MAP[k]===shard){
+      countryKeyword=k;
+      break;
+    }
+  }
+  
   try{
     const data=await loadShard(shard);
-    const terms=tokenize(raw);
-    const hits=data.banks.filter(b=>looseMatch(b,terms));
+    const hits=data.banks.filter(b=>smartMatch(b,raw,countryKeyword));
     renderBanks(hits,shard);
   }catch(e){
     renderBanks([]);
@@ -616,5 +647,6 @@ document.getElementById('searchInput').addEventListener('keypress',e=>{
   if(e.key==='Enter') runSearch();
 });
 </script>
+
 </body>
 </html>
