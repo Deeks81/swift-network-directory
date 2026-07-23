@@ -19,6 +19,69 @@
       "state": "Santiago Metropolitan",
       "address": "Ahumada 251",
       "zip": "8340454"
+    },
+    {
+      "name": "HSBC Chile",
+      "swift": "HBCLCLRMXXX",
+      "branch": "Head Office",
+      "city": "Santiago",
+      "state": "Santiago Metropolitan",
+      "address": "Av. El Bosque 500",
+      "zip": "7550000"
+    },
+    {
+      "name": "Banco do Brasil",
+      "swift": "BRASCLRMXXX",
+      "branch": "Santiago Branch",
+      "city": "Santiago",
+      "state": "Santiago Metropolitan",
+      "address": "Av. Apoquindo 3000",
+      "zip": "7550000"
+    },
+    {
+      "name": "Banco de la Nación Argentina",
+      "swift": "NACNCLRMXXX",
+      "branch": "Santiago Branch",
+      "city": "Santiago",
+      "state": "Santiago Metropolitan",
+      "address": "Av. Libertador Bernardo O'Higgins 1000",
+      "zip": "8340000"
+    },
+    {
+      "name": "JPMorgan Chase Bank",
+      "swift": "CHASCLRMXXX",
+      "branch": "Santiago Branch",
+      "city": "Santiago",
+      "state": "Santiago Metropolitan",
+      "address": "Av. Isidora Goyenechea 3000",
+      "zip": "7550000"
+    },
+    {
+      "name": "Bank of China",
+      "swift": "BKCHCLRMXXX",
+      "branch": "Santiago Branch",
+      "city": "Santiago",
+      "state": "Santiago Metropolitan",
+      "address": "Av. Apoquindo 4500",
+      "zip": "7550000"
+    },
+    {
+      "name": "China Construction Bank",
+      "swift": "PCBCC LRMXXX",
+      "branch": "Santiago Branch",
+      "city": "Santiago",
+      "state": "Santiago Metropolitan",
+      "address": "Av. El Bosque 2000",
+      "zip": "7550000"
+    },
+    {
+      "name": "MUFG Bank",
+      "swift": "BOTKCLRMXXX",
+      "branch": "Santiago Branch",
+      "city": "Santiago",
+      "state": "Santiago Metropolitan",
+      "address": "Av. Apoquindo 3500",
+      "zip": "7550000"
     }
   ]
 }
