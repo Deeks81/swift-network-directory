@@ -3,370 +3,714 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>SWIFT / BIC Bank Directory</title>
+<title>SWIFT/BIC Bank Directory</title>
 <style>
   :root {
     --bg: #0b0f19;
     --card: #111827;
     --card-hover: #1f2937;
-    --text: #e5e7eb;
-    --muted: #9ca3af;
     --accent: #3b82f6;
-    --accent-glow: rgba(59,130,246,0.15);
-    --border: #1f2937;
-    --radius: 12px;
-    --radius-sm: 8px;
+    --accent-glow: rgba(59,130,246,0.3);
+    --text: #f1f5f9;
+    --text-dim: #94a3b8;
+    --border: #1e293b;
+    --success: #22c55e;
+    --error-bg: #1e1b4b;
+    --error-text: #a5b4fc;
+    --ad-bg: #0f172a;
+    --ad-border: #334155;
   }
   * { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
-  html, body { background:var(--bg); color:var(--text); font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif; min-height:100vh; overflow-x:hidden; }
-  body { padding-bottom:80px; }
-
-  /* TOP AD LEADERBOARD STRIP */
+  html { font-size:16px; }
+  body {
+    background:var(--bg);
+    color:var(--text);
+    font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Oxygen,Ubuntu,sans-serif;
+    min-height:100vh;
+    overflow-x:hidden;
+    -webkit-font-smoothing:antialiased;
+  }
+  .wrap { max-width:1200px; margin:0 auto; padding:0 12px; }
+  
+  /* --- TOP AD LEADERBOARD STRIP --- */
   .ad-top {
-    width:100%; min-height:90px; background:var(--card); border-bottom:1px solid var(--border);
-    display:flex; align-items:center; justify-content:center; color:var(--muted); font-size:11px; letter-spacing:1px; text-transform:uppercase;
+    width:100%;
+    min-height:90px;
+    background:var(--ad-bg);
+    border:1px dashed var(--ad-border);
+    border-radius:8px;
+    margin:12px 0;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    color:var(--text-dim);
+    font-size:11px;
+    letter-spacing:1px;
+    text-transform:uppercase;
   }
-
-  /* HEADER */
-  header { padding:20px 16px 12px; text-align:center; }
-  header h1 { font-size:22px; font-weight:700; letter-spacing:-0.5px; }
-  header p { font-size:13px; color:var(--muted); margin-top:4px; }
-
-  /* SEARCH */
-  .search-wrap { padding:0 16px 16px; }
-  .search-box { display:flex; gap:8px; }
+  
+  /* --- HEADER --- */
+  header {
+    padding:20px 0 12px;
+    text-align:center;
+  }
+  header h1 {
+    font-size:1.4rem;
+    font-weight:700;
+    letter-spacing:-0.5px;
+    background:linear-gradient(135deg,#60a5fa,#a78bfa);
+    -webkit-background-clip:text;
+    -webkit-text-fill-color:transparent;
+  }
+  header p {
+    color:var(--text-dim);
+    font-size:0.8rem;
+    margin-top:4px;
+  }
+  
+  /* --- SEARCH --- */
+  .search-box {
+    position:relative;
+    margin:16px 0;
+  }
   .search-box input {
-    flex:1; background:var(--card); border:1px solid var(--border); border-radius:var(--radius); padding:12px 14px;
-    color:var(--text); font-size:15px; outline:none; transition:border .2s;
+    width:100%;
+    padding:14px 48px 14px 16px;
+    background:var(--card);
+    border:1px solid var(--border);
+    border-radius:12px;
+    color:var(--text);
+    font-size:1rem;
+    outline:none;
+    transition:border-color 0.2s,box-shadow 0.2s;
   }
-  .search-box input:focus { border-color:var(--accent); }
+  .search-box input:focus {
+    border-color:var(--accent);
+    box-shadow:0 0 0 3px var(--accent-glow);
+  }
+  .search-box input::placeholder { color:#475569; }
   .search-box button {
-    background:var(--accent); color:#fff; border:none; border-radius:var(--radius); padding:12px 18px;
-    font-size:14px; font-weight:600; cursor:pointer; transition:opacity .2s; white-space:nowrap;
+    position:absolute;
+    right:6px;
+    top:50%;
+    transform:translateY(-50%);
+    background:var(--accent);
+    border:none;
+    border-radius:8px;
+    color:#fff;
+    padding:8px 16px;
+    font-size:0.85rem;
+    font-weight:600;
+    cursor:pointer;
+    transition:opacity 0.2s;
   }
-  .search-box button:active { opacity:.8; }
-
-  /* FUNNEL CARDS */
-  .funnel-wrap { padding:0 16px 20px; }
-  .funnel-label { font-size:11px; color:var(--muted); text-transform:uppercase; letter-spacing:1px; margin-bottom:8px; }
-  .funnel-track {
-    display:flex; gap:10px; overflow-x:auto; -webkit-overflow-scrolling:touch;
-    scrollbar-width:none; padding-bottom:4px;
+  .search-box button:active { opacity:0.7; }
+  
+  /* --- FUNNEL JOURNEY CARDS --- */
+  .funnel-wrap {
+    margin:16px 0;
+    overflow-x:auto;
+    -webkit-overflow-scrolling:touch;
+    scrollbar-width:none;
   }
-  .funnel-track::-webkit-scrollbar { display:none; }
+  .funnel-wrap::-webkit-scrollbar { display:none; }
+  .funnel {
+    display:flex;
+    gap:10px;
+    padding:4px 2px;
+    min-width:max-content;
+  }
   .funnel-card {
-    flex:0 0 auto; min-width:140px; background:var(--card); border:1px solid var(--border);
-    border-radius:var(--radius); padding:14px 16px; text-align:center; transition:background .2s; position:relative;
+    background:var(--card);
+    border:1px solid var(--border);
+    border-radius:10px;
+    padding:12px 16px;
+    min-width:140px;
+    text-align:center;
+    transition:transform 0.15s,background 0.15s;
+    flex-shrink:0;
   }
-  .funnel-card.active { background:var(--accent-glow); border-color:var(--accent); }
-  .funnel-card .step { font-size:10px; color:var(--accent); text-transform:uppercase; letter-spacing:1px; margin-bottom:4px; }
-  .funnel-card .value { font-size:15px; font-weight:600; white-space:nowrap; }
-  .funnel-arrow { flex:0 0 auto; display:flex; align-items:center; color:var(--muted); font-size:18px; padding:0 2px; }
-
-  /* SIDEBAR AD BANNER */
+  .funnel-card.active {
+    background:var(--card-hover);
+    border-color:var(--accent);
+    box-shadow:0 0 12px var(--accent-glow);
+  }
+  .funnel-card .label {
+    font-size:0.65rem;
+    text-transform:uppercase;
+    letter-spacing:1.5px;
+    color:var(--text-dim);
+    margin-bottom:4px;
+    white-space:nowrap;
+  }
+  .funnel-card .value {
+    font-size:0.95rem;
+    font-weight:600;
+    color:var(--text);
+    white-space:nowrap;
+  }
+  .arrow {
+    display:flex;
+    align-items:center;
+    color:var(--text-dim);
+    font-size:1rem;
+    flex-shrink:0;
+    padding:0 2px;
+  }
+  
+  /* --- SIDEBAR AD BANNER --- */
   .ad-sidebar {
-    margin:0 16px 16px; min-height:250px; background:var(--card); border:1px solid var(--border);
-    border-radius:var(--radius); display:flex; align-items:center; justify-content:center;
-    color:var(--muted); font-size:11px; letter-spacing:1px; text-transform:uppercase;
+    width:100%;
+    min-height:250px;
+    background:var(--ad-bg);
+    border:1px dashed var(--ad-border);
+    border-radius:8px;
+    margin:16px 0;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    color:var(--text-dim);
+    font-size:11px;
+    letter-spacing:1px;
+    text-transform:uppercase;
   }
-
-  /* RESULTS */
-  .results-wrap { padding:0 16px; }
-  .section-title { font-size:13px; color:var(--muted); text-transform:uppercase; letter-spacing:1px; margin-bottom:10px; }
+  
+  /* --- RESULTS AREA --- */
+  .results-area { margin:16px 0; }
+  .section-title {
+    font-size:0.75rem;
+    text-transform:uppercase;
+    letter-spacing:1.5px;
+    color:var(--text-dim);
+    margin-bottom:10px;
+    padding-left:4px;
+  }
+  
+  /* --- BANK CARD --- */
   .bank-card {
-    background:var(--card); border:1px solid var(--border); border-radius:var(--radius);
-    padding:16px; margin-bottom:12px; transition:background .2s;
+    background:var(--card);
+    border:1px solid var(--border);
+    border-radius:12px;
+    padding:16px;
+    margin-bottom:12px;
+    transition:transform 0.15s;
   }
-  .bank-card:active { background:var(--card-hover); }
-  .bank-name { font-size:16px; font-weight:700; margin-bottom:6px; }
-  .bank-meta { font-size:13px; color:var(--muted); line-height:1.5; }
-  .swift-code {
-    display:inline-block; margin-top:10px; background:var(--accent-glow); border:1px solid var(--accent);
-    border-radius:var(--radius-sm); padding:6px 12px; font-family:'SF Mono',monospace;
-    font-size:14px; font-weight:600; color:var(--accent); letter-spacing:1px;
+  .bank-card:active { transform:scale(0.99); }
+  .bank-card .bank-name {
+    font-size:1.05rem;
+    font-weight:700;
+    color:var(--text);
+    margin-bottom:6px;
   }
-
-  /* ERROR CARD */
+  .bank-card .bank-meta {
+    font-size:0.8rem;
+    color:var(--text-dim);
+    line-height:1.5;
+  }
+  .bank-card .swift-row {
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    margin-top:12px;
+    padding-top:12px;
+    border-top:1px solid var(--border);
+  }
+  .bank-card .swift-code {
+    font-family:'SF Mono',Monaco,monospace;
+    font-size:1.1rem;
+    font-weight:700;
+    color:var(--success);
+    letter-spacing:1px;
+  }
+  .bank-card .copy-btn {
+    background:rgba(34,197,94,0.1);
+    border:1px solid rgba(34,197,94,0.3);
+    color:var(--success);
+    padding:6px 14px;
+    border-radius:6px;
+    font-size:0.75rem;
+    font-weight:600;
+    cursor:pointer;
+    transition:all 0.2s;
+  }
+  .bank-card .copy-btn:active { background:rgba(34,197,94,0.2); }
+  
+  /* --- ERROR CARD --- */
   .info-card {
-    background:var(--card); border:1px solid var(--border); border-radius:var(--radius);
-    padding:18px 16px; text-align:center; color:var(--muted); font-size:14px; line-height:1.6;
-    margin:0 16px 16px;
+    background:var(--error-bg);
+    border:1px solid #312e81;
+    border-radius:12px;
+    padding:20px;
+    text-align:center;
+    margin:16px 0;
   }
-
-  /* STICKY ANCHOR AD STRIP */
-  .ad-anchor {
-    position:fixed; bottom:0; left:0; right:0; min-height:60px; background:var(--card);
-    border-top:1px solid var(--border); display:flex; align-items:center; justify-content:center;
-    color:var(--muted); font-size:11px; letter-spacing:1px; text-transform:uppercase; z-index:100;
+  .info-card p {
+    color:var(--error-text);
+    font-size:0.9rem;
+    line-height:1.5;
   }
-  .ad-anchor-spacer { height:60px; }
+  
+  /* --- STICKY ANCHOR AD STRIP --- */
+  .ad-sticky {
+    position:fixed;
+    bottom:0;
+    left:0;
+    right:0;
+    height:60px;
+    background:var(--ad-bg);
+    border-top:1px dashed var(--ad-border);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    color:var(--text-dim);
+    font-size:11px;
+    letter-spacing:1px;
+    text-transform:uppercase;
+    z-index:100;
+  }
+  .sticky-spacer { height:72px; }
+  
+  /* --- RESPONSIVE --- */
+  @media(min-width:768px){
+    .main-layout {
+      display:grid;
+      grid-template-columns:1fr 300px;
+      gap:20px;
+      align-items:start;
+    }
+    .ad-sidebar { position:sticky; top:16px; margin:0; }
+  }
 </style>
 </head>
 <body>
 
 <!-- TOP AD LEADERBOARD STRIP -->
-<div class="ad-top">[TOP AD LEADERBOARD STRIP]</div>
+<div class="wrap">
+  <div class="ad-top" id="ad-top">
+    [TOP AD LEADERBOARD STRIP]
+    <!-- Paste PropellerAds leaderboard script here -->
+  </div>
+</div>
 
 <header>
-  <h1>SWIFT / BIC Directory</h1>
-  <p>Find bank codes worldwide</p>
+  <div class="wrap">
+    <h1>SWIFT / BIC Bank Directory</h1>
+    <p>Search worldwide bank codes by name, city, or country</p>
+  </div>
 </header>
 
-<!-- SEARCH -->
-<div class="search-wrap">
+<div class="wrap">
   <div class="search-box">
-    <input type="text" id="searchInput" placeholder="e.g. London, Santander Chile, Banco Itaú..." autocomplete="off">
+    <input type="text" id="searchInput" placeholder="e.g. 'London', 'Chile', 'Santander Madrid'" autocomplete="off">
     <button onclick="runSearch()">Search</button>
   </div>
 </div>
 
-<!-- MULTI-STEP FUNNEL -->
-<div class="funnel-wrap">
-  <div class="funnel-label">Settlement path</div>
-  <div class="funnel-track" id="funnelTrack"></div>
+<!-- FUNNEL JOURNEY -->
+<div class="wrap">
+  <div class="funnel-wrap">
+    <div class="funnel" id="funnel">
+      <div class="funnel-card" id="f-continent">
+        <div class="label">Continent</div>
+        <div class="value" id="v-continent">—</div>
+      </div>
+      <div class="arrow">›</div>
+      <div class="funnel-card" id="f-country">
+        <div class="label">Country</div>
+        <div class="value" id="v-country">—</div>
+      </div>
+      <div class="arrow">›</div>
+      <div class="funnel-card" id="f-state">
+        <div class="label">State</div>
+        <div class="value" id="v-state">—</div>
+      </div>
+      <div class="arrow">›</div>
+      <div class="funnel-card" id="f-city">
+        <div class="label">City</div>
+        <div class="value" id="v-city">—</div>
+      </div>
+    </div>
+  </div>
 </div>
 
-<!-- SIDEBAR AD BANNER -->
-<div class="ad-sidebar">[SIDEBAR AD BANNER]</div>
-
-<!-- RESULTS -->
-<div class="results-wrap" id="resultsArea"></div>
-
-<!-- ERROR / INFO CARD (hidden by default) -->
-<div class="info-card" id="infoCard" style="display:none;">
-  Bank or location not found. Please check your spelling.
+<div class="wrap main-layout">
+  <div class="results-area" id="resultsArea">
+    <div class="section-title" id="resultsTitle" style="display:none;">Matching Banks</div>
+    <div id="bankList"></div>
+  </div>
+  
+  <!-- SIDEBAR AD BANNER -->
+  <div class="ad-sidebar" id="ad-sidebar">
+    [SIDEBAR AD BANNER]
+    <!-- Paste PropellerAds sidebar script here -->
+  </div>
 </div>
 
 <!-- STICKY ANCHOR AD STRIP -->
-<div class="ad-anchor">[STICKY ANCHOR AD STRIP]</div>
-<div class="ad-anchor-spacer"></div>
+<div class="ad-sticky" id="ad-sticky">
+  [STICKY ANCHOR AD STRIP]
+  <!-- Paste PropellerAds anchor/sticky script here -->
+</div>
+<div class="sticky-spacer"></div>
 
 <script>
-/* =========================================================
-   SHARD MAP — maps keywords to country JSON filenames.
-   Add more entries as you create new country shards.
-   Each value is an object: { file, continent, country, state?, city? }
-   ========================================================= */
+/* ============================================================
+   REGIONAL SHARDING — LOCAL JSON DATA PRE-LOADING SYSTEM
+   ============================================================ */
+
+// Country keyword map: maps common search terms to shard filenames
 const SHARD_MAP = {
-  /* United Kingdom */
-  'uk': {file:'united_kingdom.json',continent:'Europe',country:'United Kingdom'},
-  'united kingdom': {file:'united_kingdom.json',continent:'Europe',country:'United Kingdom'},
-  'great britain': {file:'united_kingdom.json',continent:'Europe',country:'United Kingdom'},
-  'britain': {file:'united_kingdom.json',continent:'Europe',country:'United Kingdom'},
-  'england': {file:'united_kingdom.json',continent:'Europe',country:'United Kingdom'},
-  'london': {file:'united_kingdom.json',continent:'Europe',country:'United Kingdom',city:'London'},
-  'manchester': {file:'united_kingdom.json',continent:'Europe',country:'United Kingdom',city:'Manchester'},
-  'birmingham': {file:'united_kingdom.json',continent:'Europe',country:'United Kingdom',city:'Birmingham'},
-  'edinburgh': {file:'united_kingdom.json',continent:'Europe',country:'United Kingdom',city:'Edinburgh'},
-  'glasgow': {file:'united_kingdom.json',continent:'Europe',country:'United Kingdom',city:'Glasgow'},
-  'cardiff': {file:'united_kingdom.json',continent:'Europe',country:'United Kingdom',city:'Cardiff'},
-  'belfast': {file:'united_kingdom.json',continent:'Europe',country:'United Kingdom',city:'Belfast'},
-  'liverpool': {file:'united_kingdom.json',continent:'Europe',country:'United Kingdom',city:'Liverpool'},
-  'leeds': {file:'united_kingdom.json',continent:'Europe',country:'United Kingdom',city:'Leeds'},
-  'bristol': {file:'united_kingdom.json',continent:'Europe',country:'United Kingdom',city:'Bristol'},
-  'barclays': {file:'united_kingdom.json',continent:'Europe',country:'United Kingdom'},
-  'hsbc': {file:'united_kingdom.json',continent:'Europe',country:'United Kingdom'},
-  'lloyds': {file:'united_kingdom.json',continent:'Europe',country:'United Kingdom'},
-  'natwest': {file:'united_kingdom.json',continent:'Europe',country:'United Kingdom'},
-  'santander uk': {file:'united_kingdom.json',continent:'Europe',country:'United Kingdom'},
+  // Europe
+  'united kingdom': 'united_kingdom', 'uk': 'united_kingdom', 'great britain': 'united_kingdom',
+  'britain': 'united_kingdom', 'england': 'united_kingdom', 'scotland': 'united_kingdom',
+  'wales': 'united_kingdom', 'northern ireland': 'united_kingdom',
+  'london': 'united_kingdom', 'manchester': 'united_kingdom', 'birmingham': 'united_kingdom',
+  'liverpool': 'united_kingdom', 'leeds': 'united_kingdom', 'glasgow': 'united_kingdom',
+  'edinburgh': 'united_kingdom', 'bristol': 'united_kingdom', 'cardiff': 'united_kingdom',
+  
+  'germany': 'germany', 'deutschland': 'germany',
+  'berlin': 'germany', 'munich': 'germany', 'munchen': 'germany',
+  'hamburg': 'germany', 'frankfurt': 'germany', 'cologne': 'germany', 'koln': 'germany',
+  'stuttgart': 'germany', 'dusseldorf': 'germany', 'dortmund': 'germany',
+  
+  'france': 'france', 'paris': 'france', 'lyon': 'france', 'marseille': 'france',
+  'nice': 'france', 'toulouse': 'france', 'bordeaux': 'france', 'lille': 'france',
+  
+  'italy': 'italy', 'italia': 'italy',
+  'rome': 'italy', 'roma': 'italy', 'milan': 'italy', 'milano': 'italy',
+  'naples': 'italy', 'napoli': 'italy', 'turin': 'italy', 'torino': 'italy',
+  'florence': 'italy', 'firenze': 'italy', 'venice': 'italy', 'venezia': 'italy',
+  
+  'spain': 'spain', 'espana': 'spain',
+  'madrid': 'spain', 'barcelona': 'spain', 'valencia': 'spain', 'seville': 'spain',
+  'sevilla': 'spain', 'bilbao': 'spain', 'malaga': 'spain',
+  
+  'netherlands': 'netherlands', 'holland': 'netherlands',
+  'amsterdam': 'netherlands', 'rotterdam': 'netherlands', 'the hague': 'netherlands',
+  'utrecht': 'netherlands', 'eindhoven': 'netherlands',
+  
+  'switzerland': 'switzerland', 'swiss': 'switzerland',
+  'zurich': 'switzerland', 'geneva': 'switzerland', 'basel': 'switzerland', 'bern': 'switzerland',
+  
+  'belgium': 'belgium', 'brussels': 'belgium', 'antwerp': 'belgium', 'gent': 'belgium',
+  'austria': 'austria', 'vienna': 'austria', 'wien': 'austria', 'salzburg': 'austria',
+  'sweden': 'sweden', 'stockholm': 'sweden', 'gothenburg': 'sweden', 'malmo': 'sweden',
+  'norway': 'norway', 'oslo': 'norway', 'bergen': 'norway',
+  'denmark': 'denmark', 'copenhagen': 'denmark', 'aarhus': 'denmark',
+  'finland': 'finland', 'helsinki': 'finland', 'espoo': 'finland',
+  'ireland': 'ireland', 'dublin': 'ireland', 'cork': 'ireland',
+  'portugal': 'portugal', 'lisbon': 'portugal', 'lisboa': 'portugal', 'porto': 'portugal',
+  'poland': 'poland', 'warsaw': 'poland', 'krakow': 'poland', 'wroclaw': 'poland',
+  'czech republic': 'czech_republic', 'czechia': 'czech_republic',
+  'prague': 'czech_republic', 'praha': 'czech_republic', 'brno': 'czech_republic',
+  'hungary': 'hungary', 'budapest': 'hungary',
+  'greece': 'greece', 'athens': 'greece', 'thessaloniki': 'greece',
+  'romania': 'romania', 'bucharest': 'romania', 'cluj': 'romania',
+  'bulgaria': 'bulgaria', 'sofia': 'bulgaria',
+  'croatia': 'croatia', 'zagreb': 'croatia', 'split': 'croatia',
+  'serbia': 'serbia', 'belgrade': 'serbia',
+  'ukraine': 'ukraine', 'kyiv': 'ukraine', 'kiev': 'ukraine', 'kharkiv': 'ukraine',
+  'russia': 'russia', 'moscow': 'russia', 'saint petersburg': 'russia', 'spb': 'russia',
+  'turkey': 'turkey', 'istanbul': 'turkey', 'ankara': 'turkey', 'izmir': 'turkey',
+  
+  // Americas
+  'united states': 'united_states', 'usa': 'united_states', 'us': 'united_states',
+  'america': 'united_states', 'new york': 'united_states', 'ny': 'united_states',
+  'los angeles': 'united_states', 'la': 'united_states', 'chicago': 'united_states',
+  'houston': 'united_states', 'phoenix': 'united_states', 'philadelphia': 'united_states',
+  'san antonio': 'united_states', 'san diego': 'united_states', 'dallas': 'united_states',
+  'san jose': 'united_states', 'austin': 'united_states', 'miami': 'united_states',
+  'boston': 'united_states', 'seattle': 'united_states', 'san francisco': 'united_states',
+  'denver': 'united_states', 'atlanta': 'united_states', 'las vegas': 'united_states',
+  
+  'canada': 'canada', 'toronto': 'canada', 'vancouver': 'canada', 'montreal': 'canada',
+  'calgary': 'canada', 'ottawa': 'canada', 'edmonton': 'canada',
+  
+  'mexico': 'mexico', 'mexico city': 'mexico', 'ciudad de mexico': 'mexico',
+  'guadalajara': 'mexico', 'monterrey': 'mexico',
+  
+  'brazil': 'brazil', 'brasil': 'brazil',
+  'sao paulo': 'brazil', 'rio de janeiro': 'brazil', 'brasilia': 'brazil',
+  'salvador': 'brazil', 'fortaleza': 'brazil', 'belo horizonte': 'brazil',
+  
+  'argentina': 'argentina', 'buenos aires': 'argentina', 'cordoba': 'argentina',
+  'chile': 'chile', 'santiago': 'chile', 'valparaiso': 'chile', 'concepcion': 'chile',
+  'colombia': 'colombia', 'bogota': 'colombia', 'medellin': 'colombia', 'cali': 'colombia',
+  'peru': 'peru', 'lima': 'peru', 'arequipa': 'peru',
+  'venezuela': 'venezuela', 'caracas': 'venezuela',
+  'ecuador': 'ecuador', 'quito': 'ecuador', 'guayaquil': 'ecuador',
+  
+  // Asia
+  'china': 'china', 'prc': 'china',
+  'beijing': 'china', 'shanghai': 'china', 'guangzhou': 'china', 'shenzhen': 'china',
+  'chengdu': 'china', 'hangzhou': 'china', 'wuhan': 'china', 'xian': 'china',
+  'nanjing': 'china', 'chongqing': 'china', 'tianjin': 'china',
+  
+  'japan': 'japan', 'tokyo': 'japan', 'osaka': 'japan', 'yokohama': 'japan',
+  'nagoya': 'japan', 'sapporo': 'japan', 'fukuoka': 'japan', 'kobe': 'japan',
+  'kyoto': 'japan', 'kawasaki': 'japan',
+  
+  'india': 'india', 'mumbai': 'india', 'delhi': 'india', 'bangalore': 'india',
+  'bengaluru': 'india', 'hyderabad': 'india', 'ahmedabad': 'india', 'chennai': 'india',
+  'kolkata': 'india', 'pune': 'india', 'jaipur': 'india',
+  
+  'south korea': 'south_korea', 'korea': 'south_korea',
+  'seoul': 'south_korea', 'busan': 'south_korea', 'incheon': 'south_korea',
+  
+  'singapore': 'singapore',
+  'hong kong': 'hong_kong', 'hk': 'hong_kong',
+  'taiwan': 'taiwan', 'taipei': 'taiwan', 'kaohsiung': 'taiwan',
+  'thailand': 'thailand', 'bangkok': 'thailand', 'chiang mai': 'thailand',
+  'malaysia': 'malaysia', 'kuala lumpur': 'malaysia', 'penang': 'malaysia',
+  'indonesia': 'indonesia', 'jakarta': 'indonesia', 'surabaya': 'indonesia',
+  'bandung': 'indonesia', 'bali': 'indonesia',
+  'philippines': 'philippines', 'manila': 'philippines', 'cebu': 'philippines',
+  'vietnam': 'vietnam', 'ho chi minh': 'vietnam', 'saigon': 'vietnam', 'hanoi': 'vietnam',
+  'pakistan': 'pakistan', 'karachi': 'pakistan', 'lahore': 'pakistan', 'islamabad': 'pakistan',
+  'bangladesh': 'bangladesh', 'dhaka': 'bangladesh', 'chittagong': 'bangladesh',
+  'sri lanka': 'sri_lanka', 'colombo': 'sri_lanka',
+  'myanmar': 'myanmar', 'yangon': 'myanmar', 'naypyidaw': 'myanmar',
+  'cambodia': 'cambodia', 'phnom penh': 'cambodia',
+  'laos': 'laos', 'vientiane': 'laos',
+  'nepal': 'nepal', 'kathmandu': 'nepal',
+  
+  // Middle East
+  'uae': 'uae', 'united arab emirates': 'uae', 'dubai': 'uae', 'abu dhabi': 'uae',
+  'sharjah': 'uae', 'ajman': 'uae',
+  'saudi arabia': 'saudi_arabia', 'ksa': 'saudi_arabia',
+  'riyadh': 'saudi_arabia', 'jeddah': 'saudi_arabia', 'mecca': 'saudi_arabia',
+  'medina': 'saudi_arabia', 'dammam': 'saudi_arabia',
+  'israel': 'israel', 'tel aviv': 'israel', 'jerusalem': 'israel', 'haifa': 'israel',
+  'qatar': 'qatar', 'doha': 'qatar',
+  'kuwait': 'kuwait', 'kuwait city': 'kuwait',
+  'bahrain': 'bahrain', 'manama': 'bahrain',
+  'oman': 'oman', 'muscat': 'oman',
+  'jordan': 'jordan', 'amman': 'jordan',
+  'lebanon': 'lebanon', 'beirut': 'lebanon',
+  'iraq': 'iraq', 'baghdad': 'iraq',
+  'iran': 'iran', 'tehran': 'iran', 'isfahan': 'iran',
+  
+  // Oceania
+  'australia': 'australia', 'sydney': 'australia', 'melbourne': 'australia',
+  'brisbane': 'australia', 'perth': 'australia', 'adelaide': 'australia',
+  'canberra': 'australia', 'gold coast': 'australia',
+  'new zealand': 'new_zealand', 'auckland': 'new_zealand', 'wellington': 'new_zealand',
+  'christchurch': 'new_zealand',
+  
+  // Africa
+  'south africa': 'south_africa', 'johannesburg': 'south_africa', 'cape town': 'south_africa',
+  'durban': 'south_africa', 'pretoria': 'south_africa',
+  'nigeria': 'nigeria', 'lagos': 'nigeria', 'abuja': 'nigeria', 'kano': 'nigeria',
+  'egypt': 'egypt', 'cairo': 'egypt', 'alexandria': 'egypt',
+  'kenya': 'kenya', 'nairobi': 'kenya', 'mombasa': 'kenya',
+  'morocco': 'morocco', 'casablanca': 'morocco', 'marrakech': 'morocco', 'rabat': 'morocco',
+  'ghana': 'ghana', 'accra': 'ghana',
+  'ethiopia': 'ethiopia', 'addis ababa': 'ethiopia',
+  'tanzania': 'tanzania', 'dar es salaam': 'tanzania',
+  'uganda': 'uganda', 'kampala': 'uganda',
+  'zambia': 'zambia', 'lusaka': 'zambia',
+  'zimbabwe': 'zimbabwe', 'harare': 'zimbabwe',
+  'botswana': 'botswana', 'gaborone': 'botswana',
+  'namibia': 'namibia', 'windhoek': 'namibia',
+  'tunisia': 'tunisia', 'tunis': 'tunisia',
+  'algeria': 'algeria', 'algiers': 'algeria',
+  'libya': 'libya', 'tripoli': 'libya',
+  'ivory coast': 'ivory_coast', "cote d'ivoire": 'ivory_coast', 'abidjan': 'ivory_coast',
+  'senegal': 'senegal', 'dakar': 'senegal',
+  'cameroon': 'cameroon', 'yaounde': 'cameroon', 'douala': 'cameroon',
+  'angola': 'angola', 'luanda': 'angola',
+  'mozambique': 'mozambique', 'maputo': 'mozambique',
+  'madagascar': 'madagascar', 'antananarivo': 'madagascar',
+  'mauritius': 'mauritius', 'port louis': 'mauritius',
+  'rwanda': 'rwanda', 'kigali': 'rwanda'
+};
 
-  /* Chile */
-  'chile': {file:'chile.json',continent:'South America',country:'Chile'},
-  'santiago': {file:'chile.json',continent:'South America',country:'Chile',city:'Santiago'},
-  'valparaiso': {file:'chile.json',continent:'South America',country:'Chile',city:'Valparaiso'},
-  'concepcion': {file:'chile.json',continent:'South America',country:'Chile',city:'Concepcion'},
-  'antofagasta': {file:'chile.json',continent:'South America',country:'Chile',city:'Antofagasta'},
-  'temuco': {file:'chile.json',continent:'South America',country:'Chile',city:'Temuco'},
-  'rancagua': {file:'chile.json',continent:'South America',country:'Chile',city:'Rancagua'},
-  'iquique': {file:'chile.json',continent:'South America',country:'Chile',city:'Iquique'},
-  'banco de chile': {file:'chile.json',continent:'South America',country:'Chile'},
-  'bancochile': {file:'chile.json',continent:'South America',country:'Chile'},
-  'santander chile': {file:'chile.json',continent:'South America',country:'Chile'},
-  'banco estado': {file:'chile.json',continent:'South America',country:'Chile'},
-  'itau chile': {file:'chile.json',continent:'South America',country:'Chile'},
-  'scotiabank chile': {file:'chile.json',continent:'South America',country:'Chile'},
+// Continent lookup by country shard name
+const CONTINENT_MAP = {
+  'united_kingdom':'Europe','germany':'Europe','france':'Europe','italy':'Europe',
+  'spain':'Europe','netherlands':'Europe','switzerland':'Europe','belgium':'Europe',
+  'austria':'Europe','sweden':'Europe','norway':'Europe','denmark':'Europe',
+  'finland':'Europe','ireland':'Europe','portugal':'Europe','poland':'Europe',
+  'czech_republic':'Europe','hungary':'Europe','greece':'Europe','romania':'Europe',
+  'bulgaria':'Europe','croatia':'Europe','serbia':'Europe','ukraine':'Europe',
+  'russia':'Europe','turkey':'Europe',
+  'united_states':'North America','canada':'North America','mexico':'North America',
+  'brazil':'South America','argentina':'South America','chile':'South America',
+  'colombia':'South America','peru':'South America','venezuela':'South America',
+  'ecuador':'South America',
+  'china':'Asia','japan':'Asia','india':'Asia','south_korea':'Asia','singapore':'Asia',
+  'hong_kong':'Asia','taiwan':'Asia','thailand':'Asia','malaysia':'Asia',
+  'indonesia':'Asia','philippines':'Asia','vietnam':'Asia','pakistan':'Asia',
+  'bangladesh':'Asia','sri_lanka':'Asia','myanmar':'Asia','cambodia':'Asia',
+  'laos':'Asia','nepal':'Asia',
+  'uae':'Middle East','saudi_arabia':'Middle East','israel':'Middle East','qatar':'Middle East',
+  'kuwait':'Middle East','bahrain':'Middle East','oman':'Middle East','jordan':'Middle East',
+  'lebanon':'Middle East','iraq':'Middle East','iran':'Middle East',
+  'australia':'Oceania','new_zealand':'Oceania',
+  'south_africa':'Africa','nigeria':'Africa','egypt':'Africa','kenya':'Africa',
+  'morocco':'Africa','ghana':'Africa','ethiopia':'Africa','tanzania':'Africa',
+  'uganda':'Africa','zambia':'Africa','zimbabwe':'Africa','botswana':'Africa',
+  'namibia':'Africa','tunisia':'Africa','algeria':'Africa','libya':'Africa',
+  'ivory_coast':'Africa','senegal':'Africa','cameroon':'Africa','angola':'Africa',
+  'mozambique':'Africa','madagascar':'Africa','mauritius':'Africa','rwanda':'Africa'
+};
 
-  /* Brazil */
-  'brazil': {file:'brazil.json',continent:'South America',country:'Brazil'},
-  'brasil': {file:'brazil.json',continent:'South America',country:'Brazil'},
-  'sao paulo': {file:'brazil.json',continent:'South America',country:'Brazil',city:'Sao Paulo'},
-  'rio de janeiro': {file:'brazil.json',continent:'South America',country:'Brazil',city:'Rio de Janeiro'},
-  'brasilia': {file:'brazil.json',continent:'South America',country:'Brazil',city:'Brasilia'},
-  'salvador': {file:'brazil.json',continent:'South America',country:'Brazil',city:'Salvador'},
-  'fortaleza': {file:'brazil.json',continent:'South America',country:'Brazil',city:'Fortaleza'},
-  'belo horizonte': {file:'brazil.json',continent:'South America',country:'Brazil',city:'Belo Horizonte'},
-  'curitiba': {file:'brazil.json',continent:'South America',country:'Brazil',city:'Curitiba'},
-  'manaus': {file:'brazil.json',continent:'South America',country:'Brazil',city:'Manaus'},
-  'recife': {file:'brazil.json',continent:'South America',country:'Brazil',city:'Recife'},
-  'porto alegre': {file:'brazil.json',continent:'South America',country:'Brazil',city:'Porto Alegre'},
-  'itau': {file:'brazil.json',continent:'South America',country:'Brazil'},
-  'itaú': {file:'brazil.json',continent:'South America',country:'Brazil'},
-  'bradesco': {file:'brazil.json',continent:'South America',country:'Brazil'},
-  'banco do brasil': {file:'brazil.json',continent:'South America',country:'Brazil'},
-  'santander brasil': {file:'brazil.json',continent:'South America',country:'Brazil'},
-  'caixa': {file:'brazil.json',continent:'South America',country:'Brazil'},
-  'nubank': {file:'brazil.json',continent:'South America',country:'Brazil'},
+/* ============================================================
+   CORE SEARCH & SHARD FETCH LOGIC
+   ============================================================ */
 
-  /* United States */
-  'usa': {file:'united_states.json',continent:'North America',country:'United States'},
-  'us': {file:'united_states.json',continent:'North America',country:'United States'},
-  'united states': {file:'united_states.json',continent:'North America',country:'United States'},
-  'america': {file:'united_states.json',continent:'North America',country:'United States'},
-  'new york': {file:'united_states.json',continent:'North America',country:'United States',state:'New York',city:'New York'},
-  'los angeles': {file:'united_states.json',continent:'North America',country:'United States',state:'California',city:'Los Angeles'},
-  'chicago': {file:'united_states.json',continent:'North America',country:'United States',state:'Illinois',city:'Chicago'},
-  'houston': {file:'united_states.json',continent:'North America',country:'United States',state:'Texas',city:'Houston'},
-  'phoenix': {file:'united_states.json',continent:'North America',country:'United States',state:'Arizona',city:'Phoenix'},
-  'philadelphia': {file:'united_states.json',continent:'North America',country:'United States',state:'Pennsylvania',city:'Philadelphia'},
-  'san antonio': {file:'united_states.json',continent:'North America',country:'United States',state:'Texas',city:'San Antonio'},
-  'san diego': {file:'united_states.json',continent:'North America',country:'United States',state:'California',city:'San Diego'},
-  'dallas': {file:'united_states.json',continent:'North America',country:'United States',state:'Texas',city:'Dallas'},
-  'san jose': {file:'united_states.json',continent:'North America',country:'United States',state:'California',city:'San Jose'},
-  'austin': {file:'united_states.json',continent:'North America',country:'United States',state:'Texas',city:'Austin'},
-  'seattle': {file:'united_states.json',continent:'North America',country:'United States',state:'Washington',city:'Seattle'},
-  'denver': {file:'united_states.json',continent:'North America',country:'United States',state:'Colorado',city:'Denver'},
-  'washington': {file:'united_states.json',continent:'North America',country:'United States',state:'District of Columbia',city:'Washington'},
-  'boston': {file:'united_states.json',continent:'North America',country:'United States',state:'Massachusetts',city:'Boston'},
-  'miami': {file:'united_states.json',continent:'North America',country:'United States',state:'Florida',city:'Miami'},
-  'san francisco': {file:'united_states.json',continent:'North America',country:'United States',state:'California',city:'San Francisco'},
-  'chase': {file:'united_states.json',continent:'North America',country:'United States'},
-  'bank of america': {file:'united_states.json',continent:'North America',country:'United States'},
-  'wells fargo': {file:'united_states.json',continent:'North America',country:'United States'},
-  'citi': {file:'united_states.json',continent:'North America',country:'United States'},
-  'citibank': {file:'united_states.json',continent:'North America',country:'United States'},
-  'goldman sachs': {file:'united_states.json',continent:'North America',country:'United States'},
-  'morgan stanley': {file:'united_states.json',continent:'North America',country:'United States'},
-  'jpmorgan': {file:'united_states.json',continent:'North America',country:'United States'},
-  'jp morgan': {file:'united_states.json',continent:'North America',country:'United States'},
+function normalize(str){
+  return str.toLowerCase().trim().replace(/\s+/g,' ');
+}
 
-  /* Germany */
-  'germany': {file:'germany.json',continent:'Europe',country:'Germany'},
-  'deutschland': {file:'germany.json',continent:'Europe',country:'Germany'},
-  'berlin': {file:'germany.json',continent:'Europe',country:'Germany',city:'Berlin'},
-  'hamburg': {file:'germany.json',continent:'Europe',country:'Germany',city:'Hamburg'},
-  'munich': {file:'germany.json',continent:'Europe',country:'Germany',city:'Munich'},
-  'münchen': {file:'germany.json',continent:'Europe',country:'Germany',city:'Munich'},
-  'cologne': {file:'germany.json',continent:'Europe',country:'Germany',city:'Cologne'},
-  'köln': {file:'germany.json',continent:'Europe',country:'Germany',city:'Cologne'},
-  'frankfurt': {file:'germany.json',continent:'Europe',country:'Germany',city:'Frankfurt'},
-  'stuttgart': {file:'germany.json',continent:'Europe',country:'Germany',city:'Stuttgart'},
-  'düsseldorf': {file:'germany.json',continent:'Europe',country:'Germany',city:'Düsseldorf'},
-  'dortmund': {file:'germany.json',continent:'Europe',country:'Germany',city:'Dortmund'},
-  'deutsche bank': {file:'germany.json',continent:'Europe',country:'Germany'},
-  'commerzbank': {file:'germany.json',continent:'Europe',country:'Germany'},
-  'postbank': {file:'germany.json',continent:'Europe',country:'Germany'},
-  'sparkasse': {file:'germany.json',continent:'Europe',country:'Germany'},
-  'volksbank': {file:'germany.json',continent:'Europe',country:'Germany'},
-  'ing diba': {file:'germany.json',continent:'Europe',country:'Germany'},
+function identifyShard(query){
+  const q = normalize(query);
+  for(const [keyword,shard] of Object.entries(SHARD_MAP)){
+    if(q.includes(keyword)) return shard;
+  }
+  return null;
+}
 
-  /* France */
-  'france': {file:'france.json',continent:'Europe',country:'France'},
-  'paris': {file:'france.json',continent:'Europe',country:'France',city:'Paris'},
-  'marseille': {file:'france.json',continent:'Europe',country:'France',city:'Marseille'},
-  'lyon': {file:'france.json',continent:'Europe',country:'France',city:'Lyon'},
-  'toulouse': {file:'france.json',continent:'Europe',country:'France',city:'Toulouse'},
-  'nice': {file:'france.json',continent:'Europe',country:'France',city:'Nice'},
-  'nantes': {file:'france.json',continent:'Europe',country:'France',city:'Nantes'},
-  'strasbourg': {file:'france.json',continent:'Europe',country:'France',city:'Strasbourg'},
-  'montpellier': {file:'france.json',continent:'Europe',country:'France',city:'Montpellier'},
-  'bordeaux': {file:'france.json',continent:'Europe',country:'France',city:'Bordeaux'},
-  'lille': {file:'france.json',continent:'Europe',country:'France',city:'Lille'},
-  'bnp paribas': {file:'france.json',continent:'Europe',country:'France'},
-  'société générale': {file:'france.json',continent:'Europe',country:'France'},
-  'crédit agricole': {file:'france.json',continent:'Europe',country:'France'},
-  'credit agricole': {file:'france.json',continent:'Europe',country:'France'},
-  'banque populaire': {file:'france.json',continent:'Europe',country:'France'},
+function getContinent(shardName){
+  return CONTINENT_MAP[shardName] || '—';
+}
 
-  /* Spain */
-  'spain': {file:'spain.json',continent:'Europe',country:'Spain'},
-  'españa': {file:'spain.json',continent:'Europe',country:'Spain'},
-  'madrid': {file:'spain.json',continent:'Europe',country:'Spain',city:'Madrid'},
-  'barcelona': {file:'spain.json',continent:'Europe',country:'Spain',city:'Barcelona'},
-  'valencia': {file:'spain.json',continent:'Europe',country:'Spain',city:'Valencia'},
-  'seville': {file:'spain.json',continent:'Europe',country:'Spain',city:'Seville'},
-  'sevilla': {file:'spain.json',continent:'Europe',country:'Spain',city:'Seville'},
-  'zaragoza': {file:'spain.json',continent:'Europe',country:'Spain',city:'Zaragoza'},
-  'málaga': {file:'spain.json',continent:'Europe',country:'Spain',city:'Malaga'},
-  'malaga': {file:'spain.json',continent:'Europe',country:'Spain',city:'Malaga'},
-  'murcia': {file:'spain.json',continent:'Europe',country:'Spain',city:'Murcia'},
-  'palma': {file:'spain.json',continent:'Europe',country:'Spain',city:'Palma'},
-  'las palmas': {file:'spain.json',continent:'Europe',country:'Spain',city:'Las Palmas'},
-  'bilbao': {file:'spain.json',continent:'Europe',country:'Spain',city:'Bilbao'},
-  'alicante': {file:'spain.json',continent:'Europe',country:'Spain',city:'Alicante'},
-  'valladolid': {file:'spain.json',continent:'Europe',country:'Spain',city:'Valladolid'},
-  'vigo': {file:'spain.json',continent:'Europe',country:'Spain',city:'Vigo'},
-  'santander': {file:'spain.json',continent:'Europe',country:'Spain'},
-  'bbva': {file:'spain.json',continent:'Europe',country:'Spain'},
-  'caixabank': {file:'spain.json',continent:'Europe',country:'Spain'},
-  'sabadell': {file:'spain.json',continent:'Europe',country:'Spain'},
-  'bankinter': {file:'spain.json',continent:'Europe',country:'Spain'},
-  'abanca': {file:'spain.json',continent:'Europe',country:'Spain'},
+function formatCountryName(shardName){
+  return shardName
+    .split('_')
+    .map(w => w.charAt(0).toUpperCase()+w.slice(1))
+    .join(' ');
+}
 
-  /* Italy */
-  'italy': {file:'italy.json',continent:'Europe',country:'Italy'},
-  'italia': {file:'italy.json',continent:'Europe',country:'Italy'},
-  'rome': {file:'italy.json',continent:'Europe',country:'Italy',city:'Rome'},
-  'roma': {file:'italy.json',continent:'Europe',country:'Italy',city:'Rome'},
-  'milan': {file:'italy.json',continent:'Europe',country:'Italy',city:'Milan'},
-  'milano': {file:'italy.json',continent:'Europe',country:'Italy',city:'Milan'},
-  'naples': {file:'italy.json',continent:'Europe',country:'Italy',city:'Naples'},
-  'napoli': {file:'italy.json',continent:'Europe',country:'Italy',city:'Naples'},
-  'turin': {file:'italy.json',continent:'Europe',country:'Italy',city:'Turin'},
-  'torino': {file:'italy.json',continent:'Europe',country:'Italy',city:'Turin'},
-  'palermo': {file:'italy.json',continent:'Europe',country:'Italy',city:'Palermo'},
-  'genoa': {file:'italy.json',continent:'Europe',country:'Italy',city:'Genoa'},
-  'genova': {file:'italy.json',continent:'Europe',country:'Italy',city:'Genoa'},
-  'bologna': {file:'italy.json',continent:'Europe',country:'Italy',city:'Bologna'},
-  'florence': {file:'italy.json',continent:'Europe',country:'Italy',city:'Florence'},
-  'firenze': {file:'italy.json',continent:'Europe',country:'Italy',city:'Florence'},
-  'bari': {file:'italy.json',continent:'Europe',country:'Italy',city:'Bari'},
-  'catania': {file:'italy.json',continent:'Europe',country:'Italy',city:'Catania'},
-  'venice': {file:'italy.json',continent:'Europe',country:'Italy',city:'Venice'},
-  'verona': {file:'italy.json',continent:'Europe',country:'Italy',city:'Verona'},
-  'unicredit': {file:'italy.json',continent:'Europe',country:'Italy'},
-  'intesa sanpaolo': {file:'italy.json',continent:'Europe',country:'Italy'},
-  'monte dei paschi': {file:'italy.json',continent:'Europe',country:'Italy'},
+async function fetchShard(shardName){
+  const path = `./countries/${shardName}.json`;
+  const res = await fetch(path);
+  if(!res.ok) throw new Error('Shard not found');
+  return await res.json();
+}
 
-  /* Japan */
-  'japan': {file:'japan.json',continent:'Asia',country:'Japan'},
-  'tokyo': {file:'japan.json',continent:'Asia',country:'Japan',city:'Tokyo'},
-  'yokohama': {file:'japan.json',continent:'Asia',country:'Japan',city:'Yokohama'},
-  'osaka': {file:'japan.json',continent:'Asia',country:'Japan',city:'Osaka'},
-  'nagoya': {file:'japan.json',continent:'Asia',country:'Japan',city:'Nagoya'},
-  'sapporo': {file:'japan.json',continent:'Asia',country:'Japan',city:'Sapporo'},
-  'fukuoka': {file:'japan.json',continent:'Asia',country:'Japan',city:'Fukuoka'},
-  'kobe': {file:'japan.json',continent:'Asia',country:'Japan',city:'Kobe'},
-  'kawasaki': {file:'japan.json',continent:'Asia',country:'Japan',city:'Kawasaki'},
-  'kyoto': {file:'japan.json',continent:'Asia',country:'Japan',city:'Kyoto'},
-  'saitama': {file:'japan.json',continent:'Asia',country:'Japan',city:'Saitama'},
-  'hiroshima': {file:'japan.json',continent:'Asia',country:'Japan',city:'Hiroshima'},
-  'sendai': {file:'japan.json',continent:'Asia',country:'Japan',city:'Sendai'},
-  'kitakyushu': {file:'japan.json',continent:'Asia',country:'Japan',city:'Kitakyushu'},
-  'chiba': {file:'japan.json',continent:'Asia',country:'Japan',city:'Chiba'},
-  'niigata': {file:'japan.json',continent:'Asia',country:'Japan',city:'Niigata'},
-  'hamamatsu': {file:'japan.json',continent:'Asia',country:'Japan',city:'Hamamatsu'},
-  'okayama': {file:'japan.json',continent:'Asia',country:'Japan',city:'Okayama'},
-  'mitsubishi ufj': {file:'japan.json',continent:'Asia',country:'Japan'},
-  'mufg': {file:'japan.json',continent:'Asia',country:'Japan'},
-  'sumitomo mitsui': {file:'japan.json',continent:'Asia',country:'Japan'},
-  'mizuho': {file:'japan.json',continent:'Asia',country:'Japan'},
-  'resona': {file:'japan.json',continent:'Asia',country:'Japan'},
-  'nomura': {file:'japan.json',continent:'Asia',country:'Japan'},
+function filterBanks(data, query){
+  const q = normalize(query);
+  return data.banks.filter(b => {
+    const hay = normalize(
+      (b.name||'')+' '+(b.city||'')+' '+(b.state||'')+' '+(b.branch||'')
+    );
+    return hay.includes(q);
+  });
+}
 
-  /* Canada */
-  'canada': {file:'canada.json',continent:'North America',country:'Canada'},
-  'toronto': {file:'canada.json',continent:'North America',country:'Canada',city:'Toronto'},
-  'montreal': {file:'canada.json',continent:'North America',country:'Canada',city:'Montreal'},
-  'vancouver': {file:'canada.json',continent:'North America',country:'Canada',city:'Vancouver'},
-  'calgary': {file:'canada.json',continent:'North America',country:'Canada',city:'Calgary'},
-  'edmonton': {file:'canada.json',continent:'North America',country:'Canada',city:'Edmonton'},
-  'ottawa': {file:'canada.json',continent:'North America',country:'Canada',city:'Ottawa'},
-  'winnipeg': {file:'canada.json',continent:'North America',country:'Canada',city:'Winnipeg'},
-  'quebec city': {file:'canada.json',continent:'North America',country:'Canada',city:'Quebec City'},
-  'hamilton': {file:'canada.json',continent:'North America',country:'Canada',city:'Hamilton'},
-  'kitchener': {file:'canada.json',continent:'North America',country:'Canada',city:'Kitchener'},
-  'victoria': {file:'canada.json',continent:'North America',country:'Canada',city:'Victoria'},
-  'halifax': {file:'canada.json',continent:'North America',country:'Canada',city:'Halifax'},
-  'oshawa': {file:'canada.json',continent:'North America',country:'Canada',city:'Oshawa'},
-  'windsor': {file:'canada.json',continent:'North America',country:'Canada',city:'Windsor'},
-  'saskatoon': {file:'canada.json',continent:'North America',country:'Canada',city:'S
+function updateFunnel(continent, country, state, city){
+  document.getElementById('v-continent').textContent = continent || '—';
+  document.getElementById('v-country').textContent = country || '—';
+  document.getElementById('v-state').textContent = state || '—';
+  document.getElementById('v-city').textContent = city || '—';
+  
+  ['continent','country','state','city'].forEach(k => {
+    const el = document.getElementById('f-'+k);
+    const val = document.getElementById('v-'+k).textContent;
+    el.classList.toggle('active', val !== '—');
+  });
+}
+
+function renderBanks(banks){
+  const list = document.getElementById('bankList');
+  const title = document.getElementById('resultsTitle');
+  list.innerHTML = '';
+  
+  if(!banks || banks.length === 0){
+    title.style.display = 'none';
+    list.innerHTML = `
+      <div class="info-card">
+        <p>Bank or location not found. Please check your spelling.</p>
+      </div>
+    `;
+    return;
+  }
+  
+  title.style.display = 'block';
+  title.textContent = banks.length + ' Matching Bank' + (banks.length>1?'s':'');
+  
+  banks.forEach(b => {
+    const card = document.createElement('div');
+    card.className = 'bank-card';
+    card.innerHTML = `
+      <div class="bank-name">${escapeHtml(b.name)}</div>
+      <div class="bank-meta">
+        ${b.branch ? escapeHtml(b.branch)+'<br>' : ''}
+        ${escapeHtml(b.address||'')}<br>
+        ${escapeHtml(b.city||'')}${b.state? ', '+escapeHtml(b.state):''}
+        ${b.zip ? ' '+escapeHtml(b.zip) : ''}
+      </div>
+      <div class="swift-row">
+        <div class="swift-code">${escapeHtml(b.swift||'N/A')}</div>
+        <button class="copy-btn" onclick="copySwift(this,'${escapeHtml(b.swift||'')}')">Copy</button>
+      </div>
+    `;
+    list.appendChild(card);
+  });
+  
+  // Update funnel with first result geography
+  if(banks[0]){
+    updateFunnel(
+      getContinent(banks[0]._shard),
+      formatCountryName(banks[0]._shard),
+      banks[0].state || '—',
+      banks[0].city || '—'
+    );
+  }
+}
+
+function escapeHtml(text){
+  const div = document.createElement('div');
+  div.textContent = text;
+  return div.innerHTML;
+}
+
+function copySwift(btn,code){
+  navigator.clipboard.writeText(code).then(() => {
+    const orig = btn.textContent;
+    btn.textContent = 'Copied';
+    btn.style.background = 'rgba(34,197,94,0.25)';
+    setTimeout(() => {
+      btn.textContent = orig;
+      btn.style.background = '';
+    }, 1200);
+  });
+}
+
+async function runSearch(){
+  const input = document.getElementById('searchInput');
+  const query = input.value.trim();
+  if(!query) return;
+  
+  const list = document.getElementById('bankList');
+  list.innerHTML = '<div class="info-card"><p>Searching...</p></div>';
+  
+  const shardName = identifyShard(query);
+  
+  if(!shardName){
+    updateFunnel('—','—','—','—');
+    renderBanks([]);
+    return;
+  }
+  
+  try {
+    const data = await fetchShard(shardName);
+    // Tag each bank with its shard for funnel display
+    data.banks.forEach(b => b._shard = shardName);
+    const matches = filterBanks(data, query);
+    renderBanks(matches);
+  } catch(err){
+    updateFunnel('—','—','—','—');
+    renderBanks([]);
+  }
+}
+
+// Enter key support
+document.getElementById('searchInput').addEventListener('keypress', function(e){
+  if(e.key === 'Enter') runSearch();
+});
+</script>
+
+</body>
+</html>
