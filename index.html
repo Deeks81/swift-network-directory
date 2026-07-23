@@ -31,17 +31,110 @@ header p{color:var(--text-dim);font-size:0.8rem;margin-top:4px;}
 .ad-sidebar{width:100%;min-height:250px;background:var(--ad-bg);border:1px dashed var(--ad-border);border-radius:8px;margin:16px 0;display:flex;align-items:center;justify-content:center;color:var(--text-dim);font-size:11px;letter-spacing:1px;text-transform:uppercase;}
 .results-area{margin:16px 0;}
 .section-title{font-size:0.75rem;text-transform:uppercase;letter-spacing:1.5px;color:var(--text-dim);margin-bottom:10px;padding-left:4px;}
-.bank-card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:16px;margin-bottom:12px;transition:transform 0.15s;cursor:pointer;}
-.bank-card:active{transform:scale(0.99);}
-.bank-card .bank-name{font-size:1.05rem;font-weight:700;color:var(--text);margin-bottom:6px;}
-.bank-card .bank-meta{font-size:0.8rem;color:var(--text-dim);line-height:1.5;}
-.bank-card .swift-row{display:flex;align-items:center;justify-content:space-between;margin-top:12px;padding-top:12px;border-top:1px solid var(--border);}
-.bank-card .swift-code{font-family:'SF Mono',Monaco,monospace;font-size:1.1rem;font-weight:700;color:var(--success);letter-spacing:1px;}
-.bank-card .copy-btn{background:rgba(34,197,94,0.1);border:1px solid rgba(34,197,94,0.3);color:var(--success);padding:6px 14px;border-radius:6px;font-size:0.75rem;font-weight:600;cursor:pointer;transition:all 0.2s;}
-.bank-card .copy-btn:active{background:rgba(34,197,94,0.2);}
-.info-card{background:var(--error-bg);border:1px solid #312e81;border-radius:12px;padding:20px;text-align:center;margin:16px 0;}
-.info-card p{color:var(--error-text);font-size:0.9rem;line-height:1.5;}
-.ad-sticky{position:fixed;bottom:0;left:0;right:0;height:60px;background:var(--ad-bg);border-top:1px dashed var(--ad-border);display:flex;align-items:center;justify-content:center;color:var(--text-dim);font-size:11px;letter-spacing:1px;text-transform:uppercase;z-index:100;}
+
+/* --- BANK LIST (compact clickable) --- */
+.bank-list-item{
+  background:var(--card);
+  border:1px solid var(--border);
+  border-radius:12px;
+  padding:16px;
+  margin-bottom:10px;
+  cursor:pointer;
+  transition:all 0.15s;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+}
+.bank-list-item:hover,.bank-list-item:active{
+  background:var(--card-hover);
+  border-color:var(--accent);
+}
+.bank-list-item .bank-name-only{
+  font-size:1rem;
+  font-weight:600;
+  color:var(--text);
+}
+.bank-list-item .chevron{
+  color:var(--text-dim);
+  font-size:1.2rem;
+}
+
+/* --- EXPANDED BANK DETAIL --- */
+.bank-detail{
+  background:var(--card);
+  border:1px solid var(--accent);
+  border-radius:12px;
+  padding:16px;
+  margin-bottom:10px;
+  animation:fadeIn 0.2s ease;
+}
+@keyframes fadeIn{from{opacity:0;transform:translateY(-4px);}to{opacity:1;transform:translateY(0);}}
+.bank-detail .bank-name{
+  font-size:1.05rem;
+  font-weight:700;
+  color:var(--text);
+  margin-bottom:6px;
+}
+.bank-detail .bank-meta{
+  font-size:0.8rem;
+  color:var(--text-dim);
+  line-height:1.6;
+}
+.bank-detail .swift-row{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  margin-top:12px;
+  padding-top:12px;
+  border-top:1px solid var(--border);
+}
+.bank-detail .swift-code{
+  font-family:'SF Mono',Monaco,monospace;
+  font-size:1.1rem;
+  font-weight:700;
+  color:var(--success);
+  letter-spacing:1px;
+}
+.bank-detail .copy-btn{
+  background:rgba(34,197,94,0.1);
+  border:1px solid rgba(34,197,94,0.3);
+  color:var(--success);
+  padding:6px 14px;
+  border-radius:6px;
+  font-size:0.75rem;
+  font-weight:600;
+  cursor:pointer;
+}
+.info-card{
+  background:var(--error-bg);
+  border:1px solid #312e81;
+  border-radius:12px;
+  padding:20px;
+  text-align:center;
+  margin:16px 0;
+}
+.info-card p{
+  color:var(--error-text);
+  font-size:0.9rem;
+  line-height:1.5;
+}
+.ad-sticky{
+  position:fixed;
+  bottom:0;
+  left:0;
+  right:0;
+  height:60px;
+  background:var(--ad-bg);
+  border-top:1px dashed var(--ad-border);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  color:var(--text-dim);
+  font-size:11px;
+  letter-spacing:1px;
+  text-transform:uppercase;
+  z-index:100;
+}
 .sticky-spacer{height:72px;}
 @media(min-width:768px){.main-layout{display:grid;grid-template-columns:1fr 300px;gap:20px;align-items:start;}.ad-sidebar{position:sticky;top:16px;margin:0;}}
 </style>
@@ -56,7 +149,7 @@ header p{color:var(--text-dim);font-size:0.8rem;margin-top:4px;}
 
 <div class="wrap"><div class="funnel-wrap"><div class="funnel" id="funnel"><div class="funnel-card" id="f-continent"><div class="label">Continent</div><div class="value" id="v-continent">—</div></div><div class="arrow">›</div><div class="funnel-card" id="f-country"><div class="label">Country</div><div class="value" id="v-country">—</div></div><div class="arrow">›</div><div class="funnel-card" id="f-state"><div class="label">State</div><div class="value" id="v-state">—</div></div><div class="arrow">›</div><div class="funnel-card" id="f-city"><div class="label">City</div><div class="value" id="v-city">—</div></div></div></div></div>
 
-<div class="wrap main-layout"><div class="results-area" id="resultsArea"><div class="section-title" id="resultsTitle" style="display:none;">Matching Banks</div><div id="bankList"></div></div><div class="ad-sidebar" id="ad-sidebar">[SIDEBAR AD BANNER]</div></div>
+<div class="wrap main-layout"><div class="results-area" id="resultsArea"><div class="section-title" id="resultsTitle" style="display:none;"></div><div id="bankList"></div></div><div class="ad-sidebar" id="ad-sidebar">[SIDEBAR AD BANNER]</div></div>
 
 <div class="ad-sticky" id="ad-sticky">[STICKY ANCHOR AD STRIP]</div>
 <div class="sticky-spacer"></div>
@@ -233,49 +326,36 @@ async function loadShard(n){
   return r.json();
 }
 
-/* Full initials including ALL words (for abbreviation matching like BOA) */
 function fullInitials(str){
   return norm(str).split(/\s+/).filter(w=>w.length>0).map(w=>w[0]).join('');
 }
 
-/* Meaningful initials excluding stop words */
 function meaningfulInitials(str){
   return norm(str).split(/\s+/).filter(w=>w.length>0&&!STOP_WORDS.has(w)).map(w=>w[0]).join('');
 }
 
-/* Strict name-only matching for bank name queries (2+ meaningful tokens) */
 function nameMatches(b,phrase){
   const name=norm(b.name||'');
   if(!phrase) return true;
-  
-  // Full phrase substring in name
   if(name.includes(phrase)) return true;
-  
-  // Meaningful tokens must ALL hit the name
   const tokens=phrase.split(/\s+/).filter(t=>t.length>0&&!STOP_WORDS.has(t));
   if(tokens.length===0) return true;
-  
   return tokens.every(t=>{
     if(name.includes(t)) return true;
-    // Check full initials (includes stop words for abbreviations like BOA)
     if(t===fullInitials(b.name||'')) return true;
-    // Check meaningful initials
     if(t===meaningfulInitials(b.name||'')) return true;
-    // SWIFT prefix
     const sw=norm(b.swift||'');
     if(sw.length>=3 && t===sw.substring(0,3)) return true;
     return false;
   });
 }
 
-/* Broader field matching for single-token queries (city, SWIFT, abbreviation) */
 function fieldMatches(b,phrase){
   if(!phrase) return true;
   const fields=[b.name,b.swift,b.city,b.state,b.branch,b.address,b.zip];
   const normed=fields.map(f=>norm(f));
   const tokens=phrase.split(/\s+/).filter(t=>t.length>0&&!STOP_WORDS.has(t));
   if(tokens.length===0) return true;
-  
   return tokens.some(t=>{
     for(const h of normed){
       if(h.includes(t)) return true;
@@ -294,15 +374,10 @@ function bankMatches(b,rawQuery,countryKeyword){
     t=t.replace(countryKeyword,'').trim();
   }
   if(t.length===0) return true;
-  
   const meaningfulTokens=t.split(/\s+/).filter(x=>x.length>0&&!STOP_WORDS.has(x)).length;
-  
-  // 2+ meaningful tokens = bank name search -> strict name match
   if(meaningfulTokens>=2){
     return nameMatches(b,t);
   }
-  
-  // 1 meaningful token = could be abbreviation, city, or single-word bank name
   return fieldMatches(b,t);
 }
 
@@ -322,41 +397,62 @@ function esc(t){
   return d.innerHTML;
 }
 
-function renderBanks(list,shard){
+let currentBanks=[];
+let currentShard='';
+
+function renderBankList(banks,shard,expandedIndex){
+  currentBanks=banks;
+  currentShard=shard;
   const box=document.getElementById('bankList');
   const ttl=document.getElementById('resultsTitle');
   box.innerHTML='';
-  if(!list||!list.length){
+  
+  if(!banks||!banks.length){
     ttl.style.display='none';
     box.innerHTML='<div class="info-card"><p>Bank or location not found. Please check your spelling.</p></div>';
     updateFunnel('—','—','—','—');
     return;
   }
+  
   ttl.style.display='block';
-  ttl.textContent=list.length+' Matching Bank'+(list.length>1?'s':'');
-  list.forEach(b=>{
-    const d=document.createElement('div');
-    d.className='bank-card';
-    d.innerHTML=
-      '<div class="bank-name">'+esc(b.name)+'</div>'+
-      '<div class="bank-meta">'+
-        (b.branch?esc(b.branch)+'<br>':'')+
-        esc(b.address||'')+'<br>'+
-        esc(b.city||'')+(b.state?', '+esc(b.state):'')+
-        (b.zip?' '+esc(b.zip):'')+
-      '</div>'+
-      '<div class="swift-row">'+
-        '<div class="swift-code">'+esc(b.swift||'N/A')+'</div>'+
-        '<button class="copy-btn" onclick="event.stopPropagation();copySwift(this,\''+esc(b.swift||'')+'\')">Copy</button>'+
-      '</div>';
-    d.addEventListener('click',()=>{
+  const isPlaceOnly=expandedIndex===-2;
+  ttl.textContent=isPlaceOnly?banks.length+' Banks in '+fmtCountry(shard):banks.length+' Matching Bank'+(banks.length>1?'s':'');
+  
+  banks.forEach((b,i)=>{
+    if(i===expandedIndex){
+      // Expanded detail view
+      const d=document.createElement('div');
+      d.className='bank-detail';
+      d.innerHTML=
+        '<div class="bank-name">'+esc(b.name)+'</div>'+
+        '<div class="bank-meta">'+
+          (b.branch?esc(b.branch)+'<br>':'')+
+          esc(b.address||'')+'<br>'+
+          esc(b.city||'')+(b.state?', '+esc(b.state):'')+
+          (b.zip?' '+esc(b.zip):'')+
+        '</div>'+
+        '<div class="swift-row">'+
+          '<div class="swift-code">'+esc(b.swift||'N/A')+'</div>'+
+          '<button class="copy-btn" onclick="event.stopPropagation();copySwift(this,\''+esc(b.swift||'')+'\')">Copy</button>'+
+        '</div>';
+      box.appendChild(d);
       updateFunnel(getContins(shard),fmtCountry(shard),b.state||'—',b.city||'—');
-      document.querySelectorAll('.bank-card').forEach(c=>c.style.borderColor='');
-      d.style.borderColor='var(--accent)';
-    });
-    box.appendChild(d);
+    }else{
+      // Compact clickable item
+      const d=document.createElement('div');
+      d.className='bank-list-item';
+      d.innerHTML='<div class="bank-name-only">'+esc(b.name)+'</div><div class="chevron">›</div>';
+      d.addEventListener('click',()=>{
+        renderBankList(banks,shard,i);
+      });
+      box.appendChild(d);
+    }
   });
-  updateFunnel(getContins(shard),fmtCountry(shard),list[0].state||'—',list[0].city||'—');
+  
+  if(expandedIndex!==-1 && expandedIndex!==-2){
+    const b=banks[expandedIndex];
+    updateFunnel(getContins(shard),fmtCountry(shard),b.state||'—',b.city||'—');
+  }
 }
 
 function copySwift(btn,code){
@@ -377,7 +473,7 @@ async function runSearch(){
   
   const shard=findShard(raw);
   if(!shard){
-    renderBanks([]);
+    renderBankList([],'',-1);
     return;
   }
   
@@ -400,9 +496,19 @@ async function runSearch(){
   try{
     const data=await loadShard(shard);
     const hits=data.banks.filter(b=>bankMatches(b,raw,countryKeyword));
-    renderBanks(hits,shard);
+    
+    // Check if this is a place-only search (no bank name specified)
+    let t2=norm(raw);
+    if(countryKeyword){
+      t2=t2.replace(countryKeyword,'').trim();
+    }
+    const meaningfulTokens=t2.split(/\s+/).filter(x=>x.length>0&&!STOP_WORDS.has(x)).length;
+    const isPlaceOnly=meaningfulTokens===0;
+    
+    // If place-only, show compact list. If bank specified, expand first match.
+    renderBankList(hits,shard,isPlaceOnly?-2:0);
   }catch(e){
-    renderBanks([]);
+    renderBankList([],'',-1);
   }
 }
 
