@@ -524,17 +524,19 @@ async function loadShard(n){
 }
 
 /* 
-   KEY FIX: Smart token matching.
+   CORE FIX: Substring matching on individual fields.
    - Extract the country keyword from the query
    - Remove it from the search tokens (every bank in file is already from that country)
-   - For remaining tokens: a bank matches if ANY token hits its fields (.some)
+   - For remaining tokens: a bank matches if ANY token is a substring of ANY field
    - If no remaining tokens (e.g. user just typed "Chile"), show ALL banks in file
 */
 function smartMatch(b,rawQuery,countryKeyword){
-  const hay=norm([b.name,b.city,b.state,b.branch,b.address].filter(Boolean).join(' '));
-  let tokens=norm(rawQuery).split(/\s+/).filter(t=>t.length>0);
+  // Build haystack from all searchable bank fields
+  const fields=[b.name,b.swift,b.city,b.state,b.branch,b.address,b.zip];
+  const hayFields=fields.map(f=>norm(f));
   
-  // Remove the country keyword from tokens — it's redundant inside the file
+  // Tokenize query and remove country keyword(s)
+  let tokens=norm(rawQuery).split(/\s+/).filter(t=>t.length>0);
   if(countryKeyword){
     tokens=tokens.filter(t=>t!==countryKeyword && !countryKeyword.includes(t));
   }
@@ -542,8 +544,8 @@ function smartMatch(b,rawQuery,countryKeyword){
   // If query was just the country name, show all banks
   if(tokens.length===0) return true;
   
-  // A bank matches if AT LEAST ONE remaining token appears in its data
-  return tokens.some(t=>hay.includes(t));
+  // A bank matches if AT LEAST ONE remaining token appears as substring in ANY field
+  return tokens.some(t=>hayFields.some(h=>h.includes(t)));
 }
 
 function updateFunnel(c,co,s,ci){
