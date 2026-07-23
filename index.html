@@ -1,150 +1,374 @@
-<!DOCTYPE html>
+
+# Build the complete index.html file content
+html_content = '''<!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GLOBAL WIRE NETWORK</title>
-    <style>
-        * { box-sizing: border-box; }
-        body { background-color: #0b0f19; color: #f1f5f9; min-height: 100vh; margin: 0; padding: 20px; font-family: -apple-system, BlinkMacSystemFont, sans-serif; display: flex; flex-direction: column; justify-content: space-between; }
-        header { background-color: #111827; border-bottom: 1px solid #1e293b; padding: 16px; text-align: center; font-size: 11px; font-family: monospace; color: #10b981; }
-        main { max-width: 700px; width: 100%; margin: 20px auto; padding: 0 16px; flex-grow: 1; }
-        .panel { background-color: #111827; padding: 24px; border-radius: 16px; border: 1px solid #1e293b; position: relative; }
-        .accent { position: absolute; top: 0; left: 0; width: 100%; height: 4px; background: linear-gradient(to right, #10b981, #059669); }
-        h1 { font-size: 22px; font-weight: 900; color: #ffffff; margin: 0 0 4px 0; text-align: center; }
-        .subtitle { color: #94a3b8; font-size: 12px; margin: 0 0 20px 0; padding-bottom: 12px; border-bottom: 1px solid #1e293b; text-align: center; }
-        form { display: flex; flex-direction: column; gap: 12px; margin-bottom: 24px; }
-        input { width: 100%; padding: 16px; background-color: #0f172a; border: 1px solid #334155; border-radius: 12px; font-size: 16px; color: #ffffff; outline: none; }
-        #search-btn { background: linear-gradient(to right, #10b981, #059669); color: #0f172a; font-weight: 900; font-size: 14px; border: none; padding: 16px 24px; border-radius: 12px; cursor: pointer; text-transform: uppercase; }
-        #loading-box { display: none; padding: 16px; background-color: #1e293b; border: 1px solid #334155; color: #34d399; border-radius: 12px; font-size: 14px; font-weight: 600; font-family: monospace; margin-bottom: 20px; text-align: center; }
-        #result-box { display: none; margin-top: 24px; }
-        h2 { font-size: 12px; font-weight: 900; text-transform: uppercase; letter-spacing: 1px; color: #94a3b8; border-bottom: 1px solid #1e293b; padding-bottom: 8px; margin: 0 0 16px 0; }
-        .card-row { display: flex; flex-direction: row; flex-wrap: nowrap; gap: 12px; width: 100%; overflow-x: auto; padding-bottom: 12px; }
-        .card { flex: 1; min-width: 135px; background-color: #1e293b; border: 1px solid #334155; border-radius: 12px; padding: 14px; text-align: center; }
-        article { background-color: #0f172a; border: 1px solid #1e293b; border-radius: 16px; padding: 24px; margin-top: 24px; border-left: 4px solid #10b981; }
-        #code-display-box { font-size: 24px; font-weight: 900; color: #34d399; background-color: #0b0f19; border: 1px solid #1e293b; padding: 12px 24px; border-radius: 12px; display: block; font-family: monospace; letter-spacing: 2px; margin: 0 auto; text-align: center; width: max-content; max-width: 100%; word-break: break-all; }
-        aside { background-color: #111827; border: 1px solid #1e293b; border-radius: 16px; padding: 24px; text-align: center; font-size: 11px; font-family: monospace; color: #10b981; min-height: 100px; display: flex; align-items: center; justify-content: center; margin-top: 20px; }
-        footer { background-color: #111827; border-top: 1px solid #1e293b; padding: 16px; text-align: center; font-size: 11px; font-family: monospace; color: #10b981; min-height: 50px; display: flex; align-items: center; justify-content: center; }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>SWIFT / BIC Bank Directory</title>
+<style>
+  :root {
+    --bg: #0b0f19;
+    --card: #111827;
+    --card-hover: #1f2937;
+    --text: #e5e7eb;
+    --muted: #9ca3af;
+    --accent: #3b82f6;
+    --accent-glow: rgba(59,130,246,0.15);
+    --border: #1f2937;
+    --radius: 12px;
+    --radius-sm: 8px;
+  }
+  * { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
+  html, body { background:var(--bg); color:var(--text); font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif; min-height:100vh; overflow-x:hidden; }
+  body { padding-bottom:80px; }
+
+  /* TOP AD LEADERBOARD STRIP */
+  .ad-top {
+    width:100%; min-height:90px; background:var(--card); border-bottom:1px solid var(--border);
+    display:flex; align-items:center; justify-content:center; color:var(--muted); font-size:11px; letter-spacing:1px; text-transform:uppercase;
+  }
+
+  /* HEADER */
+  header { padding:20px 16px 12px; text-align:center; }
+  header h1 { font-size:22px; font-weight:700; letter-spacing:-0.5px; }
+  header p { font-size:13px; color:var(--muted); margin-top:4px; }
+
+  /* SEARCH */
+  .search-wrap { padding:0 16px 16px; }
+  .search-box { display:flex; gap:8px; }
+  .search-box input {
+    flex:1; background:var(--card); border:1px solid var(--border); border-radius:var(--radius); padding:12px 14px;
+    color:var(--text); font-size:15px; outline:none; transition:border .2s;
+  }
+  .search-box input:focus { border-color:var(--accent); }
+  .search-box button {
+    background:var(--accent); color:#fff; border:none; border-radius:var(--radius); padding:12px 18px;
+    font-size:14px; font-weight:600; cursor:pointer; transition:opacity .2s; white-space:nowrap;
+  }
+  .search-box button:active { opacity:.8; }
+
+  /* FUNNEL CARDS */
+  .funnel-wrap { padding:0 16px 20px; }
+  .funnel-label { font-size:11px; color:var(--muted); text-transform:uppercase; letter-spacing:1px; margin-bottom:8px; }
+  .funnel-track {
+    display:flex; gap:10px; overflow-x:auto; -webkit-overflow-scrolling:touch;
+    scrollbar-width:none; padding-bottom:4px;
+  }
+  .funnel-track::-webkit-scrollbar { display:none; }
+  .funnel-card {
+    flex:0 0 auto; min-width:140px; background:var(--card); border:1px solid var(--border);
+    border-radius:var(--radius); padding:14px 16px; text-align:center; transition:background .2s; position:relative;
+  }
+  .funnel-card.active { background:var(--accent-glow); border-color:var(--accent); }
+  .funnel-card .step { font-size:10px; color:var(--accent); text-transform:uppercase; letter-spacing:1px; margin-bottom:4px; }
+  .funnel-card .value { font-size:15px; font-weight:600; white-space:nowrap; }
+  .funnel-arrow { flex:0 0 auto; display:flex; align-items:center; color:var(--muted); font-size:18px; padding:0 2px; }
+
+  /* SIDEBAR AD BANNER */
+  .ad-sidebar {
+    margin:0 16px 16px; min-height:250px; background:var(--card); border:1px solid var(--border);
+    border-radius:var(--radius); display:flex; align-items:center; justify-content:center;
+    color:var(--muted); font-size:11px; letter-spacing:1px; text-transform:uppercase;
+  }
+
+  /* RESULTS */
+  .results-wrap { padding:0 16px; }
+  .section-title { font-size:13px; color:var(--muted); text-transform:uppercase; letter-spacing:1px; margin-bottom:10px; }
+  .bank-card {
+    background:var(--card); border:1px solid var(--border); border-radius:var(--radius);
+    padding:16px; margin-bottom:12px; transition:background .2s;
+  }
+  .bank-card:active { background:var(--card-hover); }
+  .bank-name { font-size:16px; font-weight:700; margin-bottom:6px; }
+  .bank-meta { font-size:13px; color:var(--muted); line-height:1.5; }
+  .swift-code {
+    display:inline-block; margin-top:10px; background:var(--accent-glow); border:1px solid var(--accent);
+    border-radius:var(--radius-sm); padding:6px 12px; font-family:'SF Mono',monospace;
+    font-size:14px; font-weight:600; color:var(--accent); letter-spacing:1px;
+  }
+
+  /* ERROR CARD */
+  .info-card {
+    background:var(--card); border:1px solid var(--border); border-radius:var(--radius);
+    padding:18px 16px; text-align:center; color:var(--muted); font-size:14px; line-height:1.6;
+    margin:0 16px 16px;
+  }
+
+  /* STICKY ANCHOR AD STRIP */
+  .ad-anchor {
+    position:fixed; bottom:0; left:0; right:0; min-height:60px; background:var(--card);
+    border-top:1px solid var(--border); display:flex; align-items:center; justify-content:center;
+    color:var(--muted); font-size:11px; letter-spacing:1px; text-transform:uppercase; z-index:100;
+  }
+  .ad-anchor-spacer { height:60px; }
+</style>
 </head>
- <body>
-    <header>[TOP AD LEADERBOARD STRIP]</header>
-    <main>
-        <div class="panel">
-            <div class="accent"></div>
-            <h1>GLOBAL WIRE TERMINAL</h1>
-            <div class="subtitle">Live verification routing engine tracking international SWIFT / BIC codes.</div>
-            <form id="search-form" onsubmit="queryLiveDirectory(event)">
-                <input type="text" id="search-input" placeholder="Enter bank and city/country (e.g., 'HSBC Tokyo')..." required />
-                <button type="submit" id="search-btn">Verify SWIFT Clearance</button>
-            </form>
-            <div id="loading-box">⚡ Connecting to Live OpenBIC Registry Core...</div>
-            <div id="result-box">
-                <h2>📍 Visual Settlement Journey Mapping</h2>
-                <div id="flex-journey-row" class="card-row"></div>
-                <article id="data-panel">
-                    <span style="font-size:10px; text-transform:uppercase; font-weight:bold; color:#94a3b8; display:block; text-align:center; margin-bottom:8px; font-family:monospace;">Verified Bank SWIFT / BIC Clearing Code</span>
-                    <h3 id="code-display-box"></h3>
-                </article>
-            </div>
-        </div>
-        <aside>[SIDEBAR AD BANNER]</aside>
-    </main>
-    <footer>[STICKY ANCHOR AD STRIP]</footer>
-    <script>
-        async function queryLiveDirectory(e) {
-            e.preventDefault();
-            const inputVal = document.getElementById('search-input').value.trim();
-            
-            document.getElementById('result-box').style.display = 'none';
-            document.getElementById('loading-box').style.display = 'block';
+<body>
 
-            let continent = "Global", country = "Routing Network", state = "Directory", city = "Node", code = "", emoji = "🌐";
-            let recordFound = false;
+<!-- TOP AD LEADERBOARD STRIP -->
+<div class="ad-top">[TOP AD LEADERBOARD STRIP]</div>
 
-            try {
-                // TRUE DYNAMIC APICALL ROUTED TO IMMUNE CLOUD METRICS
-                const targetApi = `https://openbic.com{encodeURIComponent(inputVal)}`;
-                const proxyBridge = `https://allorigins.win{encodeURIComponent(targetApi)}`;
-                
-                const response = await fetch(proxyBridge);
-                if (response.ok) {
-                    const wrapper = await response.json();
-                    const data = JSON.parse(wrapper.contents);
+<header>
+  <h1>SWIFT / BIC Directory</h1>
+  <p>Find bank codes worldwide</p>
+</header>
 
-                    if (data && data.results && data.results.length > 0) {
-                        const item = data.results[0];
-                        code = item.bic || "";
-                        continent = item.continent || "Global";
-                        country = item.country || "Verified Region";
-                        state = item.state || item.province || "Active Sector";
-                        city = item.city || "Branch Hub";
-                        emoji = item.flag || "🌐";
-                        recordFound = true;
-                    }
-                }
-            } catch (err) {
-                recordFound = false;
-            }
+<!-- SEARCH -->
+<div class="search-wrap">
+  <div class="search-box">
+    <input type="text" id="searchInput" placeholder="e.g. London, Santander Chile, Banco Itaú..." autocomplete="off">
+    <button onclick="runSearch()">Search</button>
+  </div>
+</div>
 
-            // DYNAMIC LAYMAN FALLBACK FOR LOCAL KEYWORD EXTRACTIONS
-            if (!recordFound) {
-                let q = inputVal.toLowerCase().replace(/[^a-z0-9 ]/g, "");
-                let bankPref = "BANK";
-                if (q.includes("barclays")) bankPref = "BARC";
-                else if (q.includes("deutsche")) bankPref = "DEUT";
-                else if (q.includes("american express") || q.includes("amex")) bankPref = "AETC";
-                else if (q.includes("boc")) bankPref = "BCEY";
-                else if (q.includes("axis")) bankPref = "UTIB";
-                else if (q.includes("sbi")) bankPref = "SBIN";
-                else if (q.includes("hsbc")) bankPref = q.includes("brazil") ? "HSBN" : "HSBC";
-                else if (q.includes("icici")) bankPref = "ICIC";
-                else if (q.includes("hdfc")) bankPref = "HDFC";
-                else if (q.includes("bank of america") || q.includes("boa")) bankPref = "BOFA";
+<!-- MULTI-STEP FUNNEL -->
+<div class="funnel-wrap">
+  <div class="funnel-label">Settlement path</div>
+  <div class="funnel-track" id="funnelTrack"></div>
+</div>
 
-                if (q.includes("tokyo") || q.includes("japan")) {
-                    continent = "Asia"; country = "Japan"; state = "Kanto Region"; city = "Tokyo"; emoji = "🇯🇵"; code = bankPref + "JPJTXXX"; recordFound = true;
-                } else if (q.includes("brazil") || q.includes("br")) {
-                    continent = "South America"; country = "Brazil"; state = "São Paulo"; city = "Rio Hub"; emoji = "🇧🇷"; code = bankPref + "BRSSXXX"; recordFound = true;
-                } else if (q.includes("singapore") || q.includes("sg")) {
-                    continent = "Asia"; country = "Singapore"; state = "Central Region"; city = "Singapore Hub"; emoji = "🇸🇬"; code = bankPref + "SGSGXXX"; recordFound = true;
-                } else if (q.includes("chile") || q.includes("santiago")) {
-                    continent = "South America"; country = "Chile"; state = "Santiago Metropolitan"; city = "Santiago"; emoji = "🇨🇱"; code = bankPref === "BOFA" ? "BOFACLR1XXX" : bankPref + "CLSGXXX"; recordFound = true;
-                } else if (q.includes("london") || q.includes("uk")) {
-                    continent = "Europe"; country = "United Kingdom"; state = "England"; city = "London"; emoji = "🇬🇧"; code = bankPref + "GB2LXXX"; recordFound = true;
-                } else if (q.includes("frankfurt") || q.includes("germany")) {
-                    continent = "Europe"; country = "Germany"; state = "Hesse"; city = "Frankfurt"; emoji = "🇩🇪"; code = bankPref + "DEDDFXX"; recordFound = true;
-                } else if (q.includes("india") || q.includes("mumbai") || q.includes("kolkata") || q.includes("gurugram") || q.includes("kochi") || q.includes("korba")) {
-                    continent = "Asia"; country = "India"; emoji = "🇮🇳"; recordFound = true;
-                    if (q.includes("kolkata")) { state = "West Bengal"; city = "Kolkata"; code = bankPref + "INBBKOL"; }
-                    else if (q.includes("gurugram") || q.includes("gurgaon")) { state = "Haryana"; city = "Gurugram"; code = bankPref + "INBBGRG"; }
-                    else if (q.includes("kochi")) { state = "Kerala"; city = "Kochi"; code = bankPref + "INBBKOC"; }
-                    else if (q.includes("korba")) { state = "Chhattisgarh"; city = "Korba"; code = bankPref + "INBBKRB"; }
-                    else { state = "Maharashtra"; city = "Mumbai"; code = bankPref + "INBBXXX"; }
-                }
-            }
+<!-- SIDEBAR AD BANNER -->
+<div class="ad-sidebar">[SIDEBAR AD BANNER]</div>
 
-            document.getElementById('loading-box').style.display = 'none';
-            document.getElementById('result-box').style.display = 'block';
+<!-- RESULTS -->
+<div class="results-wrap" id="resultsArea"></div>
 
-            const row = document.getElementById('flex-journey-row');
-            const displayBox = document.getElementById('code-display-box');
+<!-- ERROR / INFO CARD (hidden by default) -->
+<div class="info-card" id="infoCard" style="display:none;">
+  Bank or location not found. Please check your spelling.
+</div>
 
-            if (recordFound && code !== "") {
-                let h = '';
-                h += '<div class="card"><div>🌍</div><div style="font-size:12px;font-weight:900;margin-top:4px">' + continent + '</div></div>';
-                h += '<div class="card"><div>' + emoji + '</div><div style="font-size:12px;font-weight:900;margin-top:4px">' + country + '</div></div>';
-                h += '<div class="card"><div>📍</div><div style="font-size:12px;font-weight:900;margin-top:4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">' + state + '</div></div>';
-                h += '<div class="card"><div>🏙️</div><div style="font-size:12px;font-weight:900;margin-top:4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">' + city + '</div></div>';
-                row.innerHTML = h;
-                displayBox.innerText = code.toUpperCase();
-                displayBox.style.color = '#34d399';
-            } else {
-                row.innerHTML = '<div class="card" style="min-width:100%; background-color:#1e293b; border-color:#334155;"><div style="font-size:16px;">🔍</div><div style="font-size:12px; font-weight:500; margin-top:4px; color:#94a3b8; word-break:normal; text-transform:none;">Bank or location not found. Please check your spelling.</div></div>';
-                displayBox.innerText = "No routing record available";
-                displayBox.style.color = '#94a3b8';
-            }
-        }
-    </script>
-</body>
-</html>
+<!-- STICKY ANCHOR AD STRIP -->
+<div class="ad-anchor">[STICKY ANCHOR AD STRIP]</div>
+<div class="ad-anchor-spacer"></div>
+
+<script>
+/* =========================================================
+   SHARD MAP — maps keywords to country JSON filenames.
+   Add more entries as you create new country shards.
+   Each value is an object: { file, continent, country, state?, city? }
+   ========================================================= */
+const SHARD_MAP = {
+  /* United Kingdom */
+  'uk': {file:'united_kingdom.json',continent:'Europe',country:'United Kingdom'},
+  'united kingdom': {file:'united_kingdom.json',continent:'Europe',country:'United Kingdom'},
+  'great britain': {file:'united_kingdom.json',continent:'Europe',country:'United Kingdom'},
+  'britain': {file:'united_kingdom.json',continent:'Europe',country:'United Kingdom'},
+  'england': {file:'united_kingdom.json',continent:'Europe',country:'United Kingdom'},
+  'london': {file:'united_kingdom.json',continent:'Europe',country:'United Kingdom',city:'London'},
+  'manchester': {file:'united_kingdom.json',continent:'Europe',country:'United Kingdom',city:'Manchester'},
+  'birmingham': {file:'united_kingdom.json',continent:'Europe',country:'United Kingdom',city:'Birmingham'},
+  'edinburgh': {file:'united_kingdom.json',continent:'Europe',country:'United Kingdom',city:'Edinburgh'},
+  'glasgow': {file:'united_kingdom.json',continent:'Europe',country:'United Kingdom',city:'Glasgow'},
+  'cardiff': {file:'united_kingdom.json',continent:'Europe',country:'United Kingdom',city:'Cardiff'},
+  'belfast': {file:'united_kingdom.json',continent:'Europe',country:'United Kingdom',city:'Belfast'},
+  'liverpool': {file:'united_kingdom.json',continent:'Europe',country:'United Kingdom',city:'Liverpool'},
+  'leeds': {file:'united_kingdom.json',continent:'Europe',country:'United Kingdom',city:'Leeds'},
+  'bristol': {file:'united_kingdom.json',continent:'Europe',country:'United Kingdom',city:'Bristol'},
+  'barclays': {file:'united_kingdom.json',continent:'Europe',country:'United Kingdom'},
+  'hsbc': {file:'united_kingdom.json',continent:'Europe',country:'United Kingdom'},
+  'lloyds': {file:'united_kingdom.json',continent:'Europe',country:'United Kingdom'},
+  'natwest': {file:'united_kingdom.json',continent:'Europe',country:'United Kingdom'},
+  'santander uk': {file:'united_kingdom.json',continent:'Europe',country:'United Kingdom'},
+
+  /* Chile */
+  'chile': {file:'chile.json',continent:'South America',country:'Chile'},
+  'santiago': {file:'chile.json',continent:'South America',country:'Chile',city:'Santiago'},
+  'valparaiso': {file:'chile.json',continent:'South America',country:'Chile',city:'Valparaiso'},
+  'concepcion': {file:'chile.json',continent:'South America',country:'Chile',city:'Concepcion'},
+  'antofagasta': {file:'chile.json',continent:'South America',country:'Chile',city:'Antofagasta'},
+  'temuco': {file:'chile.json',continent:'South America',country:'Chile',city:'Temuco'},
+  'rancagua': {file:'chile.json',continent:'South America',country:'Chile',city:'Rancagua'},
+  'iquique': {file:'chile.json',continent:'South America',country:'Chile',city:'Iquique'},
+  'banco de chile': {file:'chile.json',continent:'South America',country:'Chile'},
+  'bancochile': {file:'chile.json',continent:'South America',country:'Chile'},
+  'santander chile': {file:'chile.json',continent:'South America',country:'Chile'},
+  'banco estado': {file:'chile.json',continent:'South America',country:'Chile'},
+  'itau chile': {file:'chile.json',continent:'South America',country:'Chile'},
+  'scotiabank chile': {file:'chile.json',continent:'South America',country:'Chile'},
+
+  /* Brazil */
+  'brazil': {file:'brazil.json',continent:'South America',country:'Brazil'},
+  'brasil': {file:'brazil.json',continent:'South America',country:'Brazil'},
+  'sao paulo': {file:'brazil.json',continent:'South America',country:'Brazil',city:'Sao Paulo'},
+  'rio de janeiro': {file:'brazil.json',continent:'South America',country:'Brazil',city:'Rio de Janeiro'},
+  'brasilia': {file:'brazil.json',continent:'South America',country:'Brazil',city:'Brasilia'},
+  'salvador': {file:'brazil.json',continent:'South America',country:'Brazil',city:'Salvador'},
+  'fortaleza': {file:'brazil.json',continent:'South America',country:'Brazil',city:'Fortaleza'},
+  'belo horizonte': {file:'brazil.json',continent:'South America',country:'Brazil',city:'Belo Horizonte'},
+  'curitiba': {file:'brazil.json',continent:'South America',country:'Brazil',city:'Curitiba'},
+  'manaus': {file:'brazil.json',continent:'South America',country:'Brazil',city:'Manaus'},
+  'recife': {file:'brazil.json',continent:'South America',country:'Brazil',city:'Recife'},
+  'porto alegre': {file:'brazil.json',continent:'South America',country:'Brazil',city:'Porto Alegre'},
+  'itau': {file:'brazil.json',continent:'South America',country:'Brazil'},
+  'itaú': {file:'brazil.json',continent:'South America',country:'Brazil'},
+  'bradesco': {file:'brazil.json',continent:'South America',country:'Brazil'},
+  'banco do brasil': {file:'brazil.json',continent:'South America',country:'Brazil'},
+  'santander brasil': {file:'brazil.json',continent:'South America',country:'Brazil'},
+  'caixa': {file:'brazil.json',continent:'South America',country:'Brazil'},
+  'nubank': {file:'brazil.json',continent:'South America',country:'Brazil'},
+
+  /* United States */
+  'usa': {file:'united_states.json',continent:'North America',country:'United States'},
+  'us': {file:'united_states.json',continent:'North America',country:'United States'},
+  'united states': {file:'united_states.json',continent:'North America',country:'United States'},
+  'america': {file:'united_states.json',continent:'North America',country:'United States'},
+  'new york': {file:'united_states.json',continent:'North America',country:'United States',state:'New York',city:'New York'},
+  'los angeles': {file:'united_states.json',continent:'North America',country:'United States',state:'California',city:'Los Angeles'},
+  'chicago': {file:'united_states.json',continent:'North America',country:'United States',state:'Illinois',city:'Chicago'},
+  'houston': {file:'united_states.json',continent:'North America',country:'United States',state:'Texas',city:'Houston'},
+  'phoenix': {file:'united_states.json',continent:'North America',country:'United States',state:'Arizona',city:'Phoenix'},
+  'philadelphia': {file:'united_states.json',continent:'North America',country:'United States',state:'Pennsylvania',city:'Philadelphia'},
+  'san antonio': {file:'united_states.json',continent:'North America',country:'United States',state:'Texas',city:'San Antonio'},
+  'san diego': {file:'united_states.json',continent:'North America',country:'United States',state:'California',city:'San Diego'},
+  'dallas': {file:'united_states.json',continent:'North America',country:'United States',state:'Texas',city:'Dallas'},
+  'san jose': {file:'united_states.json',continent:'North America',country:'United States',state:'California',city:'San Jose'},
+  'austin': {file:'united_states.json',continent:'North America',country:'United States',state:'Texas',city:'Austin'},
+  'seattle': {file:'united_states.json',continent:'North America',country:'United States',state:'Washington',city:'Seattle'},
+  'denver': {file:'united_states.json',continent:'North America',country:'United States',state:'Colorado',city:'Denver'},
+  'washington': {file:'united_states.json',continent:'North America',country:'United States',state:'District of Columbia',city:'Washington'},
+  'boston': {file:'united_states.json',continent:'North America',country:'United States',state:'Massachusetts',city:'Boston'},
+  'miami': {file:'united_states.json',continent:'North America',country:'United States',state:'Florida',city:'Miami'},
+  'san francisco': {file:'united_states.json',continent:'North America',country:'United States',state:'California',city:'San Francisco'},
+  'chase': {file:'united_states.json',continent:'North America',country:'United States'},
+  'bank of america': {file:'united_states.json',continent:'North America',country:'United States'},
+  'wells fargo': {file:'united_states.json',continent:'North America',country:'United States'},
+  'citi': {file:'united_states.json',continent:'North America',country:'United States'},
+  'citibank': {file:'united_states.json',continent:'North America',country:'United States'},
+  'goldman sachs': {file:'united_states.json',continent:'North America',country:'United States'},
+  'morgan stanley': {file:'united_states.json',continent:'North America',country:'United States'},
+  'jpmorgan': {file:'united_states.json',continent:'North America',country:'United States'},
+  'jp morgan': {file:'united_states.json',continent:'North America',country:'United States'},
+
+  /* Germany */
+  'germany': {file:'germany.json',continent:'Europe',country:'Germany'},
+  'deutschland': {file:'germany.json',continent:'Europe',country:'Germany'},
+  'berlin': {file:'germany.json',continent:'Europe',country:'Germany',city:'Berlin'},
+  'hamburg': {file:'germany.json',continent:'Europe',country:'Germany',city:'Hamburg'},
+  'munich': {file:'germany.json',continent:'Europe',country:'Germany',city:'Munich'},
+  'münchen': {file:'germany.json',continent:'Europe',country:'Germany',city:'Munich'},
+  'cologne': {file:'germany.json',continent:'Europe',country:'Germany',city:'Cologne'},
+  'köln': {file:'germany.json',continent:'Europe',country:'Germany',city:'Cologne'},
+  'frankfurt': {file:'germany.json',continent:'Europe',country:'Germany',city:'Frankfurt'},
+  'stuttgart': {file:'germany.json',continent:'Europe',country:'Germany',city:'Stuttgart'},
+  'düsseldorf': {file:'germany.json',continent:'Europe',country:'Germany',city:'Düsseldorf'},
+  'dortmund': {file:'germany.json',continent:'Europe',country:'Germany',city:'Dortmund'},
+  'deutsche bank': {file:'germany.json',continent:'Europe',country:'Germany'},
+  'commerzbank': {file:'germany.json',continent:'Europe',country:'Germany'},
+  'postbank': {file:'germany.json',continent:'Europe',country:'Germany'},
+  'sparkasse': {file:'germany.json',continent:'Europe',country:'Germany'},
+  'volksbank': {file:'germany.json',continent:'Europe',country:'Germany'},
+  'ing diba': {file:'germany.json',continent:'Europe',country:'Germany'},
+
+  /* France */
+  'france': {file:'france.json',continent:'Europe',country:'France'},
+  'paris': {file:'france.json',continent:'Europe',country:'France',city:'Paris'},
+  'marseille': {file:'france.json',continent:'Europe',country:'France',city:'Marseille'},
+  'lyon': {file:'france.json',continent:'Europe',country:'France',city:'Lyon'},
+  'toulouse': {file:'france.json',continent:'Europe',country:'France',city:'Toulouse'},
+  'nice': {file:'france.json',continent:'Europe',country:'France',city:'Nice'},
+  'nantes': {file:'france.json',continent:'Europe',country:'France',city:'Nantes'},
+  'strasbourg': {file:'france.json',continent:'Europe',country:'France',city:'Strasbourg'},
+  'montpellier': {file:'france.json',continent:'Europe',country:'France',city:'Montpellier'},
+  'bordeaux': {file:'france.json',continent:'Europe',country:'France',city:'Bordeaux'},
+  'lille': {file:'france.json',continent:'Europe',country:'France',city:'Lille'},
+  'bnp paribas': {file:'france.json',continent:'Europe',country:'France'},
+  'société générale': {file:'france.json',continent:'Europe',country:'France'},
+  'crédit agricole': {file:'france.json',continent:'Europe',country:'France'},
+  'credit agricole': {file:'france.json',continent:'Europe',country:'France'},
+  'banque populaire': {file:'france.json',continent:'Europe',country:'France'},
+
+  /* Spain */
+  'spain': {file:'spain.json',continent:'Europe',country:'Spain'},
+  'españa': {file:'spain.json',continent:'Europe',country:'Spain'},
+  'madrid': {file:'spain.json',continent:'Europe',country:'Spain',city:'Madrid'},
+  'barcelona': {file:'spain.json',continent:'Europe',country:'Spain',city:'Barcelona'},
+  'valencia': {file:'spain.json',continent:'Europe',country:'Spain',city:'Valencia'},
+  'seville': {file:'spain.json',continent:'Europe',country:'Spain',city:'Seville'},
+  'sevilla': {file:'spain.json',continent:'Europe',country:'Spain',city:'Seville'},
+  'zaragoza': {file:'spain.json',continent:'Europe',country:'Spain',city:'Zaragoza'},
+  'málaga': {file:'spain.json',continent:'Europe',country:'Spain',city:'Malaga'},
+  'malaga': {file:'spain.json',continent:'Europe',country:'Spain',city:'Malaga'},
+  'murcia': {file:'spain.json',continent:'Europe',country:'Spain',city:'Murcia'},
+  'palma': {file:'spain.json',continent:'Europe',country:'Spain',city:'Palma'},
+  'las palmas': {file:'spain.json',continent:'Europe',country:'Spain',city:'Las Palmas'},
+  'bilbao': {file:'spain.json',continent:'Europe',country:'Spain',city:'Bilbao'},
+  'alicante': {file:'spain.json',continent:'Europe',country:'Spain',city:'Alicante'},
+  'valladolid': {file:'spain.json',continent:'Europe',country:'Spain',city:'Valladolid'},
+  'vigo': {file:'spain.json',continent:'Europe',country:'Spain',city:'Vigo'},
+  'santander': {file:'spain.json',continent:'Europe',country:'Spain'},
+  'bbva': {file:'spain.json',continent:'Europe',country:'Spain'},
+  'caixabank': {file:'spain.json',continent:'Europe',country:'Spain'},
+  'sabadell': {file:'spain.json',continent:'Europe',country:'Spain'},
+  'bankinter': {file:'spain.json',continent:'Europe',country:'Spain'},
+  'abanca': {file:'spain.json',continent:'Europe',country:'Spain'},
+
+  /* Italy */
+  'italy': {file:'italy.json',continent:'Europe',country:'Italy'},
+  'italia': {file:'italy.json',continent:'Europe',country:'Italy'},
+  'rome': {file:'italy.json',continent:'Europe',country:'Italy',city:'Rome'},
+  'roma': {file:'italy.json',continent:'Europe',country:'Italy',city:'Rome'},
+  'milan': {file:'italy.json',continent:'Europe',country:'Italy',city:'Milan'},
+  'milano': {file:'italy.json',continent:'Europe',country:'Italy',city:'Milan'},
+  'naples': {file:'italy.json',continent:'Europe',country:'Italy',city:'Naples'},
+  'napoli': {file:'italy.json',continent:'Europe',country:'Italy',city:'Naples'},
+  'turin': {file:'italy.json',continent:'Europe',country:'Italy',city:'Turin'},
+  'torino': {file:'italy.json',continent:'Europe',country:'Italy',city:'Turin'},
+  'palermo': {file:'italy.json',continent:'Europe',country:'Italy',city:'Palermo'},
+  'genoa': {file:'italy.json',continent:'Europe',country:'Italy',city:'Genoa'},
+  'genova': {file:'italy.json',continent:'Europe',country:'Italy',city:'Genoa'},
+  'bologna': {file:'italy.json',continent:'Europe',country:'Italy',city:'Bologna'},
+  'florence': {file:'italy.json',continent:'Europe',country:'Italy',city:'Florence'},
+  'firenze': {file:'italy.json',continent:'Europe',country:'Italy',city:'Florence'},
+  'bari': {file:'italy.json',continent:'Europe',country:'Italy',city:'Bari'},
+  'catania': {file:'italy.json',continent:'Europe',country:'Italy',city:'Catania'},
+  'venice': {file:'italy.json',continent:'Europe',country:'Italy',city:'Venice'},
+  'verona': {file:'italy.json',continent:'Europe',country:'Italy',city:'Verona'},
+  'unicredit': {file:'italy.json',continent:'Europe',country:'Italy'},
+  'intesa sanpaolo': {file:'italy.json',continent:'Europe',country:'Italy'},
+  'monte dei paschi': {file:'italy.json',continent:'Europe',country:'Italy'},
+
+  /* Japan */
+  'japan': {file:'japan.json',continent:'Asia',country:'Japan'},
+  'tokyo': {file:'japan.json',continent:'Asia',country:'Japan',city:'Tokyo'},
+  'yokohama': {file:'japan.json',continent:'Asia',country:'Japan',city:'Yokohama'},
+  'osaka': {file:'japan.json',continent:'Asia',country:'Japan',city:'Osaka'},
+  'nagoya': {file:'japan.json',continent:'Asia',country:'Japan',city:'Nagoya'},
+  'sapporo': {file:'japan.json',continent:'Asia',country:'Japan',city:'Sapporo'},
+  'fukuoka': {file:'japan.json',continent:'Asia',country:'Japan',city:'Fukuoka'},
+  'kobe': {file:'japan.json',continent:'Asia',country:'Japan',city:'Kobe'},
+  'kawasaki': {file:'japan.json',continent:'Asia',country:'Japan',city:'Kawasaki'},
+  'kyoto': {file:'japan.json',continent:'Asia',country:'Japan',city:'Kyoto'},
+  'saitama': {file:'japan.json',continent:'Asia',country:'Japan',city:'Saitama'},
+  'hiroshima': {file:'japan.json',continent:'Asia',country:'Japan',city:'Hiroshima'},
+  'sendai': {file:'japan.json',continent:'Asia',country:'Japan',city:'Sendai'},
+  'kitakyushu': {file:'japan.json',continent:'Asia',country:'Japan',city:'Kitakyushu'},
+  'chiba': {file:'japan.json',continent:'Asia',country:'Japan',city:'Chiba'},
+  'niigata': {file:'japan.json',continent:'Asia',country:'Japan',city:'Niigata'},
+  'hamamatsu': {file:'japan.json',continent:'Asia',country:'Japan',city:'Hamamatsu'},
+  'okayama': {file:'japan.json',continent:'Asia',country:'Japan',city:'Okayama'},
+  'mitsubishi ufj': {file:'japan.json',continent:'Asia',country:'Japan'},
+  'mufg': {file:'japan.json',continent:'Asia',country:'Japan'},
+  'sumitomo mitsui': {file:'japan.json',continent:'Asia',country:'Japan'},
+  'mizuho': {file:'japan.json',continent:'Asia',country:'Japan'},
+  'resona': {file:'japan.json',continent:'Asia',country:'Japan'},
+  'nomura': {file:'japan.json',continent:'Asia',country:'Japan'},
+
+  /* Canada */
+  'canada': {file:'canada.json',continent:'North America',country:'Canada'},
+  'toronto': {file:'canada.json',continent:'North America',country:'Canada',city:'Toronto'},
+  'montreal': {file:'canada.json',continent:'North America',country:'Canada',city:'Montreal'},
+  'vancouver': {file:'canada.json',continent:'North America',country:'Canada',city:'Vancouver'},
+  'calgary': {file:'canada.json',continent:'North America',country:'Canada',city:'Calgary'},
+  'edmonton': {file:'canada.json',continent:'North America',country:'Canada',city:'Edmonton'},
+  'ottawa': {file:'canada.json',continent:'North America',country:'Canada',city:'Ottawa'},
+  'winnipeg': {file:'canada.json',continent:'North America',country:'Canada',city:'Winnipeg'},
+  'quebec city': {file:'canada.json',continent:'North America',country:'Canada',city:'Quebec City'},
+  'hamilton': {file:'canada.json',continent:'North America',country:'Canada',city:'Hamilton'},
+  'kitchener': {file:'canada.json',continent:'North America',country:'Canada',city:'Kitchener'},
+  'victoria': {file:'canada.json',continent:'North America',country:'Canada',city:'Victoria'},
+  'halifax': {file:'canada.json',continent:'North America',country:'Canada',city:'Halifax'},
+  'oshawa': {file:'canada.json',continent:'North America',country:'Canada',city:'Oshawa'},
+  'windsor': {file:'canada.json',continent:'North America',country:'Canada',city:'Windsor'},
+  'saskatoon': {file:'canada.json',continent:'North America',country:'Canada',city:'S
