@@ -1,0 +1,24 @@
+{
+  "country": "Chile",
+  "country_code": "CL",
+  "banks": [
+    {
+      "name": "Bank of America",
+      "swift": "BOFACLR1XXX",
+      "branch": "Santiago Branch",
+      "city": "Santiago",
+      "state": "Santiago Metropolitan",
+      "address": "Santiago Financial District",
+      "zip": "8320000"
+    },
+    {
+      "name": "Banco de Chile",
+      "swift": "BCHICLRMXXX",
+      "branch": "Head Office",
+      "city": "Santiago",
+      "state": "Santiago Metropolitan",
+      "address": "Ahumada 251",
+      "zip": "8340454"
+    }
+  ]
+}
