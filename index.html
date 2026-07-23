@@ -62,12 +62,6 @@ header p{color:var(--text-dim);font-size:0.8rem;margin-top:4px;}
 <div class="sticky-spacer"></div>
 
 <script>
-/* ============================================================
-   REGIONAL SHARDING — SMART SHARD DETECTION
-   Prefers whole-word matches over substring matches.
-   If multiple matches, picks the one appearing LAST in query.
-   ============================================================ */
-
 const SHARD_MAP={
   'united kingdom':'united_kingdom','uk':'united_kingdom','britain':'united_kingdom',
   'england':'united_kingdom','scotland':'united_kingdom','wales':'united_kingdom',
@@ -208,33 +202,19 @@ const CONTINENT_MAP={
 
 function norm(s){return(s||'').toLowerCase().trim();}
 
-/* 
-   Find shard with smart scoring:
-   - Whole-word match = 2 points (highest priority)
-   - Substring match = 1 point
-   - Tie-breaker: keyword appearing LATER in query wins
-*/
+/* Find shard: prefer whole-word matches, tie-break by later position */
 function findShard(q){
   const t=norm(q);
-  let bestShard=null;
-  let bestScore=-1;
-  let bestPos=-1;
-  
+  let bestShard=null,bestScore=-1,bestPos=-1;
   for(const [k,v] of Object.entries(SHARD_MAP)){
     const idx=t.indexOf(k);
     if(idx===-1) continue;
-    
-    // Check if whole-word match
     const before=idx===0||t[idx-1]===' ';
     const after=idx+k.length===t.length||t[idx+k.length]===' ';
     const score=(before&&after)?2:1;
     const pos=idx;
-    
-    // Prefer higher score, then later position
-    if(score>bestScore || (score===bestScore&&pos>bestPos)){
-      bestScore=score;
-      bestPos=pos;
-      bestShard=v;
+    if(score>bestScore||(score===bestScore&&pos>bestPos)){
+      bestScore=score;bestPos=pos;bestShard=v;
     }
   }
   return bestShard;
@@ -256,26 +236,73 @@ function initials(str){
   return norm(str).split(/\s+/).filter(w=>w.length>0).map(w=>w[0]).join('');
 }
 
-function tokenHits(token,b){
-  const fields=[b.name,b.swift,b.city,b.state,b.branch,b.address,b.zip];
-  const normed=fields.map(f=>norm(f));
-  for(const h of normed){
-    if(h.includes(token)) return true;
-  }
-  const inits=initials(b.name||'');
-  if(token===inits) return true;
-  const sw=norm(b.swift||'');
-  if(sw.length>=3 && token===sw.substring(0,3)) return true;
+/* 
+   Match bank name against search tokens.
+   - Reconstruct the non-country portion of the query as a phrase
+   - Check if that phrase appears in the bank name (substring)
+   - Also check initials and SWIFT prefix
+*/
+function nameMatches(b,phrase){
+  const name=norm(b.name||'');
+  if(!phrase) return true;
+  
+  // Direct phrase match in bank name
+  if(name.includes(phrase)) return true;
+  
+  // Token-by-token: ALL tokens must hit the bank name (stricter)
+  const tokens=phrase.split(/\s+/).filter(t=>t.length>0);
+  if(tokens.length===0) return true;
+  
+  // Check if ALL tokens match name (AND logic for precision)
+  const allHit=tokens.every(t=>{
+    if(name.includes(t)) return true;
+    // Initials match for abbreviations like "boa"
+    const inits=initials(b.name||'');
+    if(t===inits) return true;
+    // SWIFT prefix
+    const sw=norm(b.swift||'');
+    if(sw.length>=3 && t===sw.substring(0,3)) return true;
+    return false;
+  });
+  if(allHit) return true;
+  
   return false;
 }
 
-function bankMatches(b,rawQuery,countryKeyword){
-  let tokens=norm(rawQuery).split(/\s+/).filter(t=>t.length>0);
-  if(countryKeyword){
-    tokens=tokens.filter(t=>t!==countryKeyword);
-  }
+/* Broader match for city/branch/address searches */
+function fieldMatches(b,phrase){
+  if(!phrase) return true;
+  const fields=[b.name,b.swift,b.city,b.state,b.branch,b.address,b.zip];
+  const normed=fields.map(f=>norm(f));
+  const tokens=phrase.split(/\s+/).filter(t=>t.length>0);
   if(tokens.length===0) return true;
-  return tokens.some(t=>tokenHits(t,b));
+  return tokens.some(t=>{
+    for(const h of normed){
+      if(h.includes(t)) return true;
+    }
+    const inits=initials(b.name||'');
+    if(t===inits) return true;
+    const sw=norm(b.swift||'');
+    if(sw.length>=3 && t===sw.substring(0,3)) return true;
+    return false;
+  });
+}
+
+function bankMatches(b,rawQuery,countryKeyword){
+  // Strip country keyword from query
+  let t=norm(rawQuery);
+  if(countryKeyword){
+    t=t.replace(countryKeyword,'').trim();
+  }
+  
+  // If only country was searched, show all banks
+  if(t.length===0) return true;
+  
+  // Try strict name match first (for "Bank of America Chile")
+  if(nameMatches(b,t)) return true;
+  
+  // Fall back to broader field match (for "Santiago Chile")
+  return fieldMatches(b,t);
 }
 
 function updateFunnel(c,co,s,ci){
@@ -353,11 +380,9 @@ async function runSearch(){
     return;
   }
   
-  // Find the exact country keyword that triggered the winning shard
   let countryKeyword='';
   const t=norm(raw);
-  let bestScore=-1;
-  let bestPos=-1;
+  let bestScore=-1,bestPos=-1;
   for(const k of Object.keys(SHARD_MAP)){
     if(SHARD_MAP[k]!==shard) continue;
     const idx=t.indexOf(k);
@@ -366,10 +391,8 @@ async function runSearch(){
     const after=idx+k.length===t.length||t[idx+k.length]===' ';
     const score=(before&&after)?2:1;
     const pos=idx;
-    if(score>bestScore || (score===bestScore&&pos>bestPos)){
-      bestScore=score;
-      bestPos=pos;
-      countryKeyword=k;
+    if(score>bestScore||(score===bestScore&&pos>bestPos)){
+      bestScore=score;bestPos=pos;countryKeyword=k;
     }
   }
   
