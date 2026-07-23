@@ -233,11 +233,17 @@ async function loadShard(n){
   return r.json();
 }
 
-function initials(str){
+/* Full initials including ALL words (for abbreviation matching like BOA) */
+function fullInitials(str){
+  return norm(str).split(/\s+/).filter(w=>w.length>0).map(w=>w[0]).join('');
+}
+
+/* Meaningful initials excluding stop words */
+function meaningfulInitials(str){
   return norm(str).split(/\s+/).filter(w=>w.length>0&&!STOP_WORDS.has(w)).map(w=>w[0]).join('');
 }
 
-/* Strict name-only matching for bank name queries */
+/* Strict name-only matching for bank name queries (2+ meaningful tokens) */
 function nameMatches(b,phrase){
   const name=norm(b.name||'');
   if(!phrase) return true;
@@ -245,33 +251,37 @@ function nameMatches(b,phrase){
   // Full phrase substring in name
   if(name.includes(phrase)) return true;
   
-  // Meaningful tokens (excluding stop words) must ALL hit the name
+  // Meaningful tokens must ALL hit the name
   const tokens=phrase.split(/\s+/).filter(t=>t.length>0&&!STOP_WORDS.has(t));
   if(tokens.length===0) return true;
   
   return tokens.every(t=>{
     if(name.includes(t)) return true;
-    const inits=initials(b.name||'');
-    if(t===inits) return true;
+    // Check full initials (includes stop words for abbreviations like BOA)
+    if(t===fullInitials(b.name||'')) return true;
+    // Check meaningful initials
+    if(t===meaningfulInitials(b.name||'')) return true;
+    // SWIFT prefix
     const sw=norm(b.swift||'');
     if(sw.length>=3 && t===sw.substring(0,3)) return true;
     return false;
   });
 }
 
-/* Broader field matching for city/location queries (single meaningful token) */
+/* Broader field matching for single-token queries (city, SWIFT, abbreviation) */
 function fieldMatches(b,phrase){
   if(!phrase) return true;
   const fields=[b.name,b.swift,b.city,b.state,b.branch,b.address,b.zip];
   const normed=fields.map(f=>norm(f));
   const tokens=phrase.split(/\s+/).filter(t=>t.length>0&&!STOP_WORDS.has(t));
   if(tokens.length===0) return true;
+  
   return tokens.some(t=>{
     for(const h of normed){
       if(h.includes(t)) return true;
     }
-    const inits=initials(b.name||'');
-    if(t===inits) return true;
+    if(t===fullInitials(b.name||'')) return true;
+    if(t===meaningfulInitials(b.name||'')) return true;
     const sw=norm(b.swift||'');
     if(sw.length>=3 && t===sw.substring(0,3)) return true;
     return false;
@@ -285,15 +295,14 @@ function bankMatches(b,rawQuery,countryKeyword){
   }
   if(t.length===0) return true;
   
-  // Count meaningful tokens
-  const meaningful=t.split(/\s+/).filter(x=>x.length>0&&!STOP_WORDS.has(x)).length;
+  const meaningfulTokens=t.split(/\s+/).filter(x=>x.length>0&&!STOP_WORDS.has(x)).length;
   
-  // If 2+ meaningful tokens, user is searching a bank name -> strict name match
-  if(meaningful>=2){
+  // 2+ meaningful tokens = bank name search -> strict name match
+  if(meaningfulTokens>=2){
     return nameMatches(b,t);
   }
   
-  // If 1 meaningful token, could be city or bank name -> broader field match
+  // 1 meaningful token = could be abbreviation, city, or single-word bank name
   return fieldMatches(b,t);
 }
 
