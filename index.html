@@ -355,198 +355,139 @@
 
 <script>
 /* ============================================================
-   REGIONAL SHARDING — LOCAL JSON DATA PRE-LOADING SYSTEM
+   REGIONAL SHARDING — LOOSE PARTIAL MATCH ENGINE
    ============================================================ */
 
-// Country keyword map: maps common search terms to shard filenames
-const SHARD_MAP = {
-  // Europe
-  'united kingdom': 'united_kingdom', 'uk': 'united_kingdom', 'great britain': 'united_kingdom',
-  'britain': 'united_kingdom', 'england': 'united_kingdom', 'scotland': 'united_kingdom',
-  'wales': 'united_kingdom', 'northern ireland': 'united_kingdom',
-  'london': 'united_kingdom', 'manchester': 'united_kingdom', 'birmingham': 'united_kingdom',
-  'liverpool': 'united_kingdom', 'leeds': 'united_kingdom', 'glasgow': 'united_kingdom',
-  'edinburgh': 'united_kingdom', 'bristol': 'united_kingdom', 'cardiff': 'united_kingdom',
-  
-  'germany': 'germany', 'deutschland': 'germany',
-  'berlin': 'germany', 'munich': 'germany', 'munchen': 'germany',
-  'hamburg': 'germany', 'frankfurt': 'germany', 'cologne': 'germany', 'koln': 'germany',
-  'stuttgart': 'germany', 'dusseldorf': 'germany', 'dortmund': 'germany',
-  
-  'france': 'france', 'paris': 'france', 'lyon': 'france', 'marseille': 'france',
-  'nice': 'france', 'toulouse': 'france', 'bordeaux': 'france', 'lille': 'france',
-  
-  'italy': 'italy', 'italia': 'italy',
-  'rome': 'italy', 'roma': 'italy', 'milan': 'italy', 'milano': 'italy',
-  'naples': 'italy', 'napoli': 'italy', 'turin': 'italy', 'torino': 'italy',
-  'florence': 'italy', 'firenze': 'italy', 'venice': 'italy', 'venezia': 'italy',
-  
-  'spain': 'spain', 'espana': 'spain',
-  'madrid': 'spain', 'barcelona': 'spain', 'valencia': 'spain', 'seville': 'spain',
-  'sevilla': 'spain', 'bilbao': 'spain', 'malaga': 'spain',
-  
-  'netherlands': 'netherlands', 'holland': 'netherlands',
-  'amsterdam': 'netherlands', 'rotterdam': 'netherlands', 'the hague': 'netherlands',
-  'utrecht': 'netherlands', 'eindhoven': 'netherlands',
-  
-  'switzerland': 'switzerland', 'swiss': 'switzerland',
-  'zurich': 'switzerland', 'geneva': 'switzerland', 'basel': 'switzerland', 'bern': 'switzerland',
-  
-  'belgium': 'belgium', 'brussels': 'belgium', 'antwerp': 'belgium', 'gent': 'belgium',
-  'austria': 'austria', 'vienna': 'austria', 'wien': 'austria', 'salzburg': 'austria',
-  'sweden': 'sweden', 'stockholm': 'sweden', 'gothenburg': 'sweden', 'malmo': 'sweden',
-  'norway': 'norway', 'oslo': 'norway', 'bergen': 'norway',
-  'denmark': 'denmark', 'copenhagen': 'denmark', 'aarhus': 'denmark',
-  'finland': 'finland', 'helsinki': 'finland', 'espoo': 'finland',
-  'ireland': 'ireland', 'dublin': 'ireland', 'cork': 'ireland',
-  'portugal': 'portugal', 'lisbon': 'portugal', 'lisboa': 'portugal', 'porto': 'portugal',
-  'poland': 'poland', 'warsaw': 'poland', 'krakow': 'poland', 'wroclaw': 'poland',
-  'czech republic': 'czech_republic', 'czechia': 'czech_republic',
-  'prague': 'czech_republic', 'praha': 'czech_republic', 'brno': 'czech_republic',
-  'hungary': 'hungary', 'budapest': 'hungary',
-  'greece': 'greece', 'athens': 'greece', 'thessaloniki': 'greece',
-  'romania': 'romania', 'bucharest': 'romania', 'cluj': 'romania',
-  'bulgaria': 'bulgaria', 'sofia': 'bulgaria',
-  'croatia': 'croatia', 'zagreb': 'croatia', 'split': 'croatia',
-  'serbia': 'serbia', 'belgrade': 'serbia',
-  'ukraine': 'ukraine', 'kyiv': 'ukraine', 'kiev': 'ukraine', 'kharkiv': 'ukraine',
-  'russia': 'russia', 'moscow': 'russia', 'saint petersburg': 'russia', 'spb': 'russia',
-  'turkey': 'turkey', 'istanbul': 'turkey', 'ankara': 'turkey', 'izmir': 'turkey',
-  
-  // Americas
-  'united states': 'united_states', 'usa': 'united_states', 'us': 'united_states',
-  'america': 'united_states', 'new york': 'united_states', 'ny': 'united_states',
-  'los angeles': 'united_states', 'la': 'united_states', 'chicago': 'united_states',
-  'houston': 'united_states', 'phoenix': 'united_states', 'philadelphia': 'united_states',
-  'san antonio': 'united_states', 'san diego': 'united_states', 'dallas': 'united_states',
-  'san jose': 'united_states', 'austin': 'united_states', 'miami': 'united_states',
-  'boston': 'united_states', 'seattle': 'united_states', 'san francisco': 'united_states',
-  'denver': 'united_states', 'atlanta': 'united_states', 'las vegas': 'united_states',
-  
-  'canada': 'canada', 'toronto': 'canada', 'vancouver': 'canada', 'montreal': 'canada',
-  'calgary': 'canada', 'ottawa': 'canada', 'edmonton': 'canada',
-  
-  'mexico': 'mexico', 'mexico city': 'mexico', 'ciudad de mexico': 'mexico',
-  'guadalajara': 'mexico', 'monterrey': 'mexico',
-  
-  'brazil': 'brazil', 'brasil': 'brazil',
-  'sao paulo': 'brazil', 'rio de janeiro': 'brazil', 'brasilia': 'brazil',
-  'salvador': 'brazil', 'fortaleza': 'brazil', 'belo horizonte': 'brazil',
-  
-  'argentina': 'argentina', 'buenos aires': 'argentina', 'cordoba': 'argentina',
-  'chile': 'chile', 'santiago': 'chile', 'valparaiso': 'chile', 'concepcion': 'chile',
-  'colombia': 'colombia', 'bogota': 'colombia', 'medellin': 'colombia', 'cali': 'colombia',
-  'peru': 'peru', 'lima': 'peru', 'arequipa': 'peru',
-  'venezuela': 'venezuela', 'caracas': 'venezuela',
-  'ecuador': 'ecuador', 'quito': 'ecuador', 'guayaquil': 'ecuador',
-  
-  // Asia
-  'china': 'china', 'prc': 'china',
-  'beijing': 'china', 'shanghai': 'china', 'guangzhou': 'china', 'shenzhen': 'china',
-  'chengdu': 'china', 'hangzhou': 'china', 'wuhan': 'china', 'xian': 'china',
-  'nanjing': 'china', 'chongqing': 'china', 'tianjin': 'china',
-  
-  'japan': 'japan', 'tokyo': 'japan', 'osaka': 'japan', 'yokohama': 'japan',
-  'nagoya': 'japan', 'sapporo': 'japan', 'fukuoka': 'japan', 'kobe': 'japan',
-  'kyoto': 'japan', 'kawasaki': 'japan',
-  
-  'india': 'india', 'mumbai': 'india', 'delhi': 'india', 'bangalore': 'india',
-  'bengaluru': 'india', 'hyderabad': 'india', 'ahmedabad': 'india', 'chennai': 'india',
-  'kolkata': 'india', 'pune': 'india', 'jaipur': 'india',
-  
-  'south korea': 'south_korea', 'korea': 'south_korea',
-  'seoul': 'south_korea', 'busan': 'south_korea', 'incheon': 'south_korea',
-  
-  'singapore': 'singapore',
-  'hong kong': 'hong_kong', 'hk': 'hong_kong',
-  'taiwan': 'taiwan', 'taipei': 'taiwan', 'kaohsiung': 'taiwan',
-  'thailand': 'thailand', 'bangkok': 'thailand', 'chiang mai': 'thailand',
-  'malaysia': 'malaysia', 'kuala lumpur': 'malaysia', 'penang': 'malaysia',
-  'indonesia': 'indonesia', 'jakarta': 'indonesia', 'surabaya': 'indonesia',
-  'bandung': 'indonesia', 'bali': 'indonesia',
-  'philippines': 'philippines', 'manila': 'philippines', 'cebu': 'philippines',
-  'vietnam': 'vietnam', 'ho chi minh': 'vietnam', 'saigon': 'vietnam', 'hanoi': 'vietnam',
-  'pakistan': 'pakistan', 'karachi': 'pakistan', 'lahore': 'pakistan', 'islamabad': 'pakistan',
-  'bangladesh': 'bangladesh', 'dhaka': 'bangladesh', 'chittagong': 'bangladesh',
-  'sri lanka': 'sri_lanka', 'colombo': 'sri_lanka',
-  'myanmar': 'myanmar', 'yangon': 'myanmar', 'naypyidaw': 'myanmar',
-  'cambodia': 'cambodia', 'phnom penh': 'cambodia',
-  'laos': 'laos', 'vientiane': 'laos',
-  'nepal': 'nepal', 'kathmandu': 'nepal',
-  
-  // Middle East
-  'uae': 'uae', 'united arab emirates': 'uae', 'dubai': 'uae', 'abu dhabi': 'uae',
-  'sharjah': 'uae', 'ajman': 'uae',
-  'saudi arabia': 'saudi_arabia', 'ksa': 'saudi_arabia',
-  'riyadh': 'saudi_arabia', 'jeddah': 'saudi_arabia', 'mecca': 'saudi_arabia',
-  'medina': 'saudi_arabia', 'dammam': 'saudi_arabia',
-  'israel': 'israel', 'tel aviv': 'israel', 'jerusalem': 'israel', 'haifa': 'israel',
-  'qatar': 'qatar', 'doha': 'qatar',
-  'kuwait': 'kuwait', 'kuwait city': 'kuwait',
-  'bahrain': 'bahrain', 'manama': 'bahrain',
-  'oman': 'oman', 'muscat': 'oman',
-  'jordan': 'jordan', 'amman': 'jordan',
-  'lebanon': 'lebanon', 'beirut': 'lebanon',
-  'iraq': 'iraq', 'baghdad': 'iraq',
-  'iran': 'iran', 'tehran': 'iran', 'isfahan': 'iran',
-  
-  // Oceania
-  'australia': 'australia', 'sydney': 'australia', 'melbourne': 'australia',
-  'brisbane': 'australia', 'perth': 'australia', 'adelaide': 'australia',
-  'canberra': 'australia', 'gold coast': 'australia',
-  'new zealand': 'new_zealand', 'auckland': 'new_zealand', 'wellington': 'new_zealand',
-  'christchurch': 'new_zealand',
-  
-  // Africa
-  'south africa': 'south_africa', 'johannesburg': 'south_africa', 'cape town': 'south_africa',
-  'durban': 'south_africa', 'pretoria': 'south_africa',
-  'nigeria': 'nigeria', 'lagos': 'nigeria', 'abuja': 'nigeria', 'kano': 'nigeria',
-  'egypt': 'egypt', 'cairo': 'egypt', 'alexandria': 'egypt',
-  'kenya': 'kenya', 'nairobi': 'kenya', 'mombasa': 'kenya',
-  'morocco': 'morocco', 'casablanca': 'morocco', 'marrakech': 'morocco', 'rabat': 'morocco',
-  'ghana': 'ghana', 'accra': 'ghana',
-  'ethiopia': 'ethiopia', 'addis ababa': 'ethiopia',
-  'tanzania': 'tanzania', 'dar es salaam': 'tanzania',
-  'uganda': 'uganda', 'kampala': 'uganda',
-  'zambia': 'zambia', 'lusaka': 'zambia',
-  'zimbabwe': 'zimbabwe', 'harare': 'zimbabwe',
-  'botswana': 'botswana', 'gaborone': 'botswana',
-  'namibia': 'namibia', 'windhoek': 'namibia',
-  'tunisia': 'tunisia', 'tunis': 'tunisia',
-  'algeria': 'algeria', 'algiers': 'algeria',
-  'libya': 'libya', 'tripoli': 'libya',
-  'ivory coast': 'ivory_coast', "cote d'ivoire": 'ivory_coast', 'abidjan': 'ivory_coast',
-  'senegal': 'senegal', 'dakar': 'senegal',
-  'cameroon': 'cameroon', 'yaounde': 'cameroon', 'douala': 'cameroon',
-  'angola': 'angola', 'luanda': 'angola',
-  'mozambique': 'mozambique', 'maputo': 'mozambique',
-  'madagascar': 'madagascar', 'antananarivo': 'madagascar',
-  'mauritius': 'mauritius', 'port louis': 'mauritius',
-  'rwanda': 'rwanda', 'kigali': 'rwanda'
+const SHARD_MAP={
+  'united kingdom':'united_kingdom','uk':'united_kingdom','britain':'united_kingdom',
+  'england':'united_kingdom','scotland':'united_kingdom','wales':'united_kingdom',
+  'northern ireland':'united_kingdom','london':'united_kingdom','manchester':'united_kingdom',
+  'birmingham':'united_kingdom','liverpool':'united_kingdom','leeds':'united_kingdom',
+  'glasgow':'united_kingdom','edinburgh':'united_kingdom','bristol':'united_kingdom',
+  'cardiff':'united_kingdom','germany':'germany','deutschland':'germany','berlin':'germany',
+  'munich':'germany','munchen':'germany','hamburg':'germany','frankfurt':'germany',
+  'cologne':'germany','koln':'germany','stuttgart':'germany','dusseldorf':'germany',
+  'dortmund':'germany','france':'france','paris':'france','lyon':'france',
+  'marseille':'france','nice':'france','toulouse':'france','bordeaux':'france',
+  'lille':'france','italy':'italy','italia':'italy','rome':'italy','roma':'italy',
+  'milan':'italy','milano':'italy','naples':'italy','napoli':'italy','turin':'italy',
+  'torino':'italy','florence':'italy','firenze':'italy','venice':'italy','venezia':'italy',
+  'spain':'spain','espana':'spain','madrid':'spain','barcelona':'spain',
+  'valencia':'spain','seville':'spain','sevilla':'spain','bilbao':'spain',
+  'malaga':'spain','netherlands':'netherlands','holland':'netherlands',
+  'amsterdam':'netherlands','rotterdam':'netherlands','the hague':'netherlands',
+  'utrecht':'netherlands','eindhoven':'netherlands','switzerland':'switzerland',
+  'swiss':'switzerland','zurich':'switzerland','geneva':'switzerland',
+  'basel':'switzerland','bern':'switzerland','belgium':'belgium','brussels':'belgium',
+  'antwerp':'belgium','gent':'belgium','austria':'austria','vienna':'austria',
+  'wien':'austria','salzburg':'austria','sweden':'sweden','stockholm':'sweden',
+  'gothenburg':'sweden','malmo':'sweden','norway':'norway','oslo':'norway',
+  'bergen':'norway','denmark':'denmark','copenhagen':'denmark','aarhus':'denmark',
+  'finland':'finland','helsinki':'finland','espoo':'finland','ireland':'ireland',
+  'dublin':'ireland','cork':'ireland','portugal':'portugal','lisbon':'portugal',
+  'lisboa':'portugal','porto':'portugal','poland':'poland','warsaw':'poland',
+  'krakow':'poland','wroclaw':'poland','czech republic':'czech_republic',
+  'czechia':'czech_republic','prague':'czech_republic','praha':'czech_republic',
+  'brno':'czech_republic','hungary':'hungary','budapest':'hungary','greece':'greece',
+  'athens':'greece','thessaloniki':'greece','romania':'romania','bucharest':'romania',
+  'cluj':'romania','bulgaria':'bulgaria','sofia':'bulgaria','croatia':'croatia',
+  'zagreb':'croatia','split':'croatia','serbia':'serbia','belgrade':'serbia',
+  'ukraine':'ukraine','kyiv':'ukraine','kiev':'ukraine','kharkiv':'ukraine',
+  'russia':'russia','moscow':'russia','saint petersburg':'russia','spb':'russia',
+  'turkey':'turkey','istanbul':'turkey','ankara':'turkey','izmir':'turkey',
+  'united states':'united_states','usa':'united_states','us':'united_states',
+  'america':'united_states','new york':'united_states','ny':'united_states',
+  'los angeles':'united_states','la':'united_states','chicago':'united_states',
+  'houston':'united_states','phoenix':'united_states','philadelphia':'united_states',
+  'san antonio':'united_states','san diego':'united_states','dallas':'united_states',
+  'san jose':'united_states','austin':'united_states','miami':'united_states',
+  'boston':'united_states','seattle':'united_states','san francisco':'united_states',
+  'denver':'united_states','atlanta':'united_states','las vegas':'united_states',
+  'canada':'canada','toronto':'canada','vancouver':'canada','montreal':'canada',
+  'calgary':'canada','ottawa':'canada','edmonton':'canada','mexico':'mexico',
+  'mexico city':'mexico','ciudad de mexico':'mexico','guadalajara':'mexico',
+  'monterrey':'mexico','brazil':'brazil','brasil':'brazil','sao paulo':'brazil',
+  'rio de janeiro':'brazil','brasilia':'brazil','salvador':'brazil',
+  'fortaleza':'brazil','belo horizonte':'brazil','argentina':'argentina',
+  'buenos aires':'argentina','cordoba':'argentina','chile':'chile',
+  'santiago':'chile','valparaiso':'chile','concepcion':'chile','colombia':'colombia',
+  'bogota':'colombia','medellin':'colombia','cali':'colombia','peru':'peru',
+  'lima':'peru','arequipa':'peru','venezuela':'venezuela','caracas':'venezuela',
+  'ecuador':'ecuador','quito':'ecuador','guayaquil':'ecuador','china':'china',
+  'prc':'china','beijing':'china','shanghai':'china','guangzhou':'china',
+  'shenzhen':'china','chengdu':'china','hangzhou':'china','wuhan':'china',
+  'xian':'china','nanjing':'china','chongqing':'china','tianjin':'china',
+  'japan':'japan','tokyo':'japan','osaka':'japan','yokohama':'japan',
+  'nagoya':'japan','sapporo':'japan','fukuoka':'japan','kobe':'japan',
+  'kyoto':'japan','kawasaki':'japan','india':'india','mumbai':'india',
+  'delhi':'india','bangalore':'india','bengaluru':'india','hyderabad':'india',
+  'ahmedabad':'india','chennai':'india','kolkata':'india','pune':'india',
+  'jaipur':'india','south korea':'south_korea','korea':'south_korea',
+  'seoul':'south_korea','busan':'south_korea','incheon':'south_korea',
+  'singapore':'singapore','hong kong':'hong_kong','hk':'hong_kong',
+  'taiwan':'taiwan','taipei':'taiwan','kaohsiung':'taiwan','thailand':'thailand',
+  'bangkok':'thailand','chiang mai':'thailand','malaysia':'malaysia',
+  'kuala lumpur':'malaysia','penang':'malaysia','indonesia':'indonesia',
+  'jakarta':'indonesia','surabaya':'indonesia','bandung':'indonesia','bali':'indonesia',
+  'philippines':'philippines','manila':'philippines','cebu':'philippines',
+  'vietnam':'vietnam','ho chi minh':'vietnam','saigon':'vietnam','hanoi':'vietnam',
+  'pakistan':'pakistan','karachi':'pakistan','lahore':'pakistan',
+  'islamabad':'pakistan','bangladesh':'bangladesh','dhaka':'bangladesh',
+  'chittagong':'bangladesh','sri lanka':'sri_lanka','colombo':'sri_lanka',
+  'myanmar':'myanmar','yangon':'myanmar','naypyidaw':'myanmar','cambodia':'cambodia',
+  'phnom penh':'cambodia','laos':'laos','vientiane':'laos','nepal':'nepal',
+  'kathmandu':'nepal','uae':'uae','united arab emirates':'uae','dubai':'uae',
+  'abu dhabi':'uae','sharjah':'uae','ajman':'uae','saudi arabia':'saudi_arabia',
+  'ksa':'saudi_arabia','riyadh':'saudi_arabia','jeddah':'saudi_arabia',
+  'mecca':'saudi_arabia','medina':'saudi_arabia','dammam':'saudi_arabia',
+  'israel':'israel','tel aviv':'israel','jerusalem':'israel','haifa':'israel',
+  'qatar':'qatar','doha':'qatar','kuwait':'kuwait','kuwait city':'kuwait',
+  'bahrain':'bahrain','manama':'bahrain','oman':'oman','muscat':'oman',
+  'jordan':'jordan','amman':'jordan','lebanon':'lebanon','beirut':'lebanon',
+  'iraq':'iraq','baghdad':'iraq','iran':'iran','tehran':'iran','isfahan':'iran',
+  'australia':'australia','sydney':'australia','melbourne':'australia',
+  'brisbane':'australia','perth':'australia','adelaide':'australia',
+  'canberra':'australia','gold coast':'australia','new zealand':'new_zealand',
+  'auckland':'new_zealand','wellington':'new_zealand','christchurch':'new_zealand',
+  'south africa':'south_africa','johannesburg':'south_africa',
+  'cape town':'south_africa','durban':'south_africa','pretoria':'south_africa',
+  'nigeria':'nigeria','lagos':'nigeria','abuja':'nigeria','kano':'nigeria',
+  'egypt':'egypt','cairo':'egypt','alexandria':'egypt','kenya':'kenya',
+  'nairobi':'kenya','mombasa':'kenya','morocco':'morocco','casablanca':'morocco',
+  'marrakech':'morocco','rabat':'morocco','ghana':'ghana','accra':'ghana',
+  'ethiopia':'ethiopia','addis ababa':'ethiopia','tanzania':'tanzania',
+  'dar es salaam':'tanzania','uganda':'uganda','kampala':'uganda','zambia':'zambia',
+  'lusaka':'zambia','zimbabwe':'zimbabwe','harare':'zimbabwe','botswana':'botswana',
+  'gaborone':'botswana','namibia':'namibia','windhoek':'namibia','tunisia':'tunisia',
+  'tunis':'tunisia','algeria':'algeria','algiers':'algeria','libya':'libya',
+  'tripoli':'libya',"cote d'ivoire":'ivory_coast','ivory coast':'ivory_coast',
+  'abidjan':'ivory_coast','senegal':'senegal','dakar':'senegal','cameroon':'cameroon',
+  'yaounde':'cameroon','douala':'cameroon','angola':'angola','luanda':'angola',
+  'mozambique':'mozambique','maputo':'mozambique','madagascar':'madagascar',
+  'antananarivo':'madagascar','mauritius':'mauritius','port louis':'mauritius',
+  'rwanda':'rwanda','kigali':'rwanda'
 };
 
-// Continent lookup by country shard name
-const CONTINENT_MAP = {
+const CONTINENT_MAP={
   'united_kingdom':'Europe','germany':'Europe','france':'Europe','italy':'Europe',
   'spain':'Europe','netherlands':'Europe','switzerland':'Europe','belgium':'Europe',
   'austria':'Europe','sweden':'Europe','norway':'Europe','denmark':'Europe',
   'finland':'Europe','ireland':'Europe','portugal':'Europe','poland':'Europe',
   'czech_republic':'Europe','hungary':'Europe','greece':'Europe','romania':'Europe',
   'bulgaria':'Europe','croatia':'Europe','serbia':'Europe','ukraine':'Europe',
-  'russia':'Europe','turkey':'Europe',
-  'united_states':'North America','canada':'North America','mexico':'North America',
-  'brazil':'South America','argentina':'South America','chile':'South America',
-  'colombia':'South America','peru':'South America','venezuela':'South America',
-  'ecuador':'South America',
-  'china':'Asia','japan':'Asia','india':'Asia','south_korea':'Asia','singapore':'Asia',
-  'hong_kong':'Asia','taiwan':'Asia','thailand':'Asia','malaysia':'Asia',
-  'indonesia':'Asia','philippines':'Asia','vietnam':'Asia','pakistan':'Asia',
-  'bangladesh':'Asia','sri_lanka':'Asia','myanmar':'Asia','cambodia':'Asia',
-  'laos':'Asia','nepal':'Asia',
-  'uae':'Middle East','saudi_arabia':'Middle East','israel':'Middle East','qatar':'Middle East',
-  'kuwait':'Middle East','bahrain':'Middle East','oman':'Middle East','jordan':'Middle East',
-  'lebanon':'Middle East','iraq':'Middle East','iran':'Middle East',
-  'australia':'Oceania','new_zealand':'Oceania',
+  'russia':'Europe','turkey':'Europe','united_states':'North America',
+  'canada':'North America','mexico':'North America','brazil':'South America',
+  'argentina':'South America','chile':'South America','colombia':'South America',
+  'peru':'South America','venezuela':'South America','ecuador':'South America',
+  'china':'Asia','japan':'Asia','india':'Asia','south_korea':'Asia',
+  'singapore':'Asia','hong_kong':'Asia','taiwan':'Asia','thailand':'Asia',
+  'malaysia':'Asia','indonesia':'Asia','philippines':'Asia','vietnam':'Asia',
+  'pakistan':'Asia','bangladesh':'Asia','sri_lanka':'Asia','myanmar':'Asia',
+  'cambodia':'Asia','laos':'Asia','nepal':'Asia','uae':'Middle East',
+  'saudi_arabia':'Middle East','israel':'Middle East','qatar':'Middle East',
+  'kuwait':'Middle East','bahrain':'Middle East','oman':'Middle East',
+  'jordan':'Middle East','lebanon':'Middle East','iraq':'Middle East',
+  'iran':'Middle East','australia':'Oceania','new_zealand':'Oceania',
   'south_africa':'Africa','nigeria':'Africa','egypt':'Africa','kenya':'Africa',
   'morocco':'Africa','ghana':'Africa','ethiopia':'Africa','tanzania':'Africa',
   'uganda':'Africa','zambia':'Africa','zimbabwe':'Africa','botswana':'Africa',
@@ -555,162 +496,125 @@ const CONTINENT_MAP = {
   'mozambique':'Africa','madagascar':'Africa','mauritius':'Africa','rwanda':'Africa'
 };
 
-/* ============================================================
-   CORE SEARCH & SHARD FETCH LOGIC
-   ============================================================ */
+function norm(s){return(s||'').toLowerCase().trim();}
 
-function normalize(str){
-  return str.toLowerCase().trim().replace(/\s+/g,' ');
-}
-
-function identifyShard(query){
-  const q = normalize(query);
-  for(const [keyword,shard] of Object.entries(SHARD_MAP)){
-    if(q.includes(keyword)) return shard;
+function findShard(q){
+  const t=norm(q);
+  for(const [k,v] of Object.entries(SHARD_MAP)){
+    if(t.includes(k)) return v;
   }
   return null;
 }
 
-function getContinent(shardName){
-  return CONTINENT_MAP[shardName] || '—';
+function getContinent(s){return CONTINENT_MAP[s]||'—';}
+
+function fmtCountry(s){
+  return s.split('_').map(w=>w[0].toUpperCase()+w.slice(1)).join(' ');
 }
 
-function formatCountryName(shardName){
-  return shardName
-    .split('_')
-    .map(w => w.charAt(0).toUpperCase()+w.slice(1))
-    .join(' ');
+async function loadShard(n){
+  const r=await fetch('./countries/'+n+'.json');
+  if(!r.ok) throw new Error('fail');
+  return r.json();
 }
 
-async function fetchShard(shardName){
-  const path = `./countries/${shardName}.json`;
-  const res = await fetch(path);
-  if(!res.ok) throw new Error('Shard not found');
-  return await res.json();
+function looseMatch(b,terms){
+  const hay=norm([b.name,b.city,b.state,b.branch,b.address].filter(Boolean).join(' '));
+  return terms.every(t=>hay.includes(t));
 }
 
-function filterBanks(data, query){
-  const q = normalize(query);
-  return data.banks.filter(b => {
-    const hay = normalize(
-      (b.name||'')+' '+(b.city||'')+' '+(b.state||'')+' '+(b.branch||'')
+function tokenize(q){
+  return norm(q).split(/\s+/).filter(t=>t.length>0);
+}
+
+function updateFunnel(c,co,s,ci){
+  document.getElementById('v-continent').textContent=c||'—';
+  document.getElementById('v-country').textContent=co||'—';
+  document.getElementById('v-state').textContent=s||'—';
+  document.getElementById('v-city').textContent=ci||'—';
+  ['continent','country','state','city'].forEach(k=>{
+    document.getElementById('f-'+k).classList.toggle(
+      'active',document.getElementById('v-'+k).textContent!=='—'
     );
-    return hay.includes(q);
   });
 }
 
-function updateFunnel(continent, country, state, city){
-  document.getElementById('v-continent').textContent = continent || '—';
-  document.getElementById('v-country').textContent = country || '—';
-  document.getElementById('v-state').textContent = state || '—';
-  document.getElementById('v-city').textContent = city || '—';
-  
-  ['continent','country','state','city'].forEach(k => {
-    const el = document.getElementById('f-'+k);
-    const val = document.getElementById('v-'+k).textContent;
-    el.classList.toggle('active', val !== '—');
-  });
+function esc(t){
+  const d=document.createElement('div');
+  d.textContent=t;
+  return d.innerHTML;
 }
 
-function renderBanks(banks){
-  const list = document.getElementById('bankList');
-  const title = document.getElementById('resultsTitle');
-  list.innerHTML = '';
-  
-  if(!banks || banks.length === 0){
-    title.style.display = 'none';
-    list.innerHTML = `
-      <div class="info-card">
-        <p>Bank or location not found. Please check your spelling.</p>
-      </div>
-    `;
+function renderBanks(list,shard){
+  const box=document.getElementById('bankList');
+  const ttl=document.getElementById('resultsTitle');
+  box.innerHTML='';
+  if(!list||!list.length){
+    ttl.style.display='none';
+    box.innerHTML='<div class="info-card"><p>Bank or location not found. Please check your spelling.</p></div>';
+    updateFunnel('—','—','—','—');
     return;
   }
-  
-  title.style.display = 'block';
-  title.textContent = banks.length + ' Matching Bank' + (banks.length>1?'s':'');
-  
-  banks.forEach(b => {
-    const card = document.createElement('div');
-    card.className = 'bank-card';
-    card.innerHTML = `
-      <div class="bank-name">${escapeHtml(b.name)}</div>
-      <div class="bank-meta">
-        ${b.branch ? escapeHtml(b.branch)+'<br>' : ''}
-        ${escapeHtml(b.address||'')}<br>
-        ${escapeHtml(b.city||'')}${b.state? ', '+escapeHtml(b.state):''}
-        ${b.zip ? ' '+escapeHtml(b.zip) : ''}
-      </div>
-      <div class="swift-row">
-        <div class="swift-code">${escapeHtml(b.swift||'N/A')}</div>
-        <button class="copy-btn" onclick="copySwift(this,'${escapeHtml(b.swift||'')}')">Copy</button>
-      </div>
-    `;
-    list.appendChild(card);
+  ttl.style.display='block';
+  ttl.textContent=list.length+' Matching Bank'+(list.length>1?'s':'');
+  list.forEach(b=>{
+    const d=document.createElement('div');
+    d.className='bank-card';
+    d.style.cursor='pointer';
+    d.innerHTML=
+      '<div class="bank-name">'+esc(b.name)+'</div>'+
+      '<div class="bank-meta">'+
+        (b.branch?esc(b.branch)+'<br>':'')+
+        esc(b.address||'')+'<br>'+
+        esc(b.city||'')+(b.state?', '+esc(b.state):'')+
+        (b.zip?' '+esc(b.zip):'')+
+      '</div>'+
+      '<div class="swift-row">'+
+        '<div class="swift-code">'+esc(b.swift||'N/A')+'</div>'+
+        '<button class="copy-btn" onclick="event.stopPropagation();copySwift(this,\''+esc(b.swift||'')+'\')">Copy</button>'+
+      '</div>';
+    d.addEventListener('click',()=>{
+      updateFunnel(getContinent(shard),fmtCountry(shard),b.state||'—',b.city||'—');
+      document.querySelectorAll('.bank-card').forEach(c=>c.style.borderColor='');
+      d.style.borderColor='var(--accent)';
+    });
+    box.appendChild(d);
   });
-  
-  // Update funnel with first result geography
-  if(banks[0]){
-    updateFunnel(
-      getContinent(banks[0]._shard),
-      formatCountryName(banks[0]._shard),
-      banks[0].state || '—',
-      banks[0].city || '—'
-    );
-  }
-}
-
-function escapeHtml(text){
-  const div = document.createElement('div');
-  div.textContent = text;
-  return div.innerHTML;
+  updateFunnel(getContinent(shard),fmtCountry(shard),list[0].state||'—',list[0].city||'—');
 }
 
 function copySwift(btn,code){
-  navigator.clipboard.writeText(code).then(() => {
-    const orig = btn.textContent;
-    btn.textContent = 'Copied';
-    btn.style.background = 'rgba(34,197,94,0.25)';
-    setTimeout(() => {
-      btn.textContent = orig;
-      btn.style.background = '';
-    }, 1200);
+  navigator.clipboard.writeText(code).then(()=>{
+    const o=btn.textContent;
+    btn.textContent='Copied';
+    btn.style.background='rgba(34,197,94,0.25)';
+    setTimeout(()=>{btn.textContent=o;btn.style.background='';},1200);
   });
 }
 
 async function runSearch(){
-  const input = document.getElementById('searchInput');
-  const query = input.value.trim();
-  if(!query) return;
-  
-  const list = document.getElementById('bankList');
-  list.innerHTML = '<div class="info-card"><p>Searching...</p></div>';
-  
-  const shardName = identifyShard(query);
-  
-  if(!shardName){
-    updateFunnel('—','—','—','—');
+  const raw=document.getElementById('searchInput').value.trim();
+  if(!raw) return;
+  const shard=findShard(raw);
+  const box=document.getElementById('bankList');
+  box.innerHTML='<div class="info-card"><p>Searching...</p></div>';
+  if(!shard){
     renderBanks([]);
     return;
   }
-  
-  try {
-    const data = await fetchShard(shardName);
-    // Tag each bank with its shard for funnel display
-    data.banks.forEach(b => b._shard = shardName);
-    const matches = filterBanks(data, query);
-    renderBanks(matches);
-  } catch(err){
-    updateFunnel('—','—','—','—');
+  try{
+    const data=await loadShard(shard);
+    const terms=tokenize(raw);
+    const hits=data.banks.filter(b=>looseMatch(b,terms));
+    renderBanks(hits,shard);
+  }catch(e){
     renderBanks([]);
   }
 }
 
-// Enter key support
-document.getElementById('searchInput').addEventListener('keypress', function(e){
-  if(e.key === 'Enter') runSearch();
+document.getElementById('searchInput').addEventListener('keypress',e=>{
+  if(e.key==='Enter') runSearch();
 });
 </script>
-
 </body>
 </html>
